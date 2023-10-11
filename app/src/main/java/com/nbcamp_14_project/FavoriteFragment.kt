@@ -5,14 +5,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
+import com.nbcamp_14_project.databinding.FragmentFavoriteBinding
 import com.nbcamp_14_project.databinding.FragmentMainBinding
 
-class MainFragment: Fragment() {
+class FavoriteFragment: Fragment() {
     companion object{
         fun newInstance() = MainFragment()
     }
-    private var _binding:FragmentMainBinding? = null
+    private var _binding: FragmentFavoriteBinding? = null
     private val binding get() = _binding!!
 
     override fun onCreateView(
@@ -20,7 +20,7 @@ class MainFragment: Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentMainBinding.inflate(inflater,container,false)
+        _binding = FragmentFavoriteBinding.inflate(inflater,container,false)
         return binding.root
     }
 
