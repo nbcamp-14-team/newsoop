@@ -1,9 +1,13 @@
-package com.nbcamp_14_project
+package com.nbcamp_14_project.mainpage
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.google.android.material.tabs.TabLayoutMediator
+import com.nbcamp_14_project.DetailActivity
+import com.nbcamp_14_project.MainViewPagerAdapter
 import com.nbcamp_14_project.databinding.ActivityMainBinding
+import com.nbcamp_14_project.ui.login.LoginActivity
 
 class MainActivity : AppCompatActivity() {
     init{
@@ -33,6 +37,14 @@ class MainActivity : AppCompatActivity() {
         TabLayoutMediator(tabLayout,viewpager){tab, position ->
             tab.setText(tabTitle[position])
         }.attach()
+        btnGotoDetail.setOnClickListener{
+            val test = Intent(this@MainActivity,DetailActivity::class.java)
+            startActivity(test)
+        }
+        btnGotoLogin.setOnClickListener {
+            val test = Intent(this@MainActivity,LoginActivity::class.java)
+            startActivity(test)
+        }
 
     }
 

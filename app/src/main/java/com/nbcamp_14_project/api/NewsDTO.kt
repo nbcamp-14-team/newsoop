@@ -26,6 +26,8 @@ data class Items(
     val link: String?,
     @SerialName("originallink")
     val originallink: String?,
+    @SerialName("articleUrl")
+    val articleUrl: String?,
     @SerialName("description")
     val description: String?,
     @SerialName("pubDate")
