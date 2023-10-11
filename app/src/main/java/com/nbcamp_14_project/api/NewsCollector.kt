@@ -1,6 +1,5 @@
 package com.nbcamp_14_project.api
 
-import android.view.Display
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Header
@@ -14,10 +13,10 @@ interface NewsCollector {
     }
     @GET("v1/search/news.json")
     fun getNews(
-        @Header("X-Naver-Client-Id")id:String?,//앱 ID
-        @Header("X-Naver-Client-Secret")secret:String?, // 앱 비밀번호
-        @Query("query")query: String?,//검색어
-        @Query("display")display: Int? = null,//출력개수
-        @Query("start")start:Int? = null,//출력 시작점
+        @Header("X-Naver-Client-Id") id:String?,//앱 ID
+        @Header("X-Naver-Client-Secret") secret:String?, // 앱 비밀번호
+        @Query("query") query: String?,//검색어
+        @Query("display") display: Int? = null,//출력개수
+        @Query("start") start:Int? = null,//출력 시작점
     ): Call<NewsDTO>
 }
