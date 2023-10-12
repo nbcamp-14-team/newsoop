@@ -10,86 +10,94 @@
 
     <ImageView
         android:id="@+id/img_back"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
         android:layout_marginLeft="10dp"
         android:layout_marginTop="10dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_back" />
 
-    <TextView
-        android:id="@+id/tv_newsoop"
-        android:layout_marginTop="10dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="NEWSOOP"
-        android:textColor="@color/green"
-        android:textSize="25dp"
-        android:textStyle="bold"
+    <ImageView
+        android:id="@+id/img_mic"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_marginLeft="270dp"
+        app:layout_constraintStart_toEndOf="@+id/img_back"
+        app:layout_constraintTop_toTopOf="@+id/img_back"
+        app:srcCompat="@drawable/ic_mic" />
+
+    <ImageView
+        android:id="@+id/img_share"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_marginLeft="10dp"
+        app:layout_constraintStart_toEndOf="@+id/img_mic"
+        app:layout_constraintTop_toTopOf="@+id/img_mic"
+        app:srcCompat="@drawable/ic_share" />
+
+    <ImageView
+        android:id="@+id/img_like"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_marginLeft="10dp"
+        app:layout_constraintStart_toEndOf="@+id/img_share"
+        app:layout_constraintTop_toTopOf="@+id/img_share"
+        app:srcCompat="@drawable/ic_like" />
+
+    <ImageView
+        android:id="@+id/img_thumbnail"
+        android:layout_width="400dp"
+        android:layout_height="242dp"
+        android:layout_marginTop="16dp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.454"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/tv_news"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="언론사"
-        android:layout_marginLeft="10dp"
-        android:textSize="20dp"
-        android:layout_marginTop="20dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_newsoop" />
-
-    <TextView
-        android:id="@+id/tv_date"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="발행날짜"
-        android:layout_marginTop="70dp"
-        android:layout_marginLeft="10dp"
-        android:textSize="20dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_news" />
-
-    <TextView
-        android:id="@+id/tv_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="10dp"
-        android:text="기자이름"
-        android:textSize="20dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/tv_date"
-        app:layout_constraintVertical_bias="0.041" />
+        app:layout_constraintTop_toBottomOf="@+id/img_back"
+        app:srcCompat="@drawable/img_muhandojeon" />
 
     <TextView
         android:id="@+id/tv_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="48dp"
-        android:text="Title"
-        android:textSize="50dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_newsoop" />
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="10dp"
+        android:textStyle="bold"
+        android:textSize="28dp"
+        android:text="Title: Unmasking the Truth\nInvestigative Report expo"
+        app:layout_constraintStart_toStartOf="@+id/img_thumbnail"
+        app:layout_constraintTop_toBottomOf="@+id/img_thumbnail" />
 
+    <TextView
+        android:id="@+id/tv_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:textStyle="bold"
+        android:textSize="20dp"
+        android:text="정현식"
+        app:layout_constraintStart_toStartOf="@+id/tv_title"
+        app:layout_constraintTop_toBottomOf="@+id/tv_title" />
 
+    <TextView
+        android:id="@+id/tv_following"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:textSize="20dp"
+        android:textStyle="bold"
+        android:textColor="#2196F3"
+        android:text="Following"
+        app:layout_constraintStart_toEndOf="@+id/tv_name"
+        app:layout_constraintTop_toTopOf="@+id/tv_name" />
 
-    <ImageView
-        android:id="@+id/img_thumbnail"
-        android:background="#D1DDCB"
-        android:layout_width="match_parent"
-        android:layout_height="150dp"
-        android:layout_marginTop="30dp"
-        app:layout_constraintEnd_toEndOf="@+id/tv_name"
-        app:layout_constraintHorizontal_bias="0.394"
+    <TextView
+        android:id="@+id/tv_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="date: 2023-10-23"
         app:layout_constraintStart_toStartOf="@+id/tv_name"
-        app:layout_constraintTop_toBottomOf="@+id/tv_name"
-        app:srcCompat="@drawable/muhandojeon" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_name" />
 
     <ScrollView
         android:id="@+id/sv_description"
@@ -100,7 +108,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/img_thumbnail"
+        app:layout_constraintTop_toBottomOf="@id/tv_date"
         app:layout_constraintVertical_bias="0.0">
 
         <TextView
@@ -108,44 +116,23 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="16dp"
-            android:text="영상 설명 / 영상 설명"
+            android:text="The nuclear-powered USS Ronald Reagan aircraft carrier arrived at the southeastern port of Busan following trilateral naval drills involving the United States, South Korea and Japan in a show of force against North Korea."
             android:textColor="@color/black"
             android:textSize="18sp" />
 
     </ScrollView>
 
-    <ImageView
-        android:id="@+id/img_share"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_marginLeft="200dp"
-        app:layout_constraintBottom_toBottomOf="@+id/tv_name"
-        app:layout_constraintStart_toEndOf="@+id/tv_name"
-        app:srcCompat="@drawable/ic_share" />
-
-    <ImageView
-        android:id="@+id/img_mic"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_marginLeft="10dp"
-        app:layout_constraintBottom_toBottomOf="@+id/img_share"
-        app:layout_constraintStart_toEndOf="@+id/img_share"
-        app:srcCompat="@drawable/ic_mic" />
-
-    <ImageView
-        android:id="@+id/img_like"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_marginLeft="10dp"
-        app:layout_constraintBottom_toBottomOf="@+id/img_mic"
-        app:layout_constraintStart_toEndOf="@+id/img_mic"
-        app:srcCompat="@drawable/ic_like" />
-
     <Button
+        android:id="@+id/btn_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="기사 구독하기"
+        android:layout_marginTop="4dp"
+        android:backgroundTint="#D1DDCB"
+        android:text="See more"
+        android:textColor="#716C6C"
+        android:textSize="20dp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/sv_description" />
 
