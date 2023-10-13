@@ -5,8 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.nbcamp_14_project.Main.MainFragment
 import com.nbcamp_14_project.databinding.FragmentFavoriteBinding
-import com.nbcamp_14_project.databinding.FragmentMainBinding
 
 class FavoriteFragment: Fragment() {
     companion object{

@@ -1,14 +1,10 @@
-package com.nbcamp_14_project.api
+package com.nbcamp_14_project.domain
 
-import com.google.gson.annotations.SerializedName
+import com.nbcamp_14_project.api.Items
 import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
 import java.util.Date
-/**
- * API를 통해서 가져온 데이터값을 분류해주는 data Class 입니다.
- */
-@Serializable
-data class NewsDTO(
+
+data class SearchEntity(
     @SerialName("lastBuildDate")
     val lastBuildDate: String? ="",
     @SerialName("total")
@@ -20,8 +16,6 @@ data class NewsDTO(
     @SerialName("item")
     val items: List<Items>?,
 )
-
-
 data class Items(
     @SerialName("title")
     val title: String?,

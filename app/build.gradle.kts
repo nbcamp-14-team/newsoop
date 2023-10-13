@@ -72,5 +72,7 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1")
     //scalars
     implementation ("com.squareup.retrofit2:converter-scalars:2.6.4")
+    //Jsoup
+    implementation ("org.jsoup:jsoup:1.13.1")
 
 }
