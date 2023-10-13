@@ -1,31 +1,25 @@
-package com.nbcamp_14_project.Main
+package com.nbcamp_14_project.home
 
-import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.nbcamp_14_project.databinding.FragmentMainBinding
+import coil.load
 import com.nbcamp_14_project.databinding.ItemRecyclerviewMainFragmentBinding
-import kotlinx.coroutines.NonDisposableHandle
-import kotlinx.coroutines.NonDisposableHandle.parent
-import retrofit2.Callback
-import retrofit2.Response
 
-class MainFragmentAdapter() : ListAdapter<MainFragmentModel, MainFragmentAdapter.ViewHolder>(
-    object : DiffUtil.ItemCallback<MainFragmentModel>() {
+class HomeAdapter() : ListAdapter<HomeModel, HomeAdapter.ViewHolder>(
+    object : DiffUtil.ItemCallback<HomeModel>() {
         override fun areContentsTheSame(
-            oldItem: MainFragmentModel,
-            newItem: MainFragmentModel
+            oldItem: HomeModel,
+            newItem: HomeModel
         ): Boolean {
             return oldItem.id == newItem.id
         }
 
         override fun areItemsTheSame(
-            oldItem: MainFragmentModel,
-            newItem: MainFragmentModel
+            oldItem: HomeModel,
+            newItem: HomeModel
         ): Boolean {
             return oldItem == newItem
         }
@@ -48,9 +42,9 @@ class MainFragmentAdapter() : ListAdapter<MainFragmentModel, MainFragmentAdapter
     class ViewHolder(
         private val binding: ItemRecyclerviewMainFragmentBinding,
     ) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(item: MainFragmentModel) = with(binding) {
+        fun bind(item: HomeModel) = with(binding) {
             title.text = item.title
-            description.id = item.id
+            ivThumbnail.load(item.thumbnail)
 
         }
     }

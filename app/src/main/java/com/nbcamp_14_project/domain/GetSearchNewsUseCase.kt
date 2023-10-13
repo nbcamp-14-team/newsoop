@@ -1,7 +1,6 @@
 package com.nbcamp_14_project.domain
 
-import com.nbcamp_14_project.Main.MainFragmentRepository
-import retrofit2.http.Query
+import com.nbcamp_14_project.home.MainFragmentRepository
 
 class GetSearchNewsUseCase(
     private val repository: MainFragmentRepository
