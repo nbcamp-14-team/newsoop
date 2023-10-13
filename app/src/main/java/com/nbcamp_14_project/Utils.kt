@@ -1,20 +1,9 @@
 package com.nbcamp_14_project
 
 import android.util.Log
-import com.nbcamp_14_project.api.NewsCollector
-import com.nbcamp_14_project.api.NewsDTO
-import com.nbcamp_14_project.api.RetrofitInstance
-import com.nbcamp_14_project.Main.MainFragmentRepository
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import org.jsoup.Jsoup
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 object Utils {
     //API 검색 함수, 파라미터 SearchWord = 검색 단어,display = 검색해올 뉴스 개수(최소 10 최대 100),start = 검색시작위치

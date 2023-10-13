@@ -1,36 +1,25 @@
-package com.nbcamp_14_project.Main
+package com.nbcamp_14_project.home
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewOutlineProvider
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import coil.load
-import com.nbcamp_14_project.Utils
-import com.nbcamp_14_project.api.Items
-import com.nbcamp_14_project.api.NewsCollector
-import com.nbcamp_14_project.api.NewsDTO
-import com.nbcamp_14_project.api.RetrofitInstance
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.PagerSnapHelper
 import com.nbcamp_14_project.databinding.FragmentMainBinding
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.async
-import kotlinx.coroutines.job
-import org.jsoup.Jsoup
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import java.util.Timer
+import java.util.TimerTask
 
-class MainFragment: Fragment() {
+class Home: Fragment() {
     companion object{
-        fun newInstance() = MainFragment()
+        fun newInstance() = Home()
     }
     private var _binding:FragmentMainBinding? = null
     private val binding get() = _binding!!
     private val listAdapter by lazy{
-        MainFragmentAdapter()
+        HomeAdapter()
     }
     private val viewModel: MainFragmentViewModel by lazy{
         ViewModelProvider(
@@ -51,15 +40,37 @@ class MainFragment: Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-//        Utils.getNews("항저우 아시안게임")
+        viewModel.search("헤드라인 뉴스")
         initView()
         initViewModel()
-        viewModel.search("오늘의 뉴스")
+
 //        getThumbnail("https://www.yna.co.kr/view/AKR20231012007700079?section=international/all&site=major_news01")
 //        test()
     }
     fun initView() = with(binding){
-        rvNews.adapter = listAdapter
+//        rvNews.adapter = listAdapter
+        val layoutManager = LinearLayoutManager(requireContext(),LinearLayoutManager.HORIZONTAL,false)
+        rvMainNews.layoutManager = layoutManager
+        rvMainNews.adapter=listAdapter
+        //PagerSnapHelper 추가
+        val snapHelper = PagerSnapHelper()
+        snapHelper.attachToRecyclerView(rvMainNews)
+        val timer = Timer()
+        val scrollTask = object: TimerTask() {
+            override fun run(){
+                run{
+                    val currentPosition = layoutManager.findFirstCompletelyVisibleItemPosition()
+                    if(currentPosition<listAdapter.itemCount -1){
+                        rvMainNews.smoothScrollToPosition(currentPosition + 1)
+                    }else{
+                        rvMainNews.smoothScrollToPosition(0)
+                    }
+                }
+            }
+        }
+        timer.schedule(scrollTask,3000,3000)
+
+
     }
     fun initViewModel() {
         with(viewModel){

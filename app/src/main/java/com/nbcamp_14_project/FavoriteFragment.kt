@@ -5,12 +5,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.nbcamp_14_project.Main.MainFragment
+import com.nbcamp_14_project.home.Home
 import com.nbcamp_14_project.databinding.FragmentFavoriteBinding
 
 class FavoriteFragment: Fragment() {
     companion object{
-        fun newInstance() = MainFragment()
+        fun newInstance() = Home()
     }
     private var _binding: FragmentFavoriteBinding? = null
     private val binding get() = _binding!!

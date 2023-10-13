@@ -5,10 +5,10 @@ import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.nbcamp_14_project.FavoriteFragment
 import com.nbcamp_14_project.SearchFragment
-import com.nbcamp_14_project.Main.MainFragment
+import com.nbcamp_14_project.home.Home
 
 class MainViewPagerAdapter(fragmentActivity:FragmentActivity):FragmentStateAdapter(fragmentActivity) {
-    val list = listOf(MainFragment(), SearchFragment(), FavoriteFragment())
+    val list = listOf(Home(), SearchFragment(), FavoriteFragment())
 
     override fun getItemCount(): Int {
         return list.size

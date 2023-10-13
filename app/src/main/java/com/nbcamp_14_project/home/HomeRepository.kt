@@ -1,4 +1,4 @@
-package com.nbcamp_14_project.Main
+package com.nbcamp_14_project.home
 
 import android.util.Log
 import com.nbcamp_14_project.domain.SearchEntity
@@ -12,19 +12,19 @@ interface MainFragmentRepository {
         display: Int? = null,
         start: Int? = null
     ): SearchEntity
-    fun getList():List<MainFragmentModel>
+    fun getList():List<HomeModel>
     //라이브데이터에 아이템 추가하는 기능
-    fun addItem(item: MainFragmentModel?):List<MainFragmentModel>
+    fun addItem(item: HomeModel?):List<HomeModel>
     //라이브데이터에서 아이템 삭제하는 기능
-    fun removeItem(item: MainFragmentModel?):List<MainFragmentModel>
-    fun modifyItem(item: MainFragmentModel?):List<MainFragmentModel>
+    fun removeItem(item: HomeModel?):List<HomeModel>
+    fun modifyItem(item: HomeModel?):List<HomeModel>
 }
 
 class MainFragmentRepositoryImpl(
     private val idGenerate: AtomicInteger,
     private val remoteDatasource: NewsCollector
 ) : MainFragmentRepository {
-    private val list = mutableListOf<MainFragmentModel>()
+    private val list = mutableListOf<HomeModel>()
     override suspend fun getNews(query: String, display: Int?, start: Int?): SearchEntity =
         remoteDatasource.getNews(
             query,
@@ -33,25 +33,11 @@ class MainFragmentRepositoryImpl(
         ).toSearchEntity()
 
 
-    override fun getList(): List<MainFragmentModel> {
-        list.addAll(
-            arrayListOf<MainFragmentModel>().apply {
-                for (i in 0 until 3) {
-                    add(
-                        MainFragmentModel(
-                            idGenerate.getAndIncrement(),
-                            "title $i",
-                            "description $i"
-                        )
-                    )
-                }
-            }
-        )
-        Log.d("List","$list")
+    override fun getList(): List<HomeModel> {
         return list
     }
 
-    override fun addItem(item: MainFragmentModel?):List<MainFragmentModel> {
+    override fun addItem(item: HomeModel?):List<HomeModel> {
         if(item == null){
             return list
         }
@@ -60,13 +46,14 @@ class MainFragmentRepositoryImpl(
                 id = idGenerate.getAndIncrement()
             )
         )
+        Log.d("test","$list")
 
-        return list
+        return ArrayList<HomeModel>(list)
     }
 
 
-    override fun modifyItem(item: MainFragmentModel?):List<MainFragmentModel> {
-        fun findIndex(item: MainFragmentModel?):Int{
+    override fun modifyItem(item: HomeModel?):List<HomeModel> {
+        fun findIndex(item: HomeModel?):Int{
             if(item == null) return 0
             val findItem = list.find{
                 it.id == item.id
@@ -79,12 +66,12 @@ class MainFragmentRepositoryImpl(
         }
         if(item == null) return list
         list[findPosition] = item
-        return ArrayList<MainFragmentModel>(list)
+        return ArrayList<HomeModel>(list)
 
     }
 
-    override fun removeItem(item: MainFragmentModel?):List<MainFragmentModel> {
-        fun findIndex(item: MainFragmentModel?):Int{
+    override fun removeItem(item: HomeModel?):List<HomeModel> {
+        fun findIndex(item: HomeModel?):Int{
             if(item == null) return 0
             val findItem = list.find{
                 it.id == item.id
@@ -96,6 +83,6 @@ class MainFragmentRepositoryImpl(
             return list
         }
         list.removeAt(findPosition)
-        return ArrayList<MainFragmentModel>(list)
+        return ArrayList<HomeModel>(list)
     }
 }
