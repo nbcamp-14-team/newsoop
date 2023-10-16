@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".SearchFragment">
+    tools:context=".search.SearchFragment">
 
     <LinearLayout
         android:id="@+id/searchView"
@@ -14,19 +14,26 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
+
         <ImageView
             android:id="@+id/search_search_btn"
-            android:layout_weight="1"
-            android:layout_gravity="center_vertical"
-            android:src="@drawable/ic_search"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-        <EditText
-            android:id="@+id/search_input"
-            android:layout_weight="8"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:hint="검색어를 입력해 주세요."/>
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:src="@drawable/ic_search" />
+
+        <EditText
+            android:id="@+id/search_input"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="8"
+            android:hint="검색어를 입력해 주세요." />
+
+        <Button
+            android:id="@+id/search_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
     </LinearLayout>
 
     <HorizontalScrollView
@@ -38,18 +45,19 @@
         app:layout_constraintTop_toBottomOf="@+id/searchView">
 
         <Button
-            android:text="Sample"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:text="Sample" />
 
     </HorizontalScrollView>
 
     <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/search_recyclerView"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        tools:listitem="@layout/fragment_search_item"
-        app:layout_constraintTop_toBottomOf="@+id/search_tag_frame" />
+        app:layout_constraintTop_toBottomOf="@+id/search_tag_frame"
+        tools:listitem="@layout/fragment_search_item" />
 </androidx.constraintlayout.widget.ConstraintLayout>
