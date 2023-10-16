@@ -3,7 +3,6 @@ package com.nbcamp_14_project.search
 import android.util.Log
 import com.nbcamp_14_project.api.NewsDTO
 import com.nbcamp_14_project.api.RetrofitInstance
-import com.nbcamp_14_project.home.HomeModel
 import retrofit2.Call
 import retrofit2.Response
 
@@ -14,23 +13,23 @@ interface SearchRepository {
         start: Int? = null
     ): NewsDTO
 
-    fun getList(query: String): List<HomeModel>
+    fun getList(query: String): List<SearchModel>
 
     //라이브데이터에 아이템 추가하는 기능
-    fun addItem(item: HomeModel?): List<HomeModel>
+    fun addItem(item: SearchModel?): List<SearchModel>
 
     //라이브데이터에서 아이템 삭제하는 기능
-    fun removeItem(item: HomeModel?): List<HomeModel>
-    fun modifyItem(item: HomeModel?): List<HomeModel>
+    fun removeItem(item: SearchModel?): List<SearchModel>
+    fun modifyItem(item: SearchModel?): List<SearchModel>
 }
 
 class SearchRepositoryImpl : SearchRepository {
-    private val list = mutableListOf<HomeModel>()
+    private val list = mutableListOf<SearchModel>()
     override suspend fun getNews(query: String, display: Int?, start: Int?): NewsDTO {
         TODO("Not yet implemented")
     }
 
-    override fun getList(query: String): List<HomeModel> {
+    override fun getList(query: String): List<SearchModel> {
         val service = RetrofitInstance.search
         service.getNaverNewsSearch(query = query).enqueue(object : retrofit2.Callback<NewsDTO> {
             override fun onResponse(call: Call<NewsDTO>, response: Response<NewsDTO>) {
@@ -40,8 +39,8 @@ class SearchRepositoryImpl : SearchRepository {
                         title = title.replace("<b>", "")
                         title = title.replace("</b>", "")
                         title = title.replace("&quot;", "\"")
-                        val description = item.description ?: ""
-                        list.add(HomeModel(null, title, description))
+                        val data = item.pubDate ?: ""
+                        list.add(SearchModel(title, data))
                     }
                 }
             }
@@ -53,15 +52,15 @@ class SearchRepositoryImpl : SearchRepository {
         return list
     }
 
-    override fun addItem(item: HomeModel?): List<HomeModel> {
+    override fun addItem(item: SearchModel?): List<SearchModel> {
         TODO("Not yet implemented")
     }
 
-    override fun removeItem(item: HomeModel?): List<HomeModel> {
+    override fun removeItem(item: SearchModel?): List<SearchModel> {
         TODO("Not yet implemented")
     }
 
-    override fun modifyItem(item: HomeModel?): List<HomeModel> {
+    override fun modifyItem(item: SearchModel?): List<SearchModel> {
         TODO("Not yet implemented")
     }
 }

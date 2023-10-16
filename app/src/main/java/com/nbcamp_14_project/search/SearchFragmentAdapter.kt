@@ -4,14 +4,14 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.nbcamp_14_project.databinding.FragmentSearchItemBinding
-import com.nbcamp_14_project.home.HomeModel
 
-class SearchFragmentAdapter(val newsList: List<HomeModel>) :
+class SearchFragmentAdapter(val newsList: List<SearchModel>) :
     RecyclerView.Adapter<SearchFragmentAdapter.Holder>() {
 
     inner class Holder(val binding: FragmentSearchItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        val title = binding.itemTitle
+        val title = binding.searchTitle
+        val date = binding.searchDate
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
@@ -26,5 +26,6 @@ class SearchFragmentAdapter(val newsList: List<HomeModel>) :
 
     override fun onBindViewHolder(holder: Holder, position: Int) {
         holder.title.text = newsList[position].title
+        holder.date.text = newsList[position].data.slice(0..16)
     }
 }
