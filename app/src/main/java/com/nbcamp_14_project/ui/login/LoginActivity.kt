@@ -9,7 +9,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.activity.result.contract.ActivityResultContracts
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.firebase.auth.FirebaseAuth
-
 import com.nbcamp_14_project.databinding.ActivityLoginBinding
 import com.nbcamp_14_project.R
 import com.nbcamp_14_project.SignUpActivity
