@@ -1,5 +1,10 @@
 package com.nbcamp_14_project.data
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.GoogleAuthProvider
 import com.nbcamp_14_project.data.model.LoggedInUser
 
 /**
@@ -7,40 +12,19 @@ import com.nbcamp_14_project.data.model.LoggedInUser
  * maintains an in-memory cache of login status and user credentials information.
  */
 
-class LoginRepository(val dataSource: LoginDataSource) {
+class LoginRepository() {
 
-    // in-memory cache of the loggedInUser object
-    var user: LoggedInUser? = null
-        private set
+    private val auth = FirebaseAuth.getInstance()
 
-    val isLoggedIn: Boolean
-        get() = user != null
-
-    init {
-        // If user credentials will be cached in local storage, it is recommended it be encrypted
-        // @see https://developer.android.com/training/articles/keystore
-        user = null
+    fun getCurrentUser(): FirebaseUser?{
+        return auth.currentUser
     }
 
-    fun logout() {
-        user = null
-        dataSource.logout()
-    }
-
-    fun login(username: String, password: String): Result<LoggedInUser> {
-        // handle login
-        val result = dataSource.login(username, password)
-
-        if (result is Result.Success) {
-            setLoggedInUser(result.data)
+    fun signOut(){
+        auth.currentUser?.let {
+            auth.signOut()
         }
-
-        return result
     }
 
-    private fun setLoggedInUser(loggedInUser: LoggedInUser) {
-        this.user = loggedInUser
-        // If user credentials will be cached in local storage, it is recommended it be encrypted
-        // @see https://developer.android.com/training/articles/keystore
-    }
+
 }

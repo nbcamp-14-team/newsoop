@@ -15,6 +15,9 @@
         android:theme="@style/Theme.Nbcamp_14team_project"
         tools:targetApi="31">
         <activity
+            android:name=".SignUpActivity"
+            android:exported="false" />
+        <activity
             android:name=".mainpage.MainActivity"
             android:exported="true">
             <intent-filter>
