@@ -1,6 +1,7 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -33,7 +34,7 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
-    buildFeatures {
+    buildFeatures{
         viewBinding = true //뷰바인딩
         dataBinding = true
     }
@@ -71,8 +72,16 @@ dependencies {
     //serialization
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1")
     //scalars
+    implementation ("com.squareup.retrofit2:converter-scalars:2.6.4")
+    //firebase
+    implementation(platform("com.google.firebase:firebase-bom:32.3.1"))
+    implementation("com.google.firebase:firebase-auth-ktx")
+    implementation("com.google.android.gms:play-services-auth:20.7.0")
     implementation("com.squareup.retrofit2:converter-scalars:2.6.4")
     //Jsoup
+    implementation ("org.jsoup:jsoup:1.13.1")
+    //indicator
+    implementation("com.tbuonomo:dotsindicator:5.0")
     implementation("org.jsoup:jsoup:1.16.1")
 
 }
