@@ -37,7 +37,9 @@ android {
         viewBinding = true //뷰바인딩
         dataBinding = true
     }
+
 }
+
 
 dependencies {
     implementation("androidx.activity:activity-ktx:1.7.0")
@@ -74,5 +76,7 @@ dependencies {
     implementation ("com.squareup.retrofit2:converter-scalars:2.6.4")
     //Jsoup
     implementation ("org.jsoup:jsoup:1.13.1")
+    //indicator
+    implementation("com.tbuonomo:dotsindicator:5.0")
 
 }
