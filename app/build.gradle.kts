@@ -4,7 +4,6 @@ plugins {
     id("com.google.gms.google-services")
 }
 
-
 android {
     namespace = "com.nbcamp_14_project"
     compileSdk = 33
@@ -78,5 +77,9 @@ dependencies {
     implementation(platform("com.google.firebase:firebase-bom:32.3.1"))
     implementation("com.google.firebase:firebase-auth-ktx")
     implementation("com.google.android.gms:play-services-auth:20.7.0")
+    //Jsoup
+    implementation ("org.jsoup:jsoup:1.13.1")
+    //indicator
+    implementation("com.tbuonomo:dotsindicator:5.0")
 
 }

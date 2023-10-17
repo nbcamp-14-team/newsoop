@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.google.android.material.tabs.TabLayoutMediator
 import com.nbcamp_14_project.DetailActivity
-import com.nbcamp_14_project.MainViewPagerAdapter
 import com.nbcamp_14_project.databinding.ActivityMainBinding
 import com.nbcamp_14_project.ui.login.LoginActivity
 
