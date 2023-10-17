@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "696141444341",
+    "project_id": "newsoop-d921e",
+    "storage_bucket": "newsoop-d921e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:696141444341:android:46fe295e17fd64341881bc",
+        "android_client_info": {
+          "package_name": "com.nbcamp_14_project"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "696141444341-ek0m2pf7jomq90n14omhj6mr8gth69rq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCtHz4X4krFL6glbG5L6rPgnoa45BTQigw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "696141444341-ek0m2pf7jomq90n14omhj6mr8gth69rq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

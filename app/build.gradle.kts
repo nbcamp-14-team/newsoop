@@ -1,6 +1,7 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -37,9 +38,7 @@ android {
         viewBinding = true //뷰바인딩
         dataBinding = true
     }
-
 }
-
 
 dependencies {
 
@@ -74,6 +73,10 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1")
     //scalars
     implementation ("com.squareup.retrofit2:converter-scalars:2.6.4")
+    //firebase
+    implementation(platform("com.google.firebase:firebase-bom:32.3.1"))
+    implementation("com.google.firebase:firebase-auth-ktx")
+    implementation("com.google.android.gms:play-services-auth:20.7.0")
     //Jsoup
     implementation ("org.jsoup:jsoup:1.13.1")
     //indicator
