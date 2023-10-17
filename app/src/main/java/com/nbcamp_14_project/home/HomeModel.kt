@@ -9,6 +9,17 @@ data class HomeModel (
     val isFollowing:Boolean = false,
     val link:String? = null,//원문 링크
     val pubDate:String? =null,//발간일자
+    val viewType:Int
 )
+//
+//fun HomeModel.toDetailModel() : DetailModel{
+//    title = title
+//    description = description
+//    thumbnail = thumbnail
+//    pubDate = pubDate
+//    link = lunk
+//    author = author
+//
+//}
 
 
