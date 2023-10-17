@@ -11,9 +11,9 @@ class SearchViewModel : ViewModel() {
     val newsListResult: LiveData<List<SearchModel>>
         get() = _newsListResult
 
-    fun getNewsList(query: String) {
+    fun getNewsList(query: String, start: Int) {
         newsList = arrayListOf()
-        newsList = SearchRepositoryImpl().getList(query) as ArrayList<SearchModel>
+        newsList = SearchRepositoryImpl().getList(query, start) as ArrayList<SearchModel>
         _newsListResult.value = newsList
     }
 }

@@ -25,5 +25,6 @@ interface NewsCollector {
         @Header("X-Naver-Client-Id") client_id: String = "XFBo9h4LO1TqscFAuCKO",
         @Header("X-Naver-Client-Secret") client_secret: String = "hi8mfNOW0V",
         @Query("query") query: String,
+        @Query("start") start: Int
     ): Call<NewsDTO>
 }
