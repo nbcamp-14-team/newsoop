@@ -1,5 +1,6 @@
 package com.nbcamp_14_project.home
 
+import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.view.LayoutInflater
@@ -10,6 +11,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewpager2.widget.ViewPager2
 import com.nbcamp_14_project.databinding.FragmentMainBinding
+import com.nbcamp_14_project.detail.DetailActivity
+import com.nbcamp_14_project.detail.DetailInfo
 
 @Suppress("DEPRECATION")
 class Home : Fragment() {
@@ -22,6 +25,11 @@ class Home : Fragment() {
     private val headLineAdapter by lazy {
         HomeHeadLineAdapter(//ViewPager2에서 클릭이 일어났을 때, Detail에 데이터값을 보냄(구현필요)
             onClick = {item ->
+                val detailInfo = item.toDetailInfo()
+                val intent = Intent(context, DetailActivity::class.java)
+                intent.putExtra("detail_model_key", detailInfo)
+
+                startActivity(intent)
 
             }
         )
@@ -29,6 +37,11 @@ class Home : Fragment() {
     private val newsAdapter by lazy {
         HomeNewsAdapter(//recyclerView에서 클릭이 일어났을 때, Detail에 데이터값을 보냄(구현필요)
             onClick = {item ->
+                val detailInfo = item.toDetailInfo()
+                val intent = Intent(context, DetailActivity::class.java)
+                intent.putExtra("detail_model_key", detailInfo)
+
+                startActivity(intent)
 
             }
         )

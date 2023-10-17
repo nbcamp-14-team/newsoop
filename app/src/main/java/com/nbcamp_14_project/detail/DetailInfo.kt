@@ -6,6 +6,7 @@ data class DetailInfo (
     val title : String?,
     val description : String?,
     val thumbnail: String? = null,
+    val author: String? = null,
     val originalLink: String?,
     val pubDate: String?
 ):Serializable

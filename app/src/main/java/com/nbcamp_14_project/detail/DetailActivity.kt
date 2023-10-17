@@ -23,14 +23,23 @@ class DetailActivity : AppCompatActivity() {
             Toast.makeText(applicationContext, "디테일 정보가 없습니다.", Toast.LENGTH_SHORT).show()
         }
 
+
         viewModel.detailInfo.observe(this) { info ->
             binding.tvTitle.text = info.title
             binding.tvDate.text = info.pubDate
             binding.imgThumbnail.load(info.thumbnail)
             binding.tvDescription.text = info.description
-
+            binding.tvName.text = info.author
 
         }
+
+        initView()
     }
 
+    private fun initView() = with(binding) {
+
+        binding.imgBack.setOnClickListener {
+            onBackPressed()
+        }
+    }
 }

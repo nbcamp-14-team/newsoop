@@ -47,7 +47,8 @@ class MainActivity : AppCompatActivity() {
                 description = "10월 마지막 주 로또 1등!",
                 thumbnail = "https://pds.joongang.co.kr/news/component/htmlphoto_mmdata/202308/03/9f2025fe-1819-42a3-b5c1-13032da70bc8.jpg",
                 originalLink = "https://www.joongang.co.kr/article/25182197#home",
-                pubDate = "2023-10-17"
+                pubDate = "2023-10-17",
+                author = "조광희"
             )
 
             intent.putExtra("detail_model_key", detailInfo)
