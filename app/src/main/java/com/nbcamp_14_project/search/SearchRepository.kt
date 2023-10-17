@@ -1,65 +1,125 @@
 package com.nbcamp_14_project.search
 
-import android.util.Log
-import com.nbcamp_14_project.api.NewsDTO
-import com.nbcamp_14_project.api.RetrofitInstance
-import retrofit2.Call
-import retrofit2.Response
+import com.nbcamp_14_project.api.NewsCollector
+import com.nbcamp_14_project.domain.SearchEntity
+import com.nbcamp_14_project.domain.toSearchEntity
+import com.nbcamp_14_project.home.HomeModel
+import com.nbcamp_14_project.home.MainFragmentRepository
+import java.util.concurrent.atomic.AtomicInteger
 
-interface SearchRepository {
-    suspend fun getNews(
-        query: String,
-        display: Int? = null,
-        start: Int? = null
-    ): NewsDTO
+class SearchFragmentRepositoryImpl(
+    private val idGenerate: AtomicInteger,
+    private val remoteDatasource: NewsCollector
+) : MainFragmentRepository {
+    private val list = mutableListOf<HomeModel>()
+    private val newsList = mutableListOf<HomeModel>()
+    override suspend fun getNews(query: String, display: Int?, start: Int?): SearchEntity =
+        remoteDatasource.getNews(
+            query,
+            display,
+            start
+        ).toSearchEntity()
 
-    fun getList(query: String, start: Int): List<SearchModel>
-    fun addItem(item: SearchModel?): List<SearchModel>
-    fun removeItem(item: SearchModel?): List<SearchModel>
-    fun modifyItem(item: SearchModel?): List<SearchModel>
-}
 
-class SearchRepositoryImpl : SearchRepository {
-    private val list = mutableListOf<SearchModel>()
-    override suspend fun getNews(query: String, display: Int?, start: Int?): NewsDTO {
-        TODO("Not yet implemented")
-    }
-
-    override fun getList(query: String, start: Int): List<SearchModel> {
-        val service = RetrofitInstance.search
-        service.getNaverNewsSearch(query = query, start = start)
-            .enqueue(object : retrofit2.Callback<NewsDTO> {
-                override fun onResponse(call: Call<NewsDTO>, response: Response<NewsDTO>) {
-                    Log.d("TAG", "query : {$query} , start : $start")
-                    if (response.isSuccessful) {
-                        response.body()?.items?.forEach { item ->
-                            var title = item.title ?: ""
-                            title = title.replace("<b>", "")
-                            title = title.replace("</b>", "")
-                            title = title.replace("&quot;", "\"")
-                            val data = item.pubDate ?: ""
-                            list.add(SearchModel(title, data))
-                        }
-                    }
-                }
-
-                override fun onFailure(call: Call<NewsDTO>, t: Throwable) {
-                    Log.d("TAG", t.message.toString())
-                }
-            })
+    override fun getList(): List<HomeModel> {
         return list
     }
 
-    override fun addItem(item: SearchModel?): List<SearchModel> {
-        TODO("Not yet implemented")
+    override fun addHeadLineItem(item: HomeModel?): List<HomeModel> {
+        if (item == null) {
+            return list
+        }
+        list.add(
+            item.copy(
+                id = idGenerate.getAndIncrement()
+            )
+        )
+
+        return ArrayList<HomeModel>(list)
     }
 
-    override fun removeItem(item: SearchModel?): List<SearchModel> {
-        TODO("Not yet implemented")
+    override fun addNewsItem(item: HomeModel?): List<HomeModel> {
+        if (item == null) {
+            return newsList
+        }
+        newsList.add(
+            item.copy(
+                id = idGenerate.getAndIncrement()
+            )
+        )
+
+        return ArrayList<HomeModel>(newsList)
     }
 
-    override fun modifyItem(item: SearchModel?): List<SearchModel> {
-        TODO("Not yet implemented")
+    override fun modifyHeadLineItem(item: HomeModel?): List<HomeModel> {
+        fun findIndex(item: HomeModel?): Int {
+            if (item == null) return 0
+            val findItem = list.find {
+                it.id == item.id
+            }
+            return list.indexOf(findItem)
+        }
+
+        val findPosition = findIndex(item)
+        if (findPosition < 0) {
+            return list
+        }
+        if (item == null) return list
+        list[findPosition] = item
+        return ArrayList<HomeModel>(list)
+
     }
 
+    override fun modifyNewsItem(item: HomeModel?): List<HomeModel> {
+        fun findIndex(item: HomeModel?): Int {
+            if (item == null) return 0
+            val findItem = newsList.find {
+                it.id == item.id
+            }
+            return newsList.indexOf(findItem)
+        }
+
+        val findPosition = findIndex(item)
+        if (findPosition < 0) {
+            return newsList
+        }
+        if (item == null) return newsList
+        newsList[findPosition] = item
+        return ArrayList<HomeModel>(newsList)
+
+    }
+
+    override fun removeHeadLineItem(item: HomeModel?): List<HomeModel> {
+        fun findIndex(item: HomeModel?): Int {
+            if (item == null) return 0
+            val findItem = list.find {
+                it.id == item.id
+            }
+            return list.indexOf(findItem)
+        }
+
+        val findPosition = findIndex(item)
+        if (findPosition < 0) {
+            return list
+        }
+        list.removeAt(findPosition)
+        return ArrayList<HomeModel>(list)
+    }
+
+    override fun removeNewsItem(item: HomeModel?): List<HomeModel> {
+        fun findIndex(item: HomeModel?): Int {
+            if (item == null) return 0
+            val findItem = newsList.find {
+                it.id == item.id
+            }
+            return newsList.indexOf(findItem)
+        }
+
+        val findPosition = findIndex(item)
+        if (findPosition < 0) {
+            return newsList
+        }
+        newsList.removeAt(findPosition)
+        return ArrayList<HomeModel>(newsList)
+    }
 }
