@@ -1,6 +1,7 @@
 package com.nbcamp_14_project.home
 
 import android.os.Bundle
+import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,10 +9,12 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
+import androidx.viewpager2.widget.ViewPager2
 import com.nbcamp_14_project.databinding.FragmentMainBinding
 import java.util.Timer
 import java.util.TimerTask
 
+@Suppress("DEPRECATION")
 class Home: Fragment() {
     companion object{
         fun newInstance() = Home()
@@ -21,7 +24,7 @@ class Home: Fragment() {
     private val listAdapter by lazy{
         HomeAdapter()
     }
-    private val viewModel: MainFragmentViewModel by lazy{
+    private val viewPagerViewModel: MainFragmentViewModel by lazy{
         ViewModelProvider(
             this,
             MainFragmentModelFactory()
@@ -40,9 +43,9 @@ class Home: Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.search("헤드라인 뉴스")
+        viewPagerViewModel.search("헤드라인 뉴스")
         initView()
-        initViewModel()
+        initViewPagerViewModel()
 
 //        getThumbnail("https://www.yna.co.kr/view/AKR20231012007700079?section=international/all&site=major_news01")
 //        test()
@@ -50,30 +53,50 @@ class Home: Fragment() {
     fun initView() = with(binding){
 //        rvNews.adapter = listAdapter
         val layoutManager = LinearLayoutManager(requireContext(),LinearLayoutManager.HORIZONTAL,false)
-        rvMainNews.layoutManager = layoutManager
-        rvMainNews.adapter=listAdapter
-        //PagerSnapHelper 추가
-        val snapHelper = PagerSnapHelper()
-        snapHelper.attachToRecyclerView(rvMainNews)
-        val timer = Timer()
-        val scrollTask = object: TimerTask() {
-            override fun run(){
-                run{
-                    val currentPosition = layoutManager.findFirstCompletelyVisibleItemPosition()
-                    if(currentPosition<listAdapter.itemCount -1){
-                        rvMainNews.smoothScrollToPosition(currentPosition + 1)
-                    }else{
-                        rvMainNews.smoothScrollToPosition(0)
-                    }
+        val slideImageHandler: Handler = Handler()
+        val slideImageRunnable = Runnable{rvMainNews.currentItem = rvMainNews.currentItem + 1}// viewpager의 Item Position을 1 추가하여 페이지 이동하게 구현
+
+        rvMainNews.adapter=listAdapter//어뎁터 연결
+        rvMainNews.orientation=ViewPager2.ORIENTATION_HORIZONTAL//가로로 설정
+        rvMainNews.apply {
+            offscreenPageLimit = 1
+            registerOnPageChangeCallback(object :ViewPager2.OnPageChangeCallback(){
+                override fun onPageSelected(position: Int) {
+                    super.onPageSelected(position)
+                    slideImageHandler.removeCallbacks(slideImageRunnable)//handler에 뷰페이저 이동 꽇음
+                    slideImageHandler.postDelayed(slideImageRunnable, 3000)//handler에 딜레이 추가
                 }
-            }
+            })
         }
-        timer.schedule(scrollTask,3000,3000)
+        rvMainNewsIndicator.setViewPager2(rvMainNews)
+        //PagerSnapHelper 추가
+//        rvMainNews.apply{
+//
+//        }
+
+//        val snapHelper = PagerSnapHelper()
+//        snapHelper
+    //        rvMainNews.layoutManager = layoutManager
+//        snapHelper.attachToRecyclerView(rvMainNews)
+//        val timer = Timer()
+//        val scrollTask = object: TimerTask() {
+//            override fun run(){
+//                run{
+//                    val currentPosition = layoutManager.findFirstCompletelyVisibleItemPosition()
+//                    if(currentPosition<listAdapter.itemCount -1){
+//                        rvMainNews.smoothScrollToPosition(currentPosition + 1)
+//                    }else{
+//                        rvMainNews.smoothScrollToPosition(0)
+//                    }
+//                }
+//            }
+//        }
+//        timer.schedule(scrollTask,3000,3000)
 
 
     }
-    fun initViewModel() {
-        with(viewModel){
+    fun initViewPagerViewModel() {
+        with(viewPagerViewModel){
             list.observe(viewLifecycleOwner){
                 listAdapter.submitList(it)
             }

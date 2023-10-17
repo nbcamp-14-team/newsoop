@@ -26,8 +26,7 @@ class MainFragmentViewModel(
     fun search(query: String) {
         viewModelScope.launch {
             val docs = searchNews(query)
-            val item = docs.items
-            if (item == null) return@launch
+            val item = docs.items ?:  return@launch
             for (i in item.indices) {
                 val thumbnail = Utils.getThumbnail(item[i].link.toString())
                 var title = item[i].title!!.replace("<b>","")

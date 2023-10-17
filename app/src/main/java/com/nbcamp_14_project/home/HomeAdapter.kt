@@ -5,10 +5,12 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager2.widget.ViewPager2
 import coil.load
 import com.nbcamp_14_project.databinding.ItemRecyclerviewMainFragmentBinding
 
-class HomeAdapter() : ListAdapter<HomeModel, HomeAdapter.ViewHolder>(
+class HomeAdapter(
+) : ListAdapter<HomeModel, HomeAdapter.ViewHolder>( //뷰페이저2로 수정하기
     object : DiffUtil.ItemCallback<HomeModel>() {
         override fun areContentsTheSame(
             oldItem: HomeModel,
@@ -26,6 +28,7 @@ class HomeAdapter() : ListAdapter<HomeModel, HomeAdapter.ViewHolder>(
     }) {
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = getItem(position)
+
         holder.bind(item)
     }
 
