@@ -18,48 +18,89 @@ class MainFragmentViewModel(
 ) : ViewModel() {
     private val _list: MutableLiveData<List<HomeModel>> = MutableLiveData()
     val list: LiveData<List<HomeModel>> get() = _list
+    private val _newsList: MutableLiveData<List<HomeModel>> = MutableLiveData()
+    val newsList: LiveData<List<HomeModel>> get() = _newsList
 
     init {
         _list.value = repository.getList()
     }
 
-    fun search(query: String) {
+    fun headLineNews(query: String) {
         viewModelScope.launch {
             val docs = searchNews(query)
-            val item = docs.items
-            if (item == null) return@launch
-            for (i in item.indices) {
+            val item = docs.items ?:  return@launch
+            for (i in item.indices) {//아이템 개수만큼 for문 실행
                 val thumbnail = Utils.getThumbnail(item[i].link.toString())
                 var title = item[i].title!!.replace("<b>","")
                 title = title.replace("</b>","")
                 title = title.replace("&quot;","\"")
-
                 val description = item[i].description
-                _list.value = repository.addItem(
+                val link = item[i].link
+                val pubDate = item[i].pubDate
+                val author = Utils.getAuthor(item[i].link.toString())
+                _list.value = repository.addHeadLineItem(
                     HomeModel(
                         title = title,
                         thumbnail = thumbnail,
-                        description = description
+                        description = description,
+                        link = link,
+                        pubDate = pubDate,
+                        author = author,
+                        viewType = 1
                     )
                 )
-                Log.d("testa2a", "$thumbnail")
             }
-            Log.d("testaa", "$docs")
+        }
+    }
+    fun detailNews(query: String){
+        viewModelScope.launch {
+            val docs = searchNews(query)
+            val item = docs.items ?: return@launch
+            for(i in item.indices){//아이템 개수만큼 for문 실행
+                val thumbnail = Utils.getThumbnail(item[i].link.toString())
+                var title = item[i].title!!.replace("<b>","")
+                title = title.replace("</b>","")
+                title = title.replace("&quot;","\"")
+                val description = item[i].description
+                val link = item[i].link
+                val pubDate = item[i].pubDate
+                val author = Utils.getAuthor(item[i].link.toString())
+                _newsList.value = repository.addNewsItem(
+                    HomeModel(
+                        title = title,
+                        thumbnail = thumbnail,
+                        description = description,
+                        link = link,
+                        pubDate = pubDate,
+                        viewType = 0
+                )
+                )
+            }
         }
     }
 
 
-    fun addItem(item: HomeModel?) {//라이브데이터에 아이템 추가하는 기능
-        _list.value = repository.addItem(item)
+    fun addHeadLineItem(item: HomeModel?) {//라이브데이터에 아이템 추가하는 기능
+        _list.value = repository.addHeadLineItem(item)
+
+    }
+    fun addNewsItem(item: HomeModel?) {//라이브데이터에 아이템 추가하는 기능
+        _newsList.value = repository.addNewsItem(item)
 
     }
 
-    fun removeItem(item: HomeModel?) {//라이브데이터에서 아이템 삭제하는 기능
-        _list.value = repository.removeItem(item)
+    fun removeHeadLineItem(item: HomeModel?) {//라이브데이터에서 아이템 삭제하는 기능
+        _list.value = repository.removeHeadLineItem(item)
+    }
+    fun removeNewsItem(item: HomeModel?) {//라이브데이터에서 아이템 삭제하는 기능
+        _newsList.value = repository.removeNewsItem(item)
     }
 
+    fun modifyHeadLineItem(item: HomeModel?) {
+        _list.value = repository.modifyHeadLineItem(item)
+    }
     fun modifyItem(item: HomeModel?) {
-        _list.value = repository.modifyItem(item)
+        _newsList.value = repository.modifyNewsItem(item)
     }
 }
 

@@ -32,14 +32,23 @@ object Utils {
 //            }
 //        })
 //    }
-    suspend fun getThumbnail(url: String):String? {
+    suspend fun getThumbnail(url: String):String? {//썸네일 가져오기
         var thumbnail: String?
         withContext(Dispatchers.IO){
-            val docs = Jsoup.connect(url).get().select("meta[property=og:image]").attr("content")
-            thumbnail = docs
+            thumbnail = Jsoup.connect(url).get().select("meta[property=og:image]").attr("content")
             Log.d("success2", "$thumbnail")
         }
         return thumbnail
+    }
+    suspend fun getAuthor(url: String): String? {
+        val author:String?
+        withContext(Dispatchers.IO){
+            author = Jsoup.connect(url).get().select("meta[name=dable:author]").attr("content")
+                .toString()//radioKorea에서 가져오는법
+            Log.d("author","$author")
+        }
+        if(author == null) return author
+        return author
     }
 }
 

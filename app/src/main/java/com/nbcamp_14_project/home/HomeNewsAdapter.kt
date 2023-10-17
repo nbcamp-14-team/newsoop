@@ -7,8 +7,11 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.nbcamp_14_project.databinding.ItemRecyclerviewMainFragmentBinding
+import com.nbcamp_14_project.databinding.ItemRvNewsMainBinding
 
-class HomeAdapter() : ListAdapter<HomeModel, HomeAdapter.ViewHolder>(
+class HomeNewsAdapter(
+    private val onClick: (HomeModel) -> Unit
+) : ListAdapter<HomeModel, HomeNewsAdapter.ViewHolder>(
     object : DiffUtil.ItemCallback<HomeModel>() {
         override fun areContentsTheSame(
             oldItem: HomeModel,
@@ -31,25 +34,30 @@ class HomeAdapter() : ListAdapter<HomeModel, HomeAdapter.ViewHolder>(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(
-            ItemRecyclerviewMainFragmentBinding.inflate(
+            ItemRvNewsMainBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
                 false
-            )
+            ),
+            onClick
         )
     }
 
     class ViewHolder(
-        private val binding: ItemRecyclerviewMainFragmentBinding,
+        private val binding: ItemRvNewsMainBinding,
+        private val onClick: (HomeModel) -> Unit
     ) : RecyclerView.ViewHolder(binding.root) {
         fun bind(item: HomeModel) = with(binding) {
             title.text = item.title
             ivThumbnail.load(item.thumbnail)
-
+            author.text = item.author
+            pubDate.text = item.pubDate
+            container.setOnClickListener {
+                onClick(
+                    item
+                )
+            }
         }
+
     }
-
 }
-
-
-
