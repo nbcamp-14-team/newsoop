@@ -29,6 +29,10 @@ class SearchFragment : Fragment() {
     private val adapter by lazy { SearchFragmentAdapter() }
     private lateinit var adapterManager: LinearLayoutManager
 
+    //tag
+    private val tagAdapter by lazy { SearchTagAdapter() }
+    private lateinit var tagAdapterManager: LinearLayoutManager
+
     override fun onAttach(context: Context) {
         super.onAttach(context)
         mContext = context
@@ -65,8 +69,11 @@ class SearchFragment : Fragment() {
 
     fun initView() = with(binding) {
         adapterManager = LinearLayoutManager(requireContext())
+        tagAdapterManager = LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
         searchRecyclerView.layoutManager = adapterManager
         searchRecyclerView.adapter = adapter
+        searchTagFrame.layoutManager = tagAdapterManager
+        searchTagFrame.adapter = tagAdapter
         searchInput.setOnEditorActionListener { textView, i, keyEvent ->
             var handled = false
             if (i == EditorInfo.IME_ACTION_DONE) {
