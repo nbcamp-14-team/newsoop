@@ -64,8 +64,15 @@ class Home : Fragment() {
         initView()
         initViewModel()
         viewPagerViewModel.headLineNews("헤드라인 뉴스")
-        viewPagerViewModel.detailNews("정치")
+        viewPagerViewModel.detailNews("정치 관련 뉴스")
 
+
+    }
+    fun changeCategory(query:String?) = with(binding){
+        viewPagerViewModel.clearAllItems()
+        viewPagerViewModel.headLineNews(query + "메인 뉴스")
+        viewPagerViewModel.detailNews(query+"관련 뉴스")
+        category.text = query
     }
 
     fun initView() = with(binding) {
@@ -93,6 +100,31 @@ class Home : Fragment() {
         rvMainNewsIndicator.setViewPager2(rvMainNews)
 
         rvNews.adapter = newsAdapter//어뎁터 연결
+        //버튼 클릭리스너
+        btnCulture.setOnClickListener{
+            changeCategory("문화")
+        }
+        btnEconomy.setOnClickListener {
+            changeCategory("경제")
+        }
+        btnIt.setOnClickListener {
+            changeCategory("it")
+        }
+        btnLife.setOnClickListener {
+            changeCategory("생활")
+        }
+        btnPolitic.setOnClickListener {
+            changeCategory("정치")
+        }
+        btnScience.setOnClickListener {
+            changeCategory("과학")
+        }
+        btnSociety.setOnClickListener {
+            changeCategory("사회")
+        }
+        btnWorld.setOnClickListener {
+            changeCategory("세계")
+        }
     }
 
     private fun initViewModel() {

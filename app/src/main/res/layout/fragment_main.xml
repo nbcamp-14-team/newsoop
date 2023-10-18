@@ -32,45 +32,54 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent">
 
-                    <Button
+                    <androidx.appcompat.widget.AppCompatButton
                         android:id="@+id/btn_politic"
                         android:text="정치"
+                        android:textStyle="bold"
+                        android:background="@drawable/btn_home"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
 
-                    <Button
+                    <androidx.appcompat.widget.AppCompatButton
                         android:id="@+id/btn_economy"
                         android:text="경제"
+                        android:background="@drawable/btn_home"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
-                    <Button
+                    <androidx.appcompat.widget.AppCompatButton
                         android:id="@+id/btn_society"
                         android:text="사회"
+                        android:background="@drawable/btn_home"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
-                    <Button
+                    <androidx.appcompat.widget.AppCompatButton
                         android:id="@+id/btn_life"
                         android:text="생활"
+                        android:background="@drawable/btn_home"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
-                    <Button
+                    <androidx.appcompat.widget.AppCompatButton
                         android:id="@+id/btn_culture"
                         android:text="문화"
+                        android:background="@drawable/btn_home"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
-                    <Button
+                    <androidx.appcompat.widget.AppCompatButton
                         android:id="@+id/btn_it"
                         android:text="IT"
+                        android:background="@drawable/btn_home"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
-                    <Button
+                    <androidx.appcompat.widget.AppCompatButton
                         android:id="@+id/btn_science"
                         android:text="과학"
+                        android:background="@drawable/btn_home"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
-                    <Button
+                    <androidx.appcompat.widget.AppCompatButton
                         android:id="@+id/btn_world"
                         android:text="세계"
+                        android:background="@drawable/btn_home"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
 
