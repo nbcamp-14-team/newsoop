@@ -7,13 +7,12 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.nbcamp_14_project.Utils
 import com.nbcamp_14_project.api.RetrofitInstance
-import com.nbcamp_14_project.domain.GetSearchNewsUseCase
 import com.nbcamp_14_project.home.HomeModel
 import kotlinx.coroutines.launch
 import java.util.concurrent.atomic.AtomicInteger
 
 class SearchViewModel(
-    private val searchNews: GetSearchNewsUseCase,
+    private val searchNews: GetSearchUseCase,
     private val repository: SearchFragmentRepositoryImpl
 ) : ViewModel() {
     private val _list: MutableLiveData<List<HomeModel>> = MutableLiveData()
@@ -38,7 +37,7 @@ class SearchViewModel(
                 val link = item[i].link
                 val pubDate = item[i].pubDate
                 val author = Utils.getAuthor(item[i].link.toString())
-                _list.value = repository.addHeadLineItem(
+                _list.value = repository.addNewsItem(
                     HomeModel(
                         title = title,
                         thumbnail = thumbnail,
@@ -54,30 +53,8 @@ class SearchViewModel(
     }
 
 
-    fun addHeadLineItem(item: HomeModel?) {//라이브데이터에 아이템 추가하는 기능
-        _list.value = repository.addHeadLineItem(item)
-
-    }
-
     fun addNewsItem(item: HomeModel?) {//라이브데이터에 아이템 추가하는 기능
         _newsList.value = repository.addNewsItem(item)
-
-    }
-
-    fun removeHeadLineItem(item: HomeModel?) {//라이브데이터에서 아이템 삭제하는 기능
-        _list.value = repository.removeHeadLineItem(item)
-    }
-
-    fun removeNewsItem(item: HomeModel?) {//라이브데이터에서 아이템 삭제하는 기능
-        _newsList.value = repository.removeNewsItem(item)
-    }
-
-    fun modifyHeadLineItem(item: HomeModel?) {
-        _list.value = repository.modifyHeadLineItem(item)
-    }
-
-    fun modifyItem(item: HomeModel?) {
-        _newsList.value = repository.modifyNewsItem(item)
     }
 }
 
@@ -91,7 +68,7 @@ class SearchFragmentModelFactory : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(SearchViewModel::class.java)) {
             return SearchViewModel(
-                GetSearchNewsUseCase(repository),
+                GetSearchUseCase(repository),
                 repository
             ) as T
         } else {

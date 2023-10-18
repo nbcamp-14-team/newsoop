@@ -1,6 +1,7 @@
 package com.nbcamp_14_project.search
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -25,6 +26,13 @@ class SearchFragmentAdapter : ListAdapter<HomeModel, SearchFragmentAdapter.ViewH
             return oldItem == newItem
         }
     }) {
+
+    interface ItemClick { //인터페이스
+        fun onClick(view: View, position: Int)
+    }
+
+    var itemClick: ItemClick? = null
+
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = getItem(position)
         holder.bind(item)
@@ -47,10 +55,8 @@ class SearchFragmentAdapter : ListAdapter<HomeModel, SearchFragmentAdapter.ViewH
             searchTitle.text = item.title
             searchDate.text = item.pubDate?.slice(0..16)
             searchImage.load(item.thumbnail)
-
         }
     }
-
 }
 //    RecyclerView.Adapter<SearchFragmentAdapter.Holder>() {
 //

@@ -30,7 +30,9 @@ class SearchFragment : Fragment() {
     private lateinit var adapterManager: LinearLayoutManager
 
     //tag
-    private val tagAdapter by lazy { SearchTagAdapter() }
+    private val tagAdapter by lazy {
+        SearchTagAdapter()
+    }
     private lateinit var tagAdapterManager: LinearLayoutManager
 
     override fun onAttach(context: Context) {
@@ -49,7 +51,6 @@ class SearchFragment : Fragment() {
         _binding = FragmentSearchBinding.inflate(inflater, container, false)
         initView()
         initViewModel()
-
         binding.searchRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
@@ -62,6 +63,13 @@ class SearchFragment : Fragment() {
                         Toast.makeText(requireContext(), "마지막", Toast.LENGTH_SHORT).show()
                     }
                 }
+            }
+        })
+        tagAdapter.setItemClickListener(object : SearchTagAdapter.OnItemClickListener {
+            override fun onClick(v: View, position: Int) {
+                Log.d("TAG", "tag Click : $position")
+                val tag = tagAdapter.tagList[position]
+                viewModel.getSearchNews(tag, 10, 1)
             }
         })
         return binding.root
