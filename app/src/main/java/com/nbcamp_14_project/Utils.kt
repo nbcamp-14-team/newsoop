@@ -32,27 +32,44 @@ object Utils {
 //            }
 //        })
 //    }
-    suspend fun getThumbnail(url: String):String? {//썸네일 가져오기
+    suspend fun getThumbnail(url: String): String? {//썸네일 가져오기
         var thumbnail: String?
-        withContext(Dispatchers.IO){
+        withContext(Dispatchers.IO) {
             thumbnail = Jsoup.connect(url).get().select("meta[property=og:image]").attr("content")
             Log.d("success2", "$thumbnail")
         }
         return thumbnail
     }
+
     suspend fun getAuthor(url: String): String? {
-        val author:String?
-        withContext(Dispatchers.IO){
-            author = Jsoup.connect(url).get().select("meta[name=dable:author]").attr("content")
+        var author: String?
+        withContext(Dispatchers.IO) {
+            val docs = Jsoup.connect(url).get()
+            author = docs.select("meta[name=dable:author]")?.attr("content")
                 .toString()//radioKorea에서 가져오는법
-            Log.d("author","$author")
+
+            if (author == "") {
+                author = docs.select("em[class=media_end_head_journalist_name]")?.html()
+                Log.d("test", "$author")
+                if (author == "") {
+
+                    author = docs.select("meta[property=og:article:author]")?.attr("content")
+                    Log.d("test1", "$author")
+
+
+                }else if(author == ""){
+                    author = docs.select("meta[property=og:article:author]")?.attr("content")
+                    Log.d("test2", "$author")
+                }else{
+                    author = "기자 정보가 없습니다."
+                }
+            }
+            Log.d("author", "$author")
         }
-        if(author == null) return author
+        if (author == null) return author
         return author
     }
 }
-
-
 
 
 //
