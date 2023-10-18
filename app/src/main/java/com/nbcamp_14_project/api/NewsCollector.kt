@@ -1,14 +1,13 @@
 package com.nbcamp_14_project.api
 
-import retrofit2.Call
 import retrofit2.http.GET
-import retrofit2.http.Header
 import retrofit2.http.Query
 
 interface NewsCollector {
-    companion object{
+    companion object {
         const val NEWS_URL = "https://openapi.naver.com/"
     }
+
     /**
      * api를 통해서 뉴스를 가져오는 명령어입니다.
      */
@@ -16,6 +15,6 @@ interface NewsCollector {
     suspend fun getNews(
         @Query("query") query: String?,//검색어
         @Query("display") display: Int? = null,//출력개수
-        @Query("start") start:Int? = null,//출력 시작점
+        @Query("start") start: Int? = null,//출력 시작점
     ): NewsDTO
 }

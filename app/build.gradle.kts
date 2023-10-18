@@ -2,6 +2,7 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("com.google.gms.google-services")
+    id("kotlin-parcelize")
 }
 
 android {
@@ -53,20 +54,20 @@ dependencies {
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
     //retrofit and converter
-    implementation ("com.google.code.gson:gson:2.10.1")
-    implementation ("com.squareup.retrofit2:retrofit:2.9.0")
-    implementation ("com.squareup.retrofit2:converter-gson:2.9.0")
+    implementation("com.google.code.gson:gson:2.10.1")
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
     //okhttp
-    implementation ("com.squareup.okhttp3:okhttp:4.10.0")
-    implementation ("com.squareup.okhttp3:logging-interceptor:4.10.0")
+    implementation("com.squareup.okhttp3:okhttp:4.10.0")
+    implementation("com.squareup.okhttp3:logging-interceptor:4.10.0")
     //coroutine
-    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.7")
-    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.0")
-    implementation ("com.google.guava:guava:27.0.1-android")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.7")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.0")
+    implementation("com.google.guava:guava:27.0.1-android")
     //cardView
-    implementation ("androidx.recyclerview:recyclerview-selection:1.1.0-rc03")
-    implementation ("androidx.recyclerview:recyclerview:1.1.0")
-    implementation ("androidx.cardview:cardview:1.0.0")
+    implementation("androidx.recyclerview:recyclerview-selection:1.1.0-rc03")
+    implementation("androidx.recyclerview:recyclerview:1.1.0")
+    implementation("androidx.cardview:cardview:1.0.0")
     //coil
     implementation("io.coil-kt:coil:1.1.0")
     //serialization
@@ -77,9 +78,11 @@ dependencies {
     implementation(platform("com.google.firebase:firebase-bom:32.3.1"))
     implementation("com.google.firebase:firebase-auth-ktx")
     implementation("com.google.android.gms:play-services-auth:20.7.0")
+    implementation("com.squareup.retrofit2:converter-scalars:2.6.4")
     //Jsoup
     implementation ("org.jsoup:jsoup:1.13.1")
     //indicator
     implementation("com.tbuonomo:dotsindicator:5.0")
+    implementation("org.jsoup:jsoup:1.16.1")
 
 }
