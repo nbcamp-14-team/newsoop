@@ -49,7 +49,7 @@ class LoginActivity : AppCompatActivity() {
                     val userPw = it.data?.getStringExtra("pw") ?: ""
 
                     binding.etUsername.setText(userId)
-                    binding.etPassword.setText(userPw)
+
                 }
             }
 
@@ -59,27 +59,26 @@ class LoginActivity : AppCompatActivity() {
         }
 
         binding.btnLogin.setOnClickListener {
-            val email = binding.etUsername.text
-            val pw = binding.etPassword.text
-            auth = FirebaseAuth.getInstance()
-            auth.signInWithEmailAndPassword(email.toString(), pw.toString())
-                .addOnCompleteListener(this) { task ->
-                    if (task.isSuccessful) {
-                        val user = auth.currentUser
-                        Log.d("LoginActivity", "login success! ${user?.email}")
-                        Toast.makeText(this, "complete", Toast.LENGTH_SHORT).show()
-                    } else {
-                        Log.e("LoginActivity", "login fail")
-                    }
-                }
+            logIn()
         }
 
-
         binding.ivGoogleLogin.setOnClickListener {}
-
-
     }
-
+    private fun logIn(){
+        val email = binding.etUsername.text
+        val pw = binding.etPassword.text
+        auth = FirebaseAuth.getInstance()
+        auth.signInWithEmailAndPassword(email.toString(), pw.toString())
+            .addOnCompleteListener(this) { task ->
+                if (task.isSuccessful) {
+                    val user = auth.currentUser
+                    Log.d("LoginActivity", "login success! ${user?.email}")
+                    Toast.makeText(this, "complete", Toast.LENGTH_SHORT).show()
+                } else {
+                    Log.e("LoginActivity", "login fail")
+                }
+            }
+    }
 
 }
 

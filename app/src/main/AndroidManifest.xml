@@ -3,7 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
-
     <application
         android:usesCleartextTraffic="true"
         android:allowBackup="true"
@@ -28,11 +27,13 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".DetailActivity"
-            android:exported="false" />
+            android:name=".detail.DetailActivity"
+            android:exported="false"></activity>
         <activity
             android:name=".ui.login.LoginActivity"
-            android:exported="false"></activity>
+            android:exported="false">
+
+        </activity>
     </application>
 
 </manifest>
