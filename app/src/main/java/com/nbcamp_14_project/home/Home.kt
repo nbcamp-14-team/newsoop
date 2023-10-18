@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewpager2.widget.ViewPager2
+import com.nbcamp_14_project.R
 import com.nbcamp_14_project.databinding.FragmentMainBinding
 import com.nbcamp_14_project.detail.DetailActivity
 import com.nbcamp_14_project.detail.DetailInfo
@@ -30,6 +31,7 @@ class Home : Fragment() {
                 intent.putExtra("detail_model_key", detailInfo)
 
                 startActivity(intent)
+                activity?.overridePendingTransition(R.anim.slide_in_up, R.anim.stay);
 
             }
         )
@@ -42,6 +44,7 @@ class Home : Fragment() {
                 intent.putExtra("detail_model_key", detailInfo)
 
                 startActivity(intent)
+                activity?.overridePendingTransition(R.anim.slide_in_up, R.anim.stay);
 
             }
         )

@@ -15,7 +15,14 @@ data class HomeModel(
 )
 
 fun HomeModel.toDetailInfo(): DetailInfo {
-    return DetailInfo(title, description, thumbnail, author, link, pubDate)
+    return DetailInfo(
+        title = title,
+        description = description,
+        thumbnail = thumbnail,
+        author = author,
+        originalLink = link,
+        pubDate = pubDate
+    )
 }
 
 
