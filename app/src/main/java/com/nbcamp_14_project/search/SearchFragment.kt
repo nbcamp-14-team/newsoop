@@ -8,7 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -19,26 +18,14 @@ class SearchFragment : Fragment() {
 
     private var _binding: FragmentSearchBinding? = null
     private val binding get() = _binding!!
-    private lateinit var mContext: Context
 
     private val viewModel: SearchViewModel by lazy {
         ViewModelProvider(
-            this, SearchFragmentModelFactory()
+            this, SearchViewModelFactory()
         )[SearchViewModel::class.java]
     }
-    private val adapter by lazy { SearchFragmentAdapter() }
-    private lateinit var adapterManager: LinearLayoutManager
-
-    //tag
-    private val tagAdapter by lazy {
-        SearchTagAdapter()
-    }
-    private lateinit var tagAdapterManager: LinearLayoutManager
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        mContext = context
-    }
+    private val adapter by lazy { SearchListAdapter() }
+    private val tagAdapter by lazy { SearchTagAdapter() }
 
     private var query = ""
     private var countStart = 11
@@ -51,20 +38,21 @@ class SearchFragment : Fragment() {
         _binding = FragmentSearchBinding.inflate(inflater, container, false)
         initView()
         initViewModel()
-        binding.searchRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                super.onScrollStateChanged(recyclerView, newState)
-                if (!binding.searchRecyclerView.canScrollVertically(1)) {
-                    if (countStart <= 100) {
-                        viewModel.getSearchNews(query, 10, countStart)
-                        countStart += 10
-                        Log.d("TAG", "count : ${countStart}")
-                    } else {
-                        Toast.makeText(requireContext(), "마지막", Toast.LENGTH_SHORT).show()
-                    }
-                }
-            }
-        })
+        //TODO :  retrofit2.HttpException: HTTP 400  fix
+//        binding.searchRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+//            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+//                super.onScrollStateChanged(recyclerView, newState)
+//                if (!binding.searchRecyclerView.canScrollVertically(1)) {
+//                    if (countStart <= 100) {
+//                        viewModel.getSearchNews(query, 10, countStart)
+//                        countStart += 10
+//                        Log.d("TAG", "count : ${countStart}")
+//                    } else {
+//                        Toast.makeText(requireContext(), "마지막", Toast.LENGTH_SHORT).show()
+//                    }
+//                }
+//            }
+//        })
         tagAdapter.setItemClickListener(object : SearchTagAdapter.OnItemClickListener {
             override fun onClick(v: View, position: Int) {
                 Log.d("TAG", "tag Click : $position")
@@ -75,14 +63,13 @@ class SearchFragment : Fragment() {
         return binding.root
     }
 
-    fun initView() = with(binding) {
-        adapterManager = LinearLayoutManager(requireContext())
-        tagAdapterManager = LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
-        searchRecyclerView.layoutManager = adapterManager
+    private fun initView() = with(binding) {
+        searchRecyclerView.layoutManager = LinearLayoutManager(requireContext())
         searchRecyclerView.adapter = adapter
-        searchTagFrame.layoutManager = tagAdapterManager
+        searchTagFrame.layoutManager =
+            LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
         searchTagFrame.adapter = tagAdapter
-        searchInput.setOnEditorActionListener { textView, i, keyEvent ->
+        searchInput.setOnEditorActionListener { _, i, _ ->
             var handled = false
             if (i == EditorInfo.IME_ACTION_DONE) {
                 Log.d("TAG", "enterEvent")
@@ -102,9 +89,9 @@ class SearchFragment : Fragment() {
         }
     }
 
-    fun initViewModel() {
+    private fun initViewModel() {
         with(viewModel) {
-            list.observe(viewLifecycleOwner) {
+            searchResultList.observe(viewLifecycleOwner) {
                 adapter.submitList(it)
             }
         }

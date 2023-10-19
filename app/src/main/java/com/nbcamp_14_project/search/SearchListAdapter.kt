@@ -10,7 +10,7 @@ import coil.load
 import com.nbcamp_14_project.databinding.FragmentSearchItemBinding
 import com.nbcamp_14_project.home.HomeModel
 
-class SearchFragmentAdapter : ListAdapter<HomeModel, SearchFragmentAdapter.ViewHolder>(
+class SearchListAdapter : ListAdapter<HomeModel, SearchListAdapter.ViewHolder>(
     object : DiffUtil.ItemCallback<HomeModel>() {
         override fun areContentsTheSame(
             oldItem: HomeModel,

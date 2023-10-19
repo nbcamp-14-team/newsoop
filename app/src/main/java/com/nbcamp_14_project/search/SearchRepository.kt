@@ -4,6 +4,8 @@ import com.nbcamp_14_project.api.NewsCollector
 import com.nbcamp_14_project.domain.SearchEntity
 import com.nbcamp_14_project.domain.toSearchEntity
 import com.nbcamp_14_project.home.HomeModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.util.concurrent.atomic.AtomicInteger
 
 
@@ -16,36 +18,44 @@ interface SearchRepository {
 
     fun getList(): List<HomeModel>
     fun addNewsItem(item: HomeModel?): List<HomeModel>
+    fun clearList()
 }
 
-class SearchFragmentRepositoryImpl(
+class SearchRepositoryImpl(
     private val idGenerate: AtomicInteger,
     private val remoteDatasource: NewsCollector
 ) : SearchRepository {
-    private val list = mutableListOf<HomeModel>()
-    private val newsList = mutableListOf<HomeModel>()
+    private val searchList = mutableListOf<HomeModel>()
+
+    //시간이 오래 걸림 ->
     override suspend fun getNews(query: String, display: Int?, start: Int?): SearchEntity =
-        remoteDatasource.getNews(
-            query,
-            display,
-            start
-        ).toSearchEntity()
+        withContext(Dispatchers.IO) {
+            remoteDatasource.getNews(
+                query,
+                display,
+                start
+            ).toSearchEntity()
+        }
 
 
     override fun getList(): List<HomeModel> {
-        return list
+        return searchList
     }
 
     override fun addNewsItem(item: HomeModel?): List<HomeModel> {
         if (item == null) {
-            return newsList
+            return searchList
         }
-        newsList.add(
+        searchList.add(
             item.copy(
                 id = idGenerate.getAndIncrement()
             )
         )
 
-        return ArrayList<HomeModel>(newsList)
+        return ArrayList<HomeModel>(searchList)
+    }
+
+    override fun clearList() {
+
     }
 }
