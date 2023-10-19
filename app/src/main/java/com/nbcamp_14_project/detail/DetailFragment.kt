@@ -34,7 +34,7 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
 
     companion object {
 
-            fun newInstance() = DetailFragment()
+        fun newInstance() = DetailFragment()
 
     }
 
@@ -43,12 +43,17 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
     private val viewModel: DetailViewModel by activityViewModels()
     private var isAnimating = false
     private lateinit var textToSpeech: TextToSpeech
-    private val favoriteviewModel: FavoriteViewModel by activityViewModels()
+    private val favoriteViewModel: FavoriteViewModel by activityViewModels()
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
         super.onViewCreated(view, savedInstanceState)
+
+        val detailInfo = arguments?.getParcelable("detailInfo") as? DetailInfo
+        if (detailInfo != null) {
+            viewModel.setDetailInfo(detailInfo)
+        }
 
         _binding = FragmentDetailBinding.bind(view)
         textToSpeech = TextToSpeech(requireContext()) { status ->
@@ -82,6 +87,15 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
 
 
     private fun initView() = with(binding) {
+
+        imgLike.setOnClickListener {
+            val detailInfo = viewModel.detailInfo.value
+            if (detailInfo != null) {
+                favoriteViewModel.addFavoriteItem(detailInfo)
+            } else {
+
+            }
+        }
 
 
 

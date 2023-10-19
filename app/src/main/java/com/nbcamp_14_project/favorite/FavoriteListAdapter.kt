@@ -10,8 +10,9 @@ import coil.load
 import com.nbcamp_14_project.databinding.FragmentFavoriteBinding
 import com.nbcamp_14_project.databinding.ItemRvNewsMainBinding
 import com.nbcamp_14_project.detail.DetailInfo
+import com.nbcamp_14_project.detail.DetailViewModel
 
-class FavoriteListAdapter : ListAdapter<DetailInfo, FavoriteListAdapter.ViewHolder>(
+class FavoriteListAdapter(private val onItemClick: (DetailInfo) -> Unit) : ListAdapter<DetailInfo, FavoriteListAdapter.ViewHolder>(
     object : DiffUtil.ItemCallback<DetailInfo>() {
         override fun areItemsTheSame(
             oldItem: DetailInfo, newItem: DetailInfo
@@ -34,25 +35,25 @@ class FavoriteListAdapter : ListAdapter<DetailInfo, FavoriteListAdapter.ViewHold
     ): FavoriteListAdapter.ViewHolder {
         return ViewHolder(
             ItemRvNewsMainBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-
         )
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = getItem(position)
         holder.bind(item)
+        holder.itemView.setOnClickListener {
+            onItemClick(item)
+        }
     }
 
     class ViewHolder(private val binding: ItemRvNewsMainBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: DetailInfo) = with(binding) {
-
             title.text = item.title
             ivThumbnail.load(item.thumbnail)
             author.text = item.author
             pubDate.text = item.pubDate
-
         }
     }
 }

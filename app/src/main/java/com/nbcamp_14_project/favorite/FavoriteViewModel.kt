@@ -18,7 +18,7 @@ class FavoriteViewModel : ViewModel() {
 
     fun removeFavoriteItem(item: DetailInfo) {
         val currentList = _favoriteList.value?.toMutableList() ?: return
-        if (currentList.contains(item)){
+        if (currentList.contains(item)) {
             currentList.remove(item)
             _favoriteList.value = currentList
         }

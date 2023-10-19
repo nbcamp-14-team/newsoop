@@ -27,7 +27,7 @@ class MainFragmentViewModel(
 
     fun headLineNews(query: String) {
         viewModelScope.launch {
-            val docs = searchNews(query)
+            val docs = searchNews(query,5)
             val item = docs.items ?:  return@launch
             for (i in item.indices) {//아이템 개수만큼 for문 실행
                 val thumbnail = Utils.getThumbnail(item[i].link.toString())
@@ -54,7 +54,7 @@ class MainFragmentViewModel(
     }
     fun detailNews(query: String){
         viewModelScope.launch {
-            val docs = searchNews(query)
+            val docs = searchNews(query,5)
             val item = docs.items ?: return@launch
             for(i in item.indices){//아이템 개수만큼 for문 실행
                 val thumbnail = Utils.getThumbnail(item[i].link.toString())
