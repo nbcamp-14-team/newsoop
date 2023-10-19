@@ -4,6 +4,9 @@ import android.util.Log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.jsoup.Jsoup
+import java.io.EOFException
+import java.io.IOException
+import java.util.zip.ZipException
 
 object Utils {
     //API 검색 함수, 파라미터 SearchWord = 검색 단어,display = 검색해올 뉴스 개수(최소 10 최대 100),start = 검색시작위치
@@ -33,30 +36,84 @@ object Utils {
 //        })
 //    }
     suspend fun getThumbnail(url: String): String? {//썸네일 가져오기
+        Log.d("ERRR", "$url")
         var thumbnail: String?
-        withContext(Dispatchers.IO) {
-            try {
-                thumbnail =
-                    Jsoup.connect(url).get().select("meta[property=og:image]").attr("content")
-                Log.d("getThumbnail", "getThumbnail : success $thumbnail")
-            } catch (e: Exception) {
-                Log.e("getThumbnail", "getThumbnail fail ${e.message}")
-                thumbnail = null
+        try {
+            withContext(Dispatchers.IO) {
+                val docs = Jsoup.connect(url).get()
+                thumbnail = docs.select("meta[property=og:image]").attr("content")
+                Log.d("success2", "$thumbnail")
             }
-
+            if (thumbnail == null || thumbnail == "") return null
+            return thumbnail
+        } catch (e: ZipException) { //ZipException 예외처리
+            Log.d("errorAtZip", "$url")
+            return null
+        } catch (e: IOException) {//IOException 에외처리
+            e.printStackTrace()//디버깅 추적을 돕기위한 메서드
+            return null
+        } catch (e: EOFException) {
+            Log.d("errAtZipEOFE", "$url")
+            return null
         }
-        return thumbnail
+
     }
 
     suspend fun getAuthor(url: String): String? {
-        val author: String?
-        withContext(Dispatchers.IO) {
-            author = Jsoup.connect(url).get().select("meta[name=dable:author]").attr("content")
-                .toString()//radioKorea에서 가져오는법
-            Log.d("author", "$author")
+        var author: String?
+        try {
+            withContext(Dispatchers.IO) {
+                val docs = Jsoup.connect(url).get()
+                author = docs.select("meta[name=dable:author]")?.attr("content")
+                    .toString()//radioKorea에서 가져오는법
+
+                if (author == "") {
+                    author = docs.select("span[class=byline_s]")?.html()//네이버
+
+                    Log.d("test", "$author")
+                    if (author == "") {
+                        author = docs.select("meta[property=og:article:author]")?.attr("content")
+                        Log.d("test1", "$author")
+                        if (author == "") {
+                            author = docs.select("meta[property=article:author]")?.attr("content")
+                            if (author == "") {
+                                author = docs.select("meta[property=dd:author]")?.attr("content")
+                                if (author == "") {
+                                    author = docs.select("meta[name=twitter:creator]")
+                                        ?.attr("content")//월간조선
+                                    if (author == "") {
+                                        author = docs.select("em[media_end_head_journalist_name]")
+                                            .toString()//작동이 잘 안됨
+                                        if (author == "") {
+                                            author = docs.select("span[class=d_newsName]").html()
+                                            if (author == "") {
+                                                author = docs.select("span[class=writer]").html()
+
+                                            } else {
+                                                author = "기자 정보가 없습니다."
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
+                        }
+                    }
+                }
+                Log.d("author", "$author")
+            }
+            if (author == null) return author
+            return author
+        } catch (e: ZipException) { //ZipException 예외처리
+            Log.d("errorAtZip", "$url")
+            return null
+        } catch (e: IOException) {//IOException 에외처리
+            e.printStackTrace()//디버깅 추적을 돕기위한 메서드
+            return null
+        } catch (e: EOFException) {
+            Log.d("errAtZipEOFE", "$url")
+            return null
         }
-        if (author == null) return author
-        return author
     }
 }
 
