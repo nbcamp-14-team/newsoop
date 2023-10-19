@@ -21,6 +21,7 @@ class SignUpActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivitySignUpBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        emailTextWatcher()
         binding.btnSignUp.setOnClickListener {
             signUp()
         }
@@ -48,7 +49,7 @@ class SignUpActivity : AppCompatActivity() {
             }
     }
 
-    private fun emailValidate(){
+    private fun emailTextWatcher(){
         binding.etEmail.addTextChangedListener(object: TextWatcher {
             override fun afterTextChanged(s: Editable?) {
 
@@ -59,11 +60,7 @@ class SignUpActivity : AppCompatActivity() {
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                val length: Int = s?.length ?: 0
-                //비밀번호 길이에 따른 메세지
-                when(length){
-
-                }
+                emailPattern()
 
             }
 
@@ -71,4 +68,20 @@ class SignUpActivity : AppCompatActivity() {
 
         })
     }
+
+    private fun emailPattern():Boolean{
+        val email = binding.etEmail.text.toString().trim()
+        val pattern = android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()
+
+        if (pattern){
+            //이메일 형식일 때
+            binding.etEmail.setBackgroundResource(R.drawable.et_border_radius)
+            return true
+        }else{
+            //이메일 형식이 아닐때
+            binding.etEmail.setBackgroundResource(R.drawable.et_border_radius_red)
+            return false
+        }
+    }
+
 }
