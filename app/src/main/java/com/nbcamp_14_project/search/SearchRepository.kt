@@ -1,5 +1,6 @@
 package com.nbcamp_14_project.search
 
+import android.util.Log
 import com.nbcamp_14_project.api.NewsCollector
 import com.nbcamp_14_project.domain.SearchEntity
 import com.nbcamp_14_project.domain.toSearchEntity
@@ -18,7 +19,7 @@ interface SearchRepository {
 
     fun getList(): List<HomeModel>
     fun addNewsItem(item: HomeModel?): List<HomeModel>
-    fun clearList()
+    fun clearList(): List<HomeModel>
 }
 
 class SearchRepositoryImpl(
@@ -51,19 +52,13 @@ class SearchRepositoryImpl(
                 id = idGenerate.getAndIncrement()
             )
         )
-        
+
         return searchList
     }
 
-    override fun clearList() {
-
-    }
-
-    override fun clearHeadLineItems(): List<HomeModel> {
-        TODO("Not yet implemented")
-    }
-
-    override fun clearNewsItems(): List<HomeModel> {
-        TODO("Not yet implemented")
+    override fun clearList(): List<HomeModel> {
+        searchList.clear()
+        Log.d("TAG", "search list size : ${searchList.size}")
+        return ArrayList<HomeModel>(searchList)
     }
 }

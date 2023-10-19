@@ -17,12 +17,16 @@ class SearchViewModel(
     private val _searchResultList: MutableLiveData<List<HomeModel>> = MutableLiveData()
     val searchResultList: LiveData<List<HomeModel>> get() = _searchResultList
 
+    fun clearAllItems() {//viewPager와 리사이클러뷰 리스트 초기화 함수
+        _searchResultList.value = repository.clearList()
+
+    }
+
     fun getSearchNews(query: String, display: Int, start: Int) {
         viewModelScope.launch {
             //docs item이 들어오는지 확인
             val docs = repository.getNews(query, display = display, start = start)
             val item = docs.items ?: return@launch
-            repository.clearList()
             for (i in item.indices) {//아이템 개수만큼 for문 실행
                 val thumbnail = Utils.getThumbnail(item[i].link.toString())
                 var title = item[i].title?.replace("<b>", "") ?: "제목 없음"

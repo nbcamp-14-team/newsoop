@@ -56,8 +56,9 @@ class SearchFragment : Fragment() {
         tagAdapter.setItemClickListener(object : SearchTagAdapter.OnItemClickListener {
             override fun onClick(v: View, position: Int) {
                 Log.d("TAG", "tag Click : $position")
-                val tag = tagAdapter.tagList[position]
-                viewModel.getSearchNews(tag, 10, 1)
+                query = tagAdapter.tagList[position]
+                viewModel.clearAllItems()
+                viewModel.getSearchNews(query, 5, 1)
             }
         })
         return binding.root
@@ -78,10 +79,10 @@ class SearchFragment : Fragment() {
             }
             handled
         }
+        query = binding.searchInput.text.toString()
         searchBtn.setOnClickListener {
-            query = binding.searchInput.text.toString()
-            viewModel.getSearchNews(query, 10, 1)
-
+            viewModel.clearAllItems()
+            viewModel.getSearchNews(query, 5, 1)
             //키보드 내리는 기능
             val imm =
                 requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
