@@ -5,19 +5,18 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.google.firebase.auth.FirebaseUser
 import com.nbcamp_14_project.data.LoginRepository
+import kotlin.math.log
 
-class LoginViewModel(private val loginRepository: LoginRepository) : ViewModel() {
-   private val currentUser = MutableLiveData<FirebaseUser>()
-
-    val email: String? = null
-    val password: String? = null
-    init {
-        currentUser.value=loginRepository.getCurrentUser()
-    }
+class LoginViewModel: ViewModel() {
+   private val loginRepository: LoginRepository = LoginRepository()
+    private val _userLiveData = loginRepository.userLiveData
+    val userLiveData: LiveData<FirebaseUser>
+        get() = _userLiveData
 
 
-    fun getCurrentUser(): LiveData<FirebaseUser>{
-        return currentUser
+    fun getCurrentUser(idToken: String){
+        loginRepository.getCurrentUser(idToken)
+        
     }
 
     fun signOut(){
