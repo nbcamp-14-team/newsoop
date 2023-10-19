@@ -7,13 +7,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewpager2.widget.ViewPager2
 import com.nbcamp_14_project.R
 import com.nbcamp_14_project.databinding.FragmentMainBinding
-import com.nbcamp_14_project.detail.DetailActivity
-import com.nbcamp_14_project.detail.DetailInfo
+import com.nbcamp_14_project.detail.DetailFragment
+import com.nbcamp_14_project.detail.DetailViewModel
+import com.nbcamp_14_project.favorite.FavoriteViewModel
+import com.nbcamp_14_project.mainpage.MainActivity
 
 @Suppress("DEPRECATION")
 class Home : Fragment() {
@@ -22,30 +24,27 @@ class Home : Fragment() {
     }
 
     private var _binding: FragmentMainBinding? = null
+    private val detailViewModel: DetailViewModel by activityViewModels()
     private val binding get() = _binding!!
+    // Home Fragment
     private val headLineAdapter by lazy {
-        HomeHeadLineAdapter(//ViewPager2에서 클릭이 일어났을 때, Detail에 데이터값을 보냄(구현필요)
-            onClick = {item ->
+        HomeHeadLineAdapter(
+            onClick = { item ->
                 val detailInfo = item.toDetailInfo()
-                val intent = Intent(context, DetailActivity::class.java)
-                intent.putExtra("detail_model_key", detailInfo)
-
-                startActivity(intent)
-                activity?.overridePendingTransition(R.anim.slide_in_up, R.anim.stay);
-
+                detailViewModel.setDetailInfo(detailInfo)
+                val mainActivity = (activity as MainActivity)
+                mainActivity.test()
             }
         )
     }
+
     private val newsAdapter by lazy {
         HomeNewsAdapter(//recyclerView에서 클릭이 일어났을 때, Detail에 데이터값을 보냄(구현필요)
-            onClick = {item ->
+            onClick = { item ->
                 val detailInfo = item.toDetailInfo()
-                val intent = Intent(context, DetailActivity::class.java)
-                intent.putExtra("detail_model_key", detailInfo)
-
-                startActivity(intent)
-                activity?.overridePendingTransition(R.anim.slide_in_up, R.anim.stay);
-
+                detailViewModel.setDetailInfo(detailInfo)
+                val mainActivity = (activity as MainActivity)
+                mainActivity.test()
             }
         )
     }
@@ -54,6 +53,7 @@ class Home : Fragment() {
             this, MainFragmentModelFactory()
         )[MainFragmentViewModel::class.java]
     }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
@@ -74,8 +74,8 @@ class Home : Fragment() {
     fun initView() = with(binding) {
         val slideImageHandler: Handler = Handler()
         val slideImageRunnable = Runnable {
-            if(rvMainNews.currentItem -1  == headLineAdapter.itemCount){
-                rvMainNews. currentItem = 0
+            if (rvMainNews.currentItem - 1 == headLineAdapter.itemCount) {
+                rvMainNews.currentItem = 0
             }
             rvMainNews.currentItem = rvMainNews.currentItem + 1
 

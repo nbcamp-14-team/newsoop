@@ -27,7 +27,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".detail.DetailActivity"
+            android:name=".detail.DetailFragment"
             android:exported="false"></activity>
         <activity
             android:name=".ui.login.LoginActivity"

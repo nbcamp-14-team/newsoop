@@ -1,20 +1,23 @@
-package com.nbcamp_14_project
+package com.nbcamp_14_project.favorite
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.nbcamp_14_project.home.Home
 import com.nbcamp_14_project.databinding.FragmentFavoriteBinding
 
 class FavoriteFragment: Fragment() {
     companion object{
-        fun newInstance() = Home()
+        fun newInstance() = FavoriteFragment()
     }
     private var _binding: FragmentFavoriteBinding? = null
     private val binding get() = _binding!!
-
+    private lateinit var adapter: FavoriteListAdapter
+    private val viewModel: FavoriteViewModel by activityViewModels()
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -25,7 +28,15 @@ class FavoriteFragment: Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+
         super.onViewCreated(view, savedInstanceState)
+        adapter = FavoriteListAdapter()
+        binding.favoriteList.layoutManager = LinearLayoutManager(context)
+        binding.favoriteList.adapter = adapter
+        viewModel.favoriteList.observe(viewLifecycleOwner){
+            adapter.submitList(it)
+        }
+
     }
 
 }
