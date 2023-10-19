@@ -49,19 +49,35 @@ object Utils {
                 .toString()//radioKorea에서 가져오는법
 
             if (author == "") {
-                author = docs.select("em[class=media_end_head_journalist_name]")?.html()
+                author = docs.select("span[class=byline_s]")?.html()//네이버
+
                 Log.d("test", "$author")
                 if (author == "") {
-
                     author = docs.select("meta[property=og:article:author]")?.attr("content")
                     Log.d("test1", "$author")
+                    if (author == "") {
+                        author = docs.select("meta[property=article:author]")?.attr("content")
+                        if (author == "") {
+                            author = docs.select("meta[property=dd:author]")?.attr("content")
+                            if (author == "") {
+                                author = docs.select("meta[name=twitter:creator]")?.attr("content")//월간조선
+                                if (author == "") {
+                                    author = docs.select("em[media_end_head_journalist_name]")
+                                        .toString()//작동이 잘 안됨
+                                    if (author == "") {
+                                        author = docs.select("span[class=d_newsName]").html()
+                                        if(author == ""){
+                                            author= docs.select("span[class=writer]").html()
 
+                                        }else {
+                                            author = "기자 정보가 없습니다."
+                                        }
+                                    }
+                                }
+                            }
+                        }
 
-                }else if(author == ""){
-                    author = docs.select("meta[property=og:article:author]")?.attr("content")
-                    Log.d("test2", "$author")
-                }else{
-                    author = "기자 정보가 없습니다."
+                    }
                 }
             }
             Log.d("author", "$author")

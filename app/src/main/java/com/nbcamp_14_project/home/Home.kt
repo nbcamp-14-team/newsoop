@@ -14,6 +14,7 @@ import com.nbcamp_14_project.R
 import com.nbcamp_14_project.databinding.FragmentMainBinding
 import com.nbcamp_14_project.detail.DetailActivity
 import com.nbcamp_14_project.detail.DetailInfo
+import com.nbcamp_14_project.search.SearchFragment
 
 @Suppress("DEPRECATION")
 class Home : Fragment() {
@@ -31,7 +32,6 @@ class Home : Fragment() {
                 intent.putExtra("detail_model_key", detailInfo)
 
                 startActivity(intent)
-                activity?.overridePendingTransition(R.anim.slide_in_up, R.anim.stay);
 
             }
         )
