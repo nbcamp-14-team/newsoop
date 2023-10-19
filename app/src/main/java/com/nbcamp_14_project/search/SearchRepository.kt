@@ -122,4 +122,12 @@ class SearchFragmentRepositoryImpl(
         newsList.removeAt(findPosition)
         return ArrayList<HomeModel>(newsList)
     }
+
+    override fun clearHeadLineItems(): List<HomeModel> {
+        TODO("Not yet implemented")
+    }
+
+    override fun clearNewsItems(): List<HomeModel> {
+        TODO("Not yet implemented")
+    }
 }

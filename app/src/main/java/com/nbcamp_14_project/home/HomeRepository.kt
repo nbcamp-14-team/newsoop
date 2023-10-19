@@ -21,6 +21,8 @@ interface MainFragmentRepository {
     fun removeNewsItem(item: HomeModel?):List<HomeModel>
     fun modifyHeadLineItem(item: HomeModel?):List<HomeModel>
     fun modifyNewsItem(item: HomeModel?):List<HomeModel>
+    fun clearNewsItems():List<HomeModel>
+    fun clearHeadLineItems():List<HomeModel>
 }
 
 class MainFragmentRepositoryImpl(
@@ -130,5 +132,15 @@ class MainFragmentRepositoryImpl(
         }
         newsList.removeAt(findPosition)
         return ArrayList<HomeModel>(newsList)
+    }
+
+    override fun clearNewsItems(): List<HomeModel> {
+        newsList.clear()
+        return ArrayList<HomeModel>(newsList)
+    }
+
+    override fun clearHeadLineItems(): List<HomeModel> {
+        list.clear()
+        return ArrayList<HomeModel>(list)
     }
 }
