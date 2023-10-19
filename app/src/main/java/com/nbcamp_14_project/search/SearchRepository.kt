@@ -1,133 +1,64 @@
 package com.nbcamp_14_project.search
 
+import android.util.Log
 import com.nbcamp_14_project.api.NewsCollector
 import com.nbcamp_14_project.domain.SearchEntity
 import com.nbcamp_14_project.domain.toSearchEntity
 import com.nbcamp_14_project.home.HomeModel
-import com.nbcamp_14_project.home.MainFragmentRepository
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.util.concurrent.atomic.AtomicInteger
 
-class SearchFragmentRepositoryImpl(
+
+interface SearchRepository {
+    suspend fun getNews(
+        query: String,
+        display: Int? = null,
+        start: Int? = null
+    ): SearchEntity
+
+    fun getList(): List<HomeModel>
+    fun addNewsItem(item: HomeModel?): List<HomeModel>
+    fun clearList(): List<HomeModel>
+}
+
+class SearchRepositoryImpl(
     private val idGenerate: AtomicInteger,
     private val remoteDatasource: NewsCollector
-) : MainFragmentRepository {
-    private val list = mutableListOf<HomeModel>()
-    private val newsList = mutableListOf<HomeModel>()
+) : SearchRepository {
+    private val searchList = mutableListOf<HomeModel>()
+
+    //시간이 오래 걸림 ->
     override suspend fun getNews(query: String, display: Int?, start: Int?): SearchEntity =
-        remoteDatasource.getNews(
-            query,
-            display,
-            start
-        ).toSearchEntity()
+        withContext(Dispatchers.IO) {
+            remoteDatasource.getNews(
+                query,
+                display,
+                start
+            ).toSearchEntity()
+        }
 
 
     override fun getList(): List<HomeModel> {
-        return list
-    }
-
-    override fun addHeadLineItem(item: HomeModel?): List<HomeModel> {
-        if (item == null) {
-            return list
-        }
-        list.add(
-            item.copy(
-                id = idGenerate.getAndIncrement()
-            )
-        )
-
-        return ArrayList<HomeModel>(list)
+        return searchList
     }
 
     override fun addNewsItem(item: HomeModel?): List<HomeModel> {
         if (item == null) {
-            return newsList
+            return searchList
         }
-        newsList.add(
+        searchList.add(
             item.copy(
                 id = idGenerate.getAndIncrement()
             )
         )
 
-        return ArrayList<HomeModel>(newsList)
+        return searchList
     }
 
-    override fun modifyHeadLineItem(item: HomeModel?): List<HomeModel> {
-        fun findIndex(item: HomeModel?): Int {
-            if (item == null) return 0
-            val findItem = list.find {
-                it.id == item.id
-            }
-            return list.indexOf(findItem)
-        }
-
-        val findPosition = findIndex(item)
-        if (findPosition < 0) {
-            return list
-        }
-        if (item == null) return list
-        list[findPosition] = item
-        return ArrayList<HomeModel>(list)
-
-    }
-
-    override fun modifyNewsItem(item: HomeModel?): List<HomeModel> {
-        fun findIndex(item: HomeModel?): Int {
-            if (item == null) return 0
-            val findItem = newsList.find {
-                it.id == item.id
-            }
-            return newsList.indexOf(findItem)
-        }
-
-        val findPosition = findIndex(item)
-        if (findPosition < 0) {
-            return newsList
-        }
-        if (item == null) return newsList
-        newsList[findPosition] = item
-        return ArrayList<HomeModel>(newsList)
-
-    }
-
-    override fun removeHeadLineItem(item: HomeModel?): List<HomeModel> {
-        fun findIndex(item: HomeModel?): Int {
-            if (item == null) return 0
-            val findItem = list.find {
-                it.id == item.id
-            }
-            return list.indexOf(findItem)
-        }
-
-        val findPosition = findIndex(item)
-        if (findPosition < 0) {
-            return list
-        }
-        list.removeAt(findPosition)
-        return ArrayList<HomeModel>(list)
-    }
-
-    override fun removeNewsItem(item: HomeModel?): List<HomeModel> {
-        fun findIndex(item: HomeModel?): Int {
-            if (item == null) return 0
-            val findItem = newsList.find {
-                it.id == item.id
-            }
-            return newsList.indexOf(findItem)
-        }
-
-        val findPosition = findIndex(item)
-        if (findPosition < 0) {
-            return newsList
-        }
-        newsList.removeAt(findPosition)
-        return ArrayList<HomeModel>(newsList)
-    }
-
-    override fun clearHeadLineItems(): List<HomeModel> {
-        TODO("Not yet implemented")
-    }
-
-    override fun clearNewsItems(): List<HomeModel> {
-        TODO("Not yet implemented")
+    override fun clearList(): List<HomeModel> {
+        searchList.clear()
+        Log.d("TAG", "search list size : ${searchList.size}")
+        return ArrayList<HomeModel>(searchList)
     }
 }

@@ -35,16 +35,16 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
-    buildFeatures{
+    buildFeatures {
         viewBinding = true //뷰바인딩
         dataBinding = true
     }
 }
 
 dependencies {
-    implementation("androidx.activity:activity-ktx:1.7.0")
+    implementation("androidx.activity:activity-ktx:1.8.0")
     implementation("androidx.fragment:fragment-ktx:1.6.1")
-    implementation("androidx.core:core-ktx:1.9.0")
+    implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.8.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
@@ -74,14 +74,14 @@ dependencies {
     //serialization
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1")
     //scalars
-    implementation ("com.squareup.retrofit2:converter-scalars:2.6.4")
+    implementation("com.squareup.retrofit2:converter-scalars:2.6.4")
     //firebase
     implementation(platform("com.google.firebase:firebase-bom:32.3.1"))
     implementation("com.google.firebase:firebase-auth-ktx")
     implementation("com.google.android.gms:play-services-auth:20.7.0")
     implementation("com.squareup.retrofit2:converter-scalars:2.6.4")
     //Jsoup
-    implementation ("org.jsoup:jsoup:1.13.1")
+    implementation("org.jsoup:jsoup:1.13.1")
     //indicator
     implementation("com.tbuonomo:dotsindicator:5.0")
     implementation("org.jsoup:jsoup:1.16.1")
