@@ -50,10 +50,6 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
 
         super.onViewCreated(view, savedInstanceState)
 
-        val detailInfo = arguments?.getParcelable("detailInfo") as? DetailInfo
-        if (detailInfo != null) {
-            viewModel.setDetailInfo(detailInfo)
-        }
 
         _binding = FragmentDetailBinding.bind(view)
         textToSpeech = TextToSpeech(requireContext()) { status ->

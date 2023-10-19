@@ -12,6 +12,8 @@ import com.nbcamp_14_project.home.Home
 import com.nbcamp_14_project.databinding.FragmentFavoriteBinding
 import com.nbcamp_14_project.detail.DetailFragment
 import com.nbcamp_14_project.detail.DetailViewModel
+import com.nbcamp_14_project.home.toDetailInfo
+import com.nbcamp_14_project.mainpage.MainActivity
 
 class FavoriteFragment: Fragment() {
     companion object{
@@ -36,17 +38,11 @@ class FavoriteFragment: Fragment() {
         super.onViewCreated(view, savedInstanceState)
         adapter = FavoriteListAdapter { item ->
 
-            val detailFragment = DetailFragment.newInstance()
-            detailFragment.arguments = Bundle().apply {
-                putParcelable("detailInfo", item)
-            }
-            parentFragmentManager.beginTransaction()
-                .replace(R.id.detailFragmentContainer, detailFragment)
-                .addToBackStack(null)
-                .commit()
+            val detailInfo = item
+            detailViewModel.setDetailInfo(detailInfo)
+            val mainActivity = (activity as MainActivity)
+            mainActivity.test()
         }
-
-
         binding.favoriteList.layoutManager = LinearLayoutManager(context)
         binding.favoriteList.adapter = adapter
         viewModel.favoriteList.observe(viewLifecycleOwner){

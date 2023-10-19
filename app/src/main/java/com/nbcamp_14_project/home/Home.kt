@@ -19,7 +19,6 @@ import com.nbcamp_14_project.detail.DetailFragment
 import com.nbcamp_14_project.detail.DetailViewModel
 import com.nbcamp_14_project.favorite.FavoriteViewModel
 import com.nbcamp_14_project.mainpage.MainActivity
-import com.nbcamp_14_project.detail.DetailActivity
 import com.nbcamp_14_project.detail.DetailInfo
 import com.nbcamp_14_project.search.SearchFragment
 
