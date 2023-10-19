@@ -28,7 +28,7 @@ class SearchFragment : Fragment() {
     private val tagAdapter by lazy { SearchTagAdapter() }
 
     private var query = ""
-    private var countStart = 11
+//    private var countStart = 11
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -38,7 +38,7 @@ class SearchFragment : Fragment() {
         _binding = FragmentSearchBinding.inflate(inflater, container, false)
         initView()
         initViewModel()
-        //TODO :  retrofit2.HttpException: HTTP 400  fix
+        // TODO :  retrofit2.HttpException: HTTP 400  fix
 //        binding.searchRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
 //            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
 //                super.onScrollStateChanged(recyclerView, newState)

@@ -1,7 +1,6 @@
 package com.nbcamp_14_project.search
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -26,12 +25,6 @@ class SearchListAdapter : ListAdapter<HomeModel, SearchListAdapter.ViewHolder>(
             return oldItem == newItem
         }
     }) {
-
-    interface ItemClick { //인터페이스
-        fun onClick(view: View, position: Int)
-    }
-
-    var itemClick: ItemClick? = null
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = getItem(position)
@@ -58,36 +51,3 @@ class SearchListAdapter : ListAdapter<HomeModel, SearchListAdapter.ViewHolder>(
         }
     }
 }
-//    RecyclerView.Adapter<SearchFragmentAdapter.Holder>() {
-//
-//    val newsList = arrayListOf<SearchModel>()
-//
-//    // 아이템 전체 삭제
-//    fun clearItem() {
-//        newsList.clear()
-//        notifyDataSetChanged()
-//    }
-//
-//    inner class Holder(val binding: FragmentSearchItemBinding) :
-//        RecyclerView.ViewHolder(binding.root) {
-//        val title = binding.searchTitle
-//        val date = binding.searchDate
-//    }
-//
-//    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
-//        val binding =
-//            FragmentSearchItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-//        return Holder(binding)
-//    }
-//
-//    override fun getItemCount(): Int {
-//        return newsList.size
-//    }
-//
-//    override fun onBindViewHolder(holder: Holder, position: Int) {
-//        holder.title.text = newsList[position].title
-//        holder.date.text = newsList[position].data.slice(0..16)
-//    }
-//
-//
-//}

@@ -31,7 +31,7 @@ class SearchViewModel(
                 val description = item[i].description
                 val link = item[i].link
                 val pubDate = item[i].pubDate
-                //TODO : fix SocketTimeoutException: timeout
+                // TODO : fix SocketTimeoutException: timeout
                 //val author = Utils.getAuthor(item[i].link.toString())
                 repository.addNewsItem(
                     HomeModel(

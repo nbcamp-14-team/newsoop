@@ -51,8 +51,8 @@ class SearchRepositoryImpl(
                 id = idGenerate.getAndIncrement()
             )
         )
-
-        return ArrayList<HomeModel>(searchList)
+        
+        return searchList
     }
 
     override fun clearList() {
