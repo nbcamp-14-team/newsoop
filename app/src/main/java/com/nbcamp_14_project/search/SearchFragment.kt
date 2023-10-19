@@ -1,7 +1,6 @@
 package com.nbcamp_14_project.search
 
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -14,9 +13,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.nbcamp_14_project.R
 import com.nbcamp_14_project.databinding.FragmentSearchBinding
-import com.nbcamp_14_project.detail.DetailFragment
 import com.nbcamp_14_project.detail.DetailViewModel
 import com.nbcamp_14_project.home.toDetailInfo
 import com.nbcamp_14_project.mainpage.MainActivity
@@ -34,7 +31,7 @@ class SearchFragment : Fragment() {
         )[SearchViewModel::class.java]
     }
     private val adapter by lazy {
-        SearchFragmentAdapter(
+        SearchListAdapter(
             onClick = { item ->
                 val detailInfo = item.toDetailInfo()
                 detailViewModel.setDetailInfo(detailInfo)
@@ -43,13 +40,6 @@ class SearchFragment : Fragment() {
             }
         )
     }
-    private lateinit var adapterManager: LinearLayoutManager
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        mContext = context
-    }
-    private val adapter by lazy { SearchListAdapter() }
     private val tagAdapter by lazy { SearchTagAdapter() }
 
     private var query = ""
