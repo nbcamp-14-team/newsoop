@@ -9,22 +9,24 @@ import coil.load
 import com.nbcamp_14_project.databinding.FragmentSearchItemBinding
 import com.nbcamp_14_project.home.HomeModel
 
-class SearchFragmentAdapter : ListAdapter<HomeModel, SearchFragmentAdapter.ViewHolder>(
-    object : DiffUtil.ItemCallback<HomeModel>() {
-        override fun areContentsTheSame(
-            oldItem: HomeModel,
-            newItem: HomeModel
-        ): Boolean {
-            return oldItem.id == newItem.id
-        }
+class SearchFragmentAdapter(
+    private val onClick: (HomeModel) -> Unit) :
+    ListAdapter<HomeModel, SearchFragmentAdapter.ViewHolder>(
+        object : DiffUtil.ItemCallback<HomeModel>() {
+            override fun areContentsTheSame(
+                oldItem: HomeModel,
+                newItem: HomeModel
+            ): Boolean {
+                return oldItem.id == newItem.id
+            }
 
-        override fun areItemsTheSame(
-            oldItem: HomeModel,
-            newItem: HomeModel
-        ): Boolean {
-            return oldItem == newItem
-        }
-    }) {
+            override fun areItemsTheSame(
+                oldItem: HomeModel,
+                newItem: HomeModel
+            ): Boolean {
+                return oldItem == newItem
+            }
+        }) {
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = getItem(position)
         holder.bind(item)
@@ -36,17 +38,25 @@ class SearchFragmentAdapter : ListAdapter<HomeModel, SearchFragmentAdapter.ViewH
                 LayoutInflater.from(parent.context),
                 parent,
                 false
-            )
+            ),
+            onClick
+
         )
     }
 
     class ViewHolder(
         private val binding: FragmentSearchItemBinding,
+        private val onClick :(HomeModel) -> Unit
     ) : RecyclerView.ViewHolder(binding.root) {
         fun bind(item: HomeModel) = with(binding) {
             searchTitle.text = item.title
             searchDate.text = item.pubDate?.slice(0..16)
             searchImage.load(item.thumbnail)
+            cardView.setOnClickListener{
+                onClick(
+                    item
+                )
+            }
 
         }
     }

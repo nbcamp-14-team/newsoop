@@ -1,20 +1,29 @@
 package com.nbcamp_14_project.search
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.nbcamp_14_project.R
 import com.nbcamp_14_project.databinding.FragmentSearchBinding
+import com.nbcamp_14_project.detail.DetailFragment
+import com.nbcamp_14_project.detail.DetailViewModel
+import com.nbcamp_14_project.home.toDetailInfo
+import com.nbcamp_14_project.mainpage.MainActivity
 
 class SearchFragment : Fragment() {
 
     private var _binding: FragmentSearchBinding? = null
+    private val detailViewModel: DetailViewModel by activityViewModels()
+
     private val binding get() = _binding!!
     private lateinit var mContext: Context
 
@@ -23,7 +32,16 @@ class SearchFragment : Fragment() {
             this, SearchFragmentModelFactory()
         )[SearchViewModel::class.java]
     }
-    private val adapter by lazy { SearchFragmentAdapter() }
+    private val adapter by lazy {
+        SearchFragmentAdapter(
+            onClick = { item ->
+                val detailInfo = item.toDetailInfo()
+                detailViewModel.setDetailInfo(detailInfo)
+                val mainActivity = (activity as MainActivity)
+                mainActivity.test()
+            }
+        )
+    }
     private lateinit var adapterManager: LinearLayoutManager
 
     override fun onAttach(context: Context) {
