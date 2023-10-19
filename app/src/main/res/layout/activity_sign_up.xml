@@ -66,12 +66,14 @@
                 android:id="@+id/et_password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:imeOptions="actionNext"
                 android:hint="비밀번호를 입력해주세요" />
 
             <EditText
                 android:id="@+id/et_check_pw"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:imeOptions="actionNext"
                 android:hint="비밀번호를 확인해주세요" />
 
             <TextView
@@ -87,6 +89,7 @@
                 android:id="@+id/et_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:imeOptions="actionNext"
                 android:hint="이름을 입력해주세요" />
 
             <Button
