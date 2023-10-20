@@ -1,6 +1,5 @@
 package com.nbcamp_14_project.search
 
-import android.util.Log
 import com.nbcamp_14_project.api.NewsCollector
 import com.nbcamp_14_project.domain.SearchEntity
 import com.nbcamp_14_project.domain.toSearchEntity
@@ -47,18 +46,12 @@ class SearchRepositoryImpl(
         if (item == null) {
             return searchList
         }
-        searchList.add(
-            item.copy(
-                id = idGenerate.getAndIncrement()
-            )
-        )
-
+        searchList.add(item.copy(id = idGenerate.getAndIncrement()))
         return searchList
     }
 
     override fun clearList(): List<HomeModel> {
         searchList.clear()
-        Log.d("TAG", "search list size : ${searchList.size}")
         return ArrayList<HomeModel>(searchList)
     }
 }
