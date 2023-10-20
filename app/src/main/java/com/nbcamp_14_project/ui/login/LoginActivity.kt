@@ -23,6 +23,7 @@ import com.nbcamp_14_project.R
 import com.nbcamp_14_project.SignUpActivity
 
 
+
 class LoginActivity : AppCompatActivity() {
     private lateinit var getResult: ActivityResultLauncher<Intent>
     private val loginViewModel: LoginViewModel by viewModels()
