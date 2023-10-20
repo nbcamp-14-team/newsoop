@@ -6,9 +6,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.nbcamp_14_project.domain.GetSearchNewsUseCase
 import com.nbcamp_14_project.Utils
 import com.nbcamp_14_project.api.RetrofitInstance
+import com.nbcamp_14_project.domain.GetSearchNewsUseCase
 import kotlinx.coroutines.launch
 import java.util.concurrent.atomic.AtomicInteger
 
@@ -27,18 +27,18 @@ class MainFragmentViewModel(
 
     fun headLineNews(query: String) {
         viewModelScope.launch {
-            val docs = searchNews(query+"메인 뉴스",5)
-            val item = docs.items ?:  return@launch
+            val docs = searchNews(query + "메인 뉴스", 5)
+            val item = docs.items ?: return@launch
             for (i in item.indices) {//아이템 개수만큼 for문 실행
                 val thumbnail = Utils.getThumbnail(item[i].link.toString())
-                var title = item[i].title!!.replace("<b>","")
-                title = title.replace("</b>","")
-                title = title.replace("&quot;","\"")
-                var description = item[i].description?.replace("<b>","")
-                description = description?.replace("</b>","")
-                description = description?.replace("&quot;","\"")
+                var title = item[i].title!!.replace("<b>", "")
+                title = title.replace("</b>", "")
+                title = title.replace("&quot;", "\"")
+                var description = item[i].description?.replace("<b>", "")
+                description = description?.replace("</b>", "")
+                description = description?.replace("&quot;", "\"")
                 val link = item[i].link
-                Log.d("link","$link")
+                Log.d("link", "$link")
                 val pubDate = item[i].pubDate
                 val author = Utils.getAuthor(item[i].link.toString())
                 _list.value = repository.addHeadLineItem(
@@ -55,22 +55,23 @@ class MainFragmentViewModel(
             }
         }
     }
-    fun detailNews(query: String,startingNum: Int? = null){
+
+    fun detailNews(query: String, startingNum: Int? = null) {
         viewModelScope.launch {
-            val docs = searchNews(query+ "관련 뉴스",5,startingNum)
+            val docs = searchNews(query + "관련 뉴스", 5, startingNum)
             val item = docs.items ?: return@launch
-            for(i in item.indices){//아이템 개수만큼 for문 실행
+            for (i in item.indices) {//아이템 개수만큼 for문 실행
                 val thumbnail = Utils.getThumbnail(item[i].link.toString())
-                var title = item[i].title!!.replace("<b>","")
-                title = title.replace("</b>","")
-                title = title.replace("&quot;","\"")
-                var description = item[i].description?.replace("<b>","")
-                description = description?.replace("</b>","")
-                description = description?.replace("&quot;","\"")
+                var title = item[i].title!!.replace("<b>", "")
+                title = title.replace("</b>", "")
+                title = title.replace("&quot;", "\"")
+                var description = item[i].description?.replace("<b>", "")
+                description = description?.replace("</b>", "")
+                description = description?.replace("&quot;", "\"")
                 val link = item[i].link
                 val pubDate = item[i].pubDate
                 val author = Utils.getAuthor(item[i].link.toString())
-                Log.d("linkRecycler","$link + $author")
+                Log.d("linkRecycler", "$link + $author")
                 _newsList.value = repository.addNewsItem(
                     HomeModel(
                         title = title,
@@ -80,12 +81,13 @@ class MainFragmentViewModel(
                         pubDate = pubDate,
                         author = author,
                         viewType = 0
-                )
+                    )
                 )
             }
         }
     }
-    fun clearAllItems(){//viewPager와 리사이클러뷰 리스트 초기화 함수
+
+    fun clearAllItems() {//viewPager와 리사이클러뷰 리스트 초기화 함수
         _list.value = repository.clearHeadLineItems()
         _newsList.value = repository.clearNewsItems()
     }
@@ -94,6 +96,7 @@ class MainFragmentViewModel(
         _list.value = repository.addHeadLineItem(item)
 
     }
+
     fun addNewsItem(item: HomeModel?) {//라이브데이터에 아이템 추가하는 기능
         _newsList.value = repository.addNewsItem(item)
 
@@ -102,6 +105,7 @@ class MainFragmentViewModel(
     fun removeHeadLineItem(item: HomeModel?) {//라이브데이터에서 아이템 삭제하는 기능
         _list.value = repository.removeHeadLineItem(item)
     }
+
     fun removeNewsItem(item: HomeModel?) {//라이브데이터에서 아이템 삭제하는 기능
         _newsList.value = repository.removeNewsItem(item)
     }
@@ -109,6 +113,7 @@ class MainFragmentViewModel(
     fun modifyHeadLineItem(item: HomeModel?) {
         _list.value = repository.modifyHeadLineItem(item)
     }
+
     fun modifyItem(item: HomeModel?) {
         _newsList.value = repository.modifyNewsItem(item)
     }

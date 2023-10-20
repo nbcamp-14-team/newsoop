@@ -18,7 +18,7 @@ class SearchViewModel(
     private val _searchResultList: MutableLiveData<List<HomeModel>> = MutableLiveData()
     val searchResultList: LiveData<List<HomeModel>> get() = _searchResultList
 
-    fun clearAllItems() {
+    fun clearAllItems() {//viewPager와 리사이클러뷰 리스트 초기화 함수
         _searchResultList.value = repository.clearList()
     }
 
@@ -36,6 +36,7 @@ class SearchViewModel(
                     val description = item[i].description
                     val link = item[i].link
                     val pubDate = item[i].pubDate
+                    // TODO : fix SocketTimeoutException: timeout
                     val author = Utils.getAuthor(item[i].link.toString())
                     repository.addNewsItem(
                         HomeModel(
@@ -50,10 +51,12 @@ class SearchViewModel(
                     )
                 }
                 _searchResultList.value = repository.getList()
+                Log.d("getSearch", "listsize : ${repository.getList().size}")
             } catch (e: Exception) {
                 Log.d("getSearch", e.message.toString())
             }
         }
+
     }
 
 }
