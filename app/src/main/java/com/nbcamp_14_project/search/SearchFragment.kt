@@ -8,7 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
@@ -87,35 +86,35 @@ class SearchFragment : Fragment() {
         initView()
         initViewModel()
         // TODO :  retrofit2.HttpException: HTTP 400  fix
-//        binding.searchRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-//            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-//                super.onScrollStateChanged(recyclerView, newState)
-//                val lastVisiblePosition =
-//                    (binding.searchRecyclerView.layoutManager as LinearLayoutManager).findLastCompletelyVisibleItemPosition()
-//                val itemCount = adapter.itemCount - 1
-//                Log.d("VisiblePosition", "$lastVisiblePosition + $itemCount")
-//
-//                if (!binding.searchRecyclerView.canScrollHorizontally(1) && lastVisiblePosition == itemCount) {
-//                    viewModel.getSearchNews(query, 5, countStart)
-//                    countStart += 6
-//                }
-//            }
-//        })
-
         binding.searchRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
-                if (!binding.searchRecyclerView.canScrollVertically(1)) {
-                    if (countStart <= 50) {
-                        viewModel.getSearchNews(query, 5, countStart)
-                        countStart += 5
-                        Log.d("TAG", "count : ${countStart}")
-                    } else {
-                        Toast.makeText(requireContext(), "마지막", Toast.LENGTH_SHORT).show()
-                    }
+                val lastVisiblePosition =
+                    (binding.searchRecyclerView.layoutManager as LinearLayoutManager).findLastCompletelyVisibleItemPosition()
+                val itemCount = adapter.itemCount - 1
+                Log.d("VisiblePosition", "$lastVisiblePosition + $itemCount")
+
+                if (!binding.searchRecyclerView.canScrollHorizontally(1) && lastVisiblePosition == itemCount) {
+                    viewModel.getSearchNews(query, 5, countStart)
+                    countStart += 6
                 }
             }
         })
+
+//        binding.searchRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+//            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+//                super.onScrollStateChanged(recyclerView, newState)
+//                if (!binding.searchRecyclerView.canScrollVertically(1)) {
+//                    if (countStart <= 50) {
+//                        viewModel.getSearchNews(query, 5, countStart)
+//                        countStart += 5
+//                        Log.d("TAG", "count : ${countStart}")
+//                    } else {
+//                        Toast.makeText(requireContext(), "마지막", Toast.LENGTH_SHORT).show()
+//                    }
+//                }
+//            }
+//        })
 
         tagAdapter.setItemClickListener(object : SearchTagAdapter.OnItemClickListener {
             override fun onClick(v: View, position: Int) {
@@ -129,7 +128,8 @@ class SearchFragment : Fragment() {
     private fun initViewModel() {
         with(viewModel) {
             searchResultList.observe(viewLifecycleOwner) {
-                adapter.submitList(it)
+                adapter.submitList(it.toMutableList())
+                Log.d("getSearch", "listsize : ${it.size}")
             }
         }
     }

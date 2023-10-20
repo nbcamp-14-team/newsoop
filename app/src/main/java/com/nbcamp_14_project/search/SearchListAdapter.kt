@@ -1,5 +1,6 @@
 package com.nbcamp_14_project.search
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -11,23 +12,23 @@ import com.nbcamp_14_project.home.HomeModel
 
 class SearchListAdapter(
     private val onClick: (HomeModel) -> Unit
-) :
-    ListAdapter<HomeModel, SearchListAdapter.ViewHolder>(
-        object : DiffUtil.ItemCallback<HomeModel>() {
-            override fun areContentsTheSame(
-                oldItem: HomeModel,
-                newItem: HomeModel
-            ): Boolean {
-                return oldItem.id == newItem.id
-            }
+) : ListAdapter<HomeModel, SearchListAdapter.ViewHolder>(
+    object : DiffUtil.ItemCallback<HomeModel>() {
+        override fun areContentsTheSame(
+            oldItem: HomeModel,
+            newItem: HomeModel
+        ): Boolean {
+            Log.d("diffUtil", "${oldItem.id} ㅣ ${newItem.id}")
+            return oldItem.title == newItem.title
+        }
 
-            override fun areItemsTheSame(
-                oldItem: HomeModel,
-                newItem: HomeModel
-            ): Boolean {
-                return oldItem == newItem
-            }
-        }) {
+        override fun areItemsTheSame(
+            oldItem: HomeModel,
+            newItem: HomeModel
+        ): Boolean {
+            return oldItem == newItem
+        }
+    }) {
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = getItem(position)
         holder.bind(item)
@@ -58,7 +59,6 @@ class SearchListAdapter(
                     item
                 )
             }
-
         }
     }
 
