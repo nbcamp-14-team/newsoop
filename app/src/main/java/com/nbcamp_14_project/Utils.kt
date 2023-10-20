@@ -88,9 +88,9 @@ object Utils {
                                             author = docs.select("span[class=d_newsName]").html()
                                             if (author == "") {
                                                 author = docs.select("span[class=writer]").html()
-
-                                            } else {
-                                                author = "기자 정보가 없습니다."
+                                                if (author == "") {
+                                                    author = "기자 정보가 없습니다."
+                                                }
                                             }
                                         }
                                     }

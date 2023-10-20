@@ -27,7 +27,7 @@ class Home : Fragment() {
     companion object {
         fun newInstance() = Home()
     }
-
+    private val changeHandler = Handler()
     private var _binding: FragmentMainBinding? = null
     private val detailViewModel: DetailViewModel by activityViewModels()
     private val binding get() = _binding!!
