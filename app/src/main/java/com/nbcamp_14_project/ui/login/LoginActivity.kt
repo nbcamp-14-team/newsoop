@@ -5,15 +5,23 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
+import androidx.appcompat.app.AppCompatActivity
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.FirebaseAuth
-import com.nbcamp_14_project.SignUpActivity
+import com.navercorp.nid.NaverIdLoginSDK
+import com.navercorp.nid.oauth.NidOAuthLogin
+import com.navercorp.nid.oauth.OAuthLoginCallback
+import com.navercorp.nid.profile.NidProfileCallback
+import com.navercorp.nid.profile.data.NidProfileResponse
 import com.nbcamp_14_project.databinding.ActivityLoginBinding
+import com.nbcamp_14_project.R
+import com.nbcamp_14_project.SignUpActivity
+
 
 
 class LoginActivity : AppCompatActivity() {
@@ -28,8 +36,13 @@ class LoginActivity : AppCompatActivity() {
 
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        //TODO : 임시
-        //setGoogleLogin()
+
+//        val naverClientId = getString(R.string.social_login_info_naver_client_id)
+//        val naverClientSecret = getString(R.string.social_login_info_naver_client_secret)
+//        val naverClientName = getString(R.string.social_login_info_naver_client_name)
+//        NaverIdLoginSDK.initialize(this, naverClientId, naverClientSecret, naverClientName)
+
+
         val activityResultLauncher =
             registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
                 if (it.resultCode == RESULT_OK) {
@@ -46,7 +59,6 @@ class LoginActivity : AppCompatActivity() {
                     loginViewModel.getCurrentUser(account.idToken!!)
                     Toast.makeText(this, "로그인 성공", Toast.LENGTH_SHORT)
                         .show()
-
                 } catch (e: ApiException) {
                     Toast.makeText(this, e.localizedMessage, Toast.LENGTH_SHORT).show()
                 }
@@ -63,23 +75,77 @@ class LoginActivity : AppCompatActivity() {
         }
 
         binding.ivGoogleLogin.setOnClickListener {
+            setGoogleLogin()
             googleLogin()
+        }
+
+        binding.ivNaver.setOnClickListener {
+//            naverLogin()
         }
     }
 
-//    private fun setGoogleLogin() {
-//        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-//            .requestIdToken(getString(R.string.default_web_client_id))
-//            .requestEmail()
-//            .build()
-//        googleSignInClient = GoogleSignIn.getClient(this, gso)
-//    }
-
+    private fun setGoogleLogin() {
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(getString(R.string.default_web_client_id))
+            .requestEmail()
+            .build()
+        googleSignInClient = GoogleSignIn.getClient(this, gso)
+    }
     private fun googleLogin() {
         val signInIntent = googleSignInClient.signInIntent
         getResult.launch(signInIntent)
     }
 
+//    private fun naverLogin() {
+//        var naverToken: String? = ""
+//
+//        val profileCallback = object : NidProfileCallback<NidProfileResponse> {
+//            override fun onSuccess(response: NidProfileResponse) {
+//                val userId = response.profile?.id
+////                binding.tvResult.text = "id: ${userId} \ntoken: ${naverToken}"
+//                Toast.makeText(this@LoginActivity, "네이버 아이디 로그인 성공!", Toast.LENGTH_SHORT).show()
+//            }
+//
+//            override fun onFailure(httpStatus: Int, message: String) {
+//                val errorCode = NaverIdLoginSDK.getLastErrorCode().code
+//                val errorDescription = NaverIdLoginSDK.getLastErrorDescription()
+//                Toast.makeText(
+//                    this@LoginActivity, "errorCode: ${errorCode}\n" +
+//                            "errorDescription: ${errorDescription}", Toast.LENGTH_SHORT
+//                ).show()
+//            }
+//
+//            override fun onError(errorCode: Int, message: String) {
+//                onFailure(errorCode, message)
+//            }
+//        }
+//        val oauthLoginCallback = object : OAuthLoginCallback {
+//            override fun onSuccess() {
+//                // 네이버 로그인 인증이 성공했을 때 수행할 코드 추가
+//                naverToken = NaverIdLoginSDK.getAccessToken()
+////                var naverRefreshToken = NaverIdLoginSDK.getRefreshToken()
+////                var naverExpiresAt = NaverIdLoginSDK.getExpiresAt().toString()
+////                var naverTokenType = NaverIdLoginSDK.getTokenType()
+////                var naverState = NaverIdLoginSDK.getState().toString()
+//                //로그인 유저 정보 가져오기
+//                NidOAuthLogin().callProfileApi(profileCallback)
+//            }
+//
+//            override fun onFailure(httpStatus: Int, message: String) {
+//                val errorCode = NaverIdLoginSDK.getLastErrorCode().code
+//                val errorDescription = NaverIdLoginSDK.getLastErrorDescription()
+//                Toast.makeText(
+//                    this@LoginActivity, "errorCode: ${errorCode}\n" +
+//                            "errorDescription: ${errorDescription}", Toast.LENGTH_SHORT
+//                ).show()
+//            }
+//
+//            override fun onError(errorCode: Int, message: String) {
+//                onFailure(errorCode, message)
+//            }
+//        }
+//        NaverIdLoginSDK.authenticate(this, oauthLoginCallback)
+//    }
 
     private fun logIn() {
         val email = binding.etUsername.text
@@ -98,16 +164,3 @@ class LoginActivity : AppCompatActivity() {
     }
 
 }
-
-
-//fun EditText.afterTextChanged(afterTextChanged: (String) -> Unit) {
-//    this.addTextChangedListener(object : TextWatcher {
-//        override fun afterTextChanged(editable: Editable?) {
-//            afterTextChanged.invoke(editable.toString())
-//        }
-//
-//        override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
-//
-//        override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
-//    })
-//}

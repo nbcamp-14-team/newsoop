@@ -85,5 +85,11 @@ dependencies {
     //indicator
     implementation("com.tbuonomo:dotsindicator:5.0")
     implementation("org.jsoup:jsoup:1.16.1")
+    //naver
+    implementation("com.navercorp.nid:oauth-jdk8:5.1.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.9")
+    //viewmodel
+    implementation("androidx.fragment:fragment-ktx:1.4.1")
+
 
 }
