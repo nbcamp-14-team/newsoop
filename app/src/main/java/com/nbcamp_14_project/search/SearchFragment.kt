@@ -68,12 +68,6 @@ class SearchFragment : Fragment() {
 //                }
 //            }
 //        })
-
-        return binding.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
         tagAdapter.setItemClickListener(object : SearchTagAdapter.OnItemClickListener {
             override fun onClick(v: View, position: Int) {
                 Log.d("TAG", "tag Click : $position")
@@ -82,6 +76,7 @@ class SearchFragment : Fragment() {
                 viewModel.getSearchNews(query, 5, 1)
             }
         })
+        return binding.root
     }
 
     private fun initView() = with(binding) {

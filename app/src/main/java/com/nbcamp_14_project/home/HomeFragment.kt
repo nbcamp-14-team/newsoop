@@ -1,6 +1,5 @@
 package com.nbcamp_14_project.home
 
-import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
@@ -13,25 +12,21 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
-import com.nbcamp_14_project.R
 import com.nbcamp_14_project.databinding.FragmentMainBinding
-import com.nbcamp_14_project.detail.DetailFragment
 import com.nbcamp_14_project.detail.DetailViewModel
-import com.nbcamp_14_project.favorite.FavoriteViewModel
 import com.nbcamp_14_project.mainpage.MainActivity
-import com.nbcamp_14_project.detail.DetailInfo
-import com.nbcamp_14_project.search.SearchFragment
 
-@Suppress("DEPRECATION")
-class Home : Fragment() {
+class HomeFragment(query:String) : Fragment() {
     companion object {
-        fun newInstance() = Home()
+        fun newInstance() = HomeFragment("정치")
     }
-    private val changeHandler = Handler()
+    private var queryInbox = query //검색어 변수
+
+
     private var _binding: FragmentMainBinding? = null
     private val detailViewModel: DetailViewModel by activityViewModels()
     private val binding get() = _binding!!
-    // Home Fragment
+    // HomeFragment Fragment
     private val headLineAdapter by lazy {
         HomeHeadLineAdapter(//ViewPager2에서 클릭이 일어났을 때, Detail에 데이터값을 보냄(구현필요)
             onClick = {item ->
@@ -58,7 +53,7 @@ class Home : Fragment() {
         )[MainFragmentViewModel::class.java]
     }
     private var startingNum:Int = 6// 인피니티스크롤 시작지점 지정 변수
-    private var query = "정치"//검색어 변수
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
@@ -69,21 +64,24 @@ class Home : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        Log.d("query","$queryInbox")
         initView()
         initViewModel()
-        viewPagerViewModel.headLineNews(query)
-        viewPagerViewModel.detailNews(query)
+//        viewPagerViewModel.clearAllItems()
+        viewPagerViewModel.headLineNews(queryInbox)
+        viewPagerViewModel.detailNews(queryInbox)
 
 
     }
-    fun changeCategory(query:String?) = with(binding){
-        viewPagerViewModel.clearAllItems()
-        viewPagerViewModel.headLineNews(query!!)
-        viewPagerViewModel.detailNews(query!!)
-        category.text = query
-    }
+//    fun changeCategory(query:String?) = with(binding){
+//        viewPagerViewModel.clearAllItems()
+//        viewPagerViewModel.headLineNews(query!!)
+//        viewPagerViewModel.detailNews(query!!)
+//        category.text = query
+//    }
 
     fun initView() = with(binding) {
+        category.text = queryInbox
         val slideImageHandler: Handler = Handler()
         val slideImageRunnable = Runnable {
             if (rvMainNews.currentItem - 1 == headLineAdapter.itemCount) {
@@ -123,54 +121,13 @@ class Home : Fragment() {
                 Log.d("VisiblePosition","$lastVisiblePosition + $itemCount")
 
                 if(!rvNews.canScrollHorizontally(1) && lastVisiblePosition == itemCount){
-                    infinityAddNews(query)
+                    infinityAddNews(queryInbox)
                 }
             }
-        })
+        }
+        )
 
-        /**
-         * 버튼 세팅
-         */
-        btnCulture.setOnClickListener{
-            changeCategory("문화")
-            query = "문화"
-            startingNum = 6
-        }
-        btnEconomy.setOnClickListener {
-            changeCategory("경제")
-            query = "경제"
-            startingNum = 6
-        }
-        btnIt.setOnClickListener {
-            changeCategory("it")
-            query = "it"
-            startingNum = 6
-        }
-        btnLife.setOnClickListener {
-            changeCategory("생활")
-            query = "생활"
-            startingNum = 6
-        }
-        btnPolitic.setOnClickListener {
-            changeCategory("정치")
-            query = "정치"
-            startingNum = 6
-        }
-        btnScience.setOnClickListener {
-            changeCategory("과학")
-            query = "과학"
-            startingNum = 6
-        }
-        btnSociety.setOnClickListener {
-            changeCategory("사회")
-            query = "사회"
-            startingNum = 6
-        }
-        btnWorld.setOnClickListener {
-            changeCategory("세계")
-            query = "세계"
-            startingNum = 6
-        }
+
     }
 
     private fun initViewModel() {
