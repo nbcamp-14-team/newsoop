@@ -63,7 +63,6 @@ class SearchFragment : Fragment() {
         searchInput.setOnEditorActionListener { _, i, _ ->
             var handled = false
             if (i == EditorInfo.IME_ACTION_DONE) {
-                Log.d("TAG", "enterEvent")
                 searchBtn.performClick()
                 handled = true
             }
@@ -101,21 +100,6 @@ class SearchFragment : Fragment() {
             }
         })
 
-//        binding.searchRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-//            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-//                super.onScrollStateChanged(recyclerView, newState)
-//                if (!binding.searchRecyclerView.canScrollVertically(1)) {
-//                    if (countStart <= 50) {
-//                        viewModel.getSearchNews(query, 5, countStart)
-//                        countStart += 5
-//                        Log.d("TAG", "count : ${countStart}")
-//                    } else {
-//                        Toast.makeText(requireContext(), "마지막", Toast.LENGTH_SHORT).show()
-//                    }
-//                }
-//            }
-//        })
-
         tagAdapter.setItemClickListener(object : SearchTagAdapter.OnItemClickListener {
             override fun onClick(v: View, position: Int) {
                 Log.d("TAG", "tag Click : $position")
@@ -129,7 +113,6 @@ class SearchFragment : Fragment() {
         with(viewModel) {
             searchResultList.observe(viewLifecycleOwner) {
                 adapter.submitList(it.toMutableList())
-                Log.d("getSearch", "listsize : ${it.size}")
             }
         }
     }

@@ -1,6 +1,5 @@
 package com.nbcamp_14_project.search
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -18,7 +17,6 @@ class SearchListAdapter(
             oldItem: HomeModel,
             newItem: HomeModel
         ): Boolean {
-            Log.d("diffUtil", "${oldItem.id} ㅣ ${newItem.id}")
             return oldItem.title == newItem.title
         }
 
