@@ -52,6 +52,32 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
 
 
         _binding = FragmentDetailBinding.bind(view)
+
+
+        val detailInfo = viewModel.detailInfo.value
+
+
+        val isFavorite = favoriteViewModel.favoriteList.value?.contains(detailInfo) == true
+        if (isFavorite) {
+            binding.imgLike.setImageResource(R.drawable.ic_check)
+        } else {
+            binding.imgLike.setImageResource(R.drawable.ic_like)
+        }
+
+
+        binding.imgLike.setOnClickListener {
+            if (detailInfo != null) {
+                val isFavorite = favoriteViewModel.favoriteList.value?.contains(detailInfo) == true
+                if (isFavorite) {
+                    favoriteViewModel.removeFavoriteItem(detailInfo)
+                    binding.imgLike.setImageResource(R.drawable.ic_like)
+                } else {
+                    favoriteViewModel.addFavoriteItem(detailInfo)
+                    binding.imgLike.setImageResource(R.drawable.ic_check)
+                }
+            }
+        }
+
         textToSpeech = TextToSpeech(requireContext()) { status ->
             if (status == TextToSpeech.SUCCESS) {
                 val result = textToSpeech.setLanguage(Locale.KOREA)
@@ -87,13 +113,19 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
         imgLike.setOnClickListener {
             val detailInfo = viewModel.detailInfo.value
             if (detailInfo != null) {
-                favoriteViewModel.addFavoriteItem(detailInfo)
-            } else {
 
+                val isFavorite = favoriteViewModel.favoriteList.value?.contains(detailInfo) == true
+
+                if (isFavorite) {
+                    favoriteViewModel.removeFavoriteItem(detailInfo)
+                    binding.imgLike.setImageResource(R.drawable.ic_like)
+                } else {
+
+                    favoriteViewModel.addFavoriteItem(detailInfo)
+                    binding.imgLike.setImageResource(R.drawable.ic_check)
+                }
             }
         }
-
-
 
 
 //        val data =viewModel.detailInfo.value

@@ -7,7 +7,7 @@ plugins {
 
 android {
     namespace = "com.nbcamp_14_project"
-    compileSdk = 33
+    compileSdk = 34
 
     defaultConfig {
         applicationId = "com.nbcamp_14_project"
