@@ -15,7 +15,7 @@ class HomeViewPagerFragment:Fragment() {
     private val binding get() = _binding!!
     private val viewPagerAdapter by lazy{
         HomeViewPagerAdapter(requireActivity())
-    }
+    }//test
 
     override fun onCreateView(
         inflater: LayoutInflater,
