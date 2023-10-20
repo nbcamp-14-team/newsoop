@@ -10,4 +10,7 @@
     <string name="invalid_password">Password must be >5 characters</string>
     <string name="login_failed">"Login failed"</string>
     <string name="join_us"><u>회원가입</u></string>
+    <string name="social_login_info_naver_client_id">vdryWnqdkbUAixhOZJzl</string>
+    <string name="social_login_info_naver_client_secret">GLLsG8sqW_</string>
+    <string name="social_login_info_naver_client_name">네이버아이디 로그인</string>
 </resources>
