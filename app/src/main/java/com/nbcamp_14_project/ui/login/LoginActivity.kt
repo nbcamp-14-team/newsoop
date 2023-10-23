@@ -5,23 +5,17 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
-import androidx.appcompat.app.AppCompatActivity
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.FirebaseAuth
-import com.navercorp.nid.NaverIdLoginSDK
-import com.navercorp.nid.oauth.NidOAuthLogin
-import com.navercorp.nid.oauth.OAuthLoginCallback
-import com.navercorp.nid.profile.NidProfileCallback
-import com.navercorp.nid.profile.data.NidProfileResponse
-import com.nbcamp_14_project.databinding.ActivityLoginBinding
 import com.nbcamp_14_project.R
 import com.nbcamp_14_project.SignUpActivity
-
+import com.nbcamp_14_project.databinding.ActivityLoginBinding
 
 
 class LoginActivity : AppCompatActivity() {
@@ -91,6 +85,7 @@ class LoginActivity : AppCompatActivity() {
             .build()
         googleSignInClient = GoogleSignIn.getClient(this, gso)
     }
+
     private fun googleLogin() {
         val signInIntent = googleSignInClient.signInIntent
         getResult.launch(signInIntent)
@@ -162,5 +157,4 @@ class LoginActivity : AppCompatActivity() {
                 }
             }
     }
-
 }
