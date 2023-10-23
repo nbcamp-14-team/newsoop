@@ -13,11 +13,21 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.FirebaseAuth
-
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.firestore.FirebaseFirestore
+import com.navercorp.nid.NaverIdLoginSDK
+import com.navercorp.nid.oauth.NidOAuthLogin
+import com.navercorp.nid.oauth.OAuthLoginCallback
+import com.navercorp.nid.profile.NidProfileCallback
+import com.navercorp.nid.profile.data.NidProfileResponse
 import com.nbcamp_14_project.databinding.ActivityLoginBinding
 import com.nbcamp_14_project.R
 import com.nbcamp_14_project.SignUpActivity
-
+import com.nbcamp_14_project.data.model.FirebaseUserData
+import com.nbcamp_14_project.data.model.User
+import com.nbcamp_14_project.favorite.FavoriteFragment
+import com.nbcamp_14_project.home.HomeFragment
+import com.nbcamp_14_project.mainpage.MainActivity
 
 
 class LoginActivity : AppCompatActivity() {
@@ -26,12 +36,18 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var binding: ActivityLoginBinding
     private lateinit var googleSignInClient: GoogleSignInClient
     private lateinit var auth: FirebaseAuth
-
+    private lateinit var fbFireStore: FirebaseFirestore
+    private var firebaseAuthStateListener: FirebaseAuth.AuthStateListener? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        auth = FirebaseAuth.getInstance()
+        fbFireStore = FirebaseFirestore.getInstance()
+
+
+
 
 //        val naverClientId = getString(R.string.social_login_info_naver_client_id)
 //        val naverClientSecret = getString(R.string.social_login_info_naver_client_secret)
@@ -73,6 +89,8 @@ class LoginActivity : AppCompatActivity() {
         binding.ivGoogleLogin.setOnClickListener {
             setGoogleLogin()
             googleLogin()
+            getCurrentProfile()
+
         }
 
         binding.ivNaver.setOnClickListener {
@@ -80,15 +98,19 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
+
+
     private fun setGoogleLogin() {
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken(getString(R.string.default_web_client_id))
+            .requestEmail()
             .build()
         googleSignInClient = GoogleSignIn.getClient(this, gso)
     }
     private fun googleLogin() {
         val signInIntent = googleSignInClient.signInIntent
         getResult.launch(signInIntent)
+
     }
 
 //    private fun naverLogin() {
@@ -149,13 +171,36 @@ class LoginActivity : AppCompatActivity() {
         auth.signInWithEmailAndPassword(email.toString(), pw.toString())
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
-                    val user = auth.currentUser
-                    Log.d("LoginActivity", "login success! ${user?.email}")
+                    val curUser = auth.currentUser
+                    val user = User()
+                    user.email = auth.currentUser?.email
+                    user.name = auth.currentUser?.displayName
                     Toast.makeText(this, "complete", Toast.LENGTH_SHORT).show()
                 } else {
                     Log.e("LoginActivity", "login fail")
                 }
             }
     }
+
+    private fun getCurrentProfile(){
+        val curUser = GoogleSignIn.getLastSignedInAccount(this)
+        curUser?.let{
+            val user = User()
+            val email = curUser.email.toString()
+            val displayName = curUser.displayName.toString()
+
+            Log.d("이메일",email)
+            Log.d("이름",displayName)
+
+        }
+    }
+    private fun movePage(user: FirebaseUser?){
+        if (user != null){
+            startActivity(Intent(this, FavoriteFragment::class.java))
+            finish()
+        }
+    }
+
+
 
 }
