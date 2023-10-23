@@ -3,8 +3,11 @@ package com.nbcamp_14_project.mainpage
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.viewModels
 import com.google.android.material.tabs.TabLayoutMediator
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import com.nbcamp_14_project.R
 import com.nbcamp_14_project.detail.DetailFragment
 import com.nbcamp_14_project.databinding.ActivityMainBinding
@@ -60,6 +63,10 @@ class MainActivity : AppCompatActivity() {
             btnGotoLogin.setOnClickListener {
                 val test = Intent(this@MainActivity, LoginActivity::class.java)
                 startActivity(test)
+            }
+
+            btnGotoDetail.setOnClickListener {
+                Firebase.auth.signOut()
             }
         }
 

@@ -91,6 +91,8 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.9")
     //viewmodel
     implementation("androidx.fragment:fragment-ktx:1.4.1")
+    //firestore
+    implementation("com.google.firebase:firebase-firestore-ktx")
 
     implementation ("com.google.firebase:firebase-firestore-ktx:24.3.0")
     implementation ("com.google.firebase:firebase-storage-ktx:20.0.2")
