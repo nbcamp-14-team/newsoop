@@ -47,13 +47,21 @@ class FavoriteFragment : Fragment() {
         return binding.root
     }
 
+    override fun onResume() {
+        super.onResume()
+        getFavoriteListFromFireStore()
+        Log.e("onResum", "#hyunsik" )
+    }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
         super.onViewCreated(view, savedInstanceState)
 
 
 
-        getFavoriteListFromFireStore()
+
+
+
+
 
         adapter = FavoriteListAdapter { item ->
             val detailInfo = item
@@ -93,13 +101,17 @@ class FavoriteFragment : Fragment() {
 
 
         }
+
+
     }
 
     private fun getFavoriteListFromFireStore() {
+        val user = FirebaseAuth.getInstance().currentUser
+        val userUID = user?.uid ?: return
         val db = FirebaseFirestore.getInstance()
-        val favoriteRef = db.collection("favorites")
+        val favoriteCollection = db.collection("User").document(userUID).collection("favorites")
 
-        favoriteRef.get()
+        favoriteCollection.get()
             .addOnSuccessListener { querySnapshot ->
                 val favoriteList = mutableListOf<DetailInfo>()
 

@@ -20,6 +20,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModel
 import androidx.recyclerview.widget.LinearLayoutManager
 import coil.load
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.nbcamp_14_project.R
 
@@ -174,35 +175,55 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
     }
 
     private fun addFavoriteToFireStore(detailInfo: DetailInfo) {
-        val db = FirebaseFirestore.getInstance()
-        val favoriteRef = db.collection("favorites")
-        val favoriteData = hashMapOf(
-            "title" to detailInfo.title,
-            "thumbnail" to detailInfo.thumbnail,
-            "description" to detailInfo.description,
-            "author" to detailInfo.author,
-            "originalLink" to detailInfo.originalLink,
-            "pubDate" to detailInfo.pubDate
-        )
-        favoriteRef.add(favoriteData)
+//        val db = FirebaseFirestore.getInstance()
+//        val favoriteRef = db.collection("favorites")
+//        val favoriteData = hashMapOf(
+//            "title" to detailInfo.title,
+//            "thumbnail" to detailInfo.thumbnail,
+//            "description" to detailInfo.description,
+//            "author" to detailInfo.author,
+//            "originalLink" to detailInfo.originalLink,
+//            "pubDate" to detailInfo.pubDate
+//        )
+//        favoriteRef.add(favoriteData)
+
+        // 1. 사용자가 로그인한 후 사용자 UID 가져오기
+        val user = FirebaseAuth.getInstance().currentUser
+        val userUID = user?.uid
+
+        if (userUID != null) {
+            // 2. Firestore에서 해당 사용자의 favorite 컬렉션 참조
+            val db = FirebaseFirestore.getInstance()
+            val favoriteCollection = db.collection("User").document(userUID).collection("favorites")
+            val favoriteData = hashMapOf(
+                "title" to detailInfo.title,
+                "thumbnail" to detailInfo.thumbnail,
+                "description" to detailInfo.description,
+                "author" to detailInfo.author,
+                "originalLink" to detailInfo.originalLink,
+                "pubDate" to detailInfo.pubDate
+            )
+
+            favoriteCollection.add(favoriteData)
+        } else {
+            Toast.makeText(requireContext(), "로그인을 해주세요.", Toast.LENGTH_SHORT).show()
+        }
 
     }
 
     private fun removeFavoriteFromFireStore(detailInfo: DetailInfo) {
+        val user = FirebaseAuth.getInstance().currentUser
+        val userUID = user?.uid ?: return
+
         val db = FirebaseFirestore.getInstance()
-        val favoriteRef = db.collection("favorites")
-        val query = favoriteRef.whereEqualTo("title", detailInfo.title)
+        val favoriteCollection = db.collection("User").document(userUID).collection("favorites")
+        val query = favoriteCollection.whereEqualTo("title", detailInfo.title)
 
         query.get().addOnSuccessListener { documents ->
             for (document in documents) {
                 document.reference.delete()
             }
         }
-    }
-
-
-    fun restoreFavoriteFromFireStore(){
-
     }
 
 
