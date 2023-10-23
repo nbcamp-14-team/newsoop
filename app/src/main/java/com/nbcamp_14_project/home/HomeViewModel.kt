@@ -142,8 +142,8 @@ class MainFragmentViewModel(
                 Log.d("authortest", "$author")
                 Utils.getAuthorName(author)
                 if (author == "") {
-//                    author = docs.select("meta[name=author]")?.attr("content")
-//                        .toString()//radioKorea에서 가져오는법
+                    author = docs.select("em[class=media_end_head_journalist_name]")?.html()
+                        .toString()//radioKorea에서 가져오는법
                     Log.d("authortest1", "$author")
                     Utils.getAuthorName(author)
                     if (author == "") {

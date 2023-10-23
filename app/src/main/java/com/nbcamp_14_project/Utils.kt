@@ -32,7 +32,7 @@ object Utils {
         }
         return ""
     }
-    fun calculationTime(createDateTime: Long): String{
+    fun calculationTime(createDateTime: Long): String{//입력값 - 원하는 시간
         val nowDateTime = Calendar.getInstance().timeInMillis //현재 시간 to millisecond
         var value = ""
         val differenceValue = nowDateTime - createDateTime //현재 시간 - 비교가 될 시간
