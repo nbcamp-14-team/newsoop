@@ -1,7 +1,7 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
-//    id("com.google.gms.google-services")
+    id("com.google.gms.google-services")
     id("kotlin-parcelize")
 }
 
@@ -90,6 +90,8 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.9")
     //viewmodel
     implementation("androidx.fragment:fragment-ktx:1.4.1")
+    //firestore
+    implementation("com.google.firebase:firebase-firestore-ktx")
 
 
 }
