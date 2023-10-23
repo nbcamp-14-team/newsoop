@@ -35,10 +35,9 @@ class HomeViewPagerFragment:Fragment() {
             viewpager.run {
                 isUserInputEnabled = false
             }
-            viewpager.offscreenPageLimit = 3//생명주기 관련 코드
-            val tabTitle = listOf("정치", "경제", "사회","생활","문화","IT","과학","세계")
+            viewpager.offscreenPageLimit = 4//생명주기 관련 코드
             TabLayoutMediator(tabLayout, viewpager) { tab, position ->
-                tab.setText(tabTitle[position])
+                tab.setText(viewPagerAdapter.getTitle(position))
             }.attach()
         }
     }

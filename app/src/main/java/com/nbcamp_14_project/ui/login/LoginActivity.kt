@@ -13,11 +13,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.FirebaseAuth
-import com.navercorp.nid.NaverIdLoginSDK
-import com.navercorp.nid.oauth.NidOAuthLogin
-import com.navercorp.nid.oauth.OAuthLoginCallback
-import com.navercorp.nid.profile.NidProfileCallback
-import com.navercorp.nid.profile.data.NidProfileResponse
+
 import com.nbcamp_14_project.databinding.ActivityLoginBinding
 import com.nbcamp_14_project.R
 import com.nbcamp_14_project.SignUpActivity
@@ -87,7 +83,6 @@ class LoginActivity : AppCompatActivity() {
     private fun setGoogleLogin() {
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken(getString(R.string.default_web_client_id))
-            .requestEmail()
             .build()
         googleSignInClient = GoogleSignIn.getClient(this, gso)
     }
