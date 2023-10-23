@@ -10,7 +10,8 @@ interface MainFragmentRepository {
     suspend fun getNews(
         query: String,
         display: Int? = null,
-        start: Int? = null
+        start: Int? = null,
+        sort: String? = null
     ): SearchEntity
     fun getList():List<HomeModel>
     //라이브데이터에 아이템 추가하는 기능
@@ -31,11 +32,12 @@ class MainFragmentRepositoryImpl(
 ) : MainFragmentRepository {
     private val list = mutableListOf<HomeModel>()
     private val newsList = mutableListOf<HomeModel>()
-    override suspend fun getNews(query: String, display: Int?, start: Int?): SearchEntity =
+    override suspend fun getNews(query: String, display: Int?, start: Int?,sort:String?): SearchEntity =
         remoteDatasource.getNews(
             query,
             display,
-            start
+            start,
+            sort
         ).toSearchEntity()
 
 

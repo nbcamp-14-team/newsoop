@@ -49,7 +49,7 @@ class SearchViewModel(
                             thumbnail = thumbnail,
                             description = description,
                             link = link,
-                            pubDate = pubDate,
+                            pubDate = null, //임의로 수정
                             author = author,
                             viewType = 1
                         )

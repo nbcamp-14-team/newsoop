@@ -16,5 +16,6 @@ interface NewsCollector {
         @Query("query") query: String?,//검색어
         @Query("display") display: Int? = null,//출력개수
         @Query("start") start: Int? = null,//출력 시작점
+        @Query("sort") sort: String? = null,//검색 결과 정렬 방법
     ): NewsDTO
 }

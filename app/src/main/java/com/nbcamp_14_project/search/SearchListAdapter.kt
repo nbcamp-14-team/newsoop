@@ -50,7 +50,7 @@ class SearchListAdapter(
     ) : RecyclerView.ViewHolder(binding.root) {
         fun bind(item: HomeModel) = with(binding) {
             searchTitle.text = item.title
-            searchDate.text = item.pubDate?.slice(0..16)
+            searchDate.text = item.pubDate?.toString()
             searchImage.load(item.thumbnail)
             cardView.setOnClickListener {
                 onClick(
