@@ -8,10 +8,12 @@ class GetSearchNewsUseCase(
     suspend operator fun invoke(
         query: String,
         display: Int?= null,
-        start: Int? = null
+        start: Int? = null,
+        sort:String? = null,
     )= repository.getNews(
             query,
             display,
-            start
+            start,
+            sort
         )
 }
