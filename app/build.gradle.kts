@@ -88,4 +88,10 @@ dependencies {
     //naver
     implementation("com.navercorp.nid:oauth-jdk8:5.1.0")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.9")
+    //viewmodel
+    implementation("androidx.fragment:fragment-ktx:1.4.1")
+    //firestore
+    implementation("com.google.firebase:firebase-firestore-ktx")
+
+
 }
