@@ -185,6 +185,7 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
             "pubDate" to detailInfo.pubDate
         )
         favoriteRef.add(favoriteData)
+
     }
 
     private fun removeFavoriteFromFireStore(detailInfo: DetailInfo) {

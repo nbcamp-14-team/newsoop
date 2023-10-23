@@ -26,5 +26,14 @@ class FavoriteViewModel : ViewModel() {
 
     }
 
+    fun setFavoriteList(list: List<DetailInfo>) {
+        _favoriteList.value = list
+    }
+
+
+
+
+
+
 }
 
