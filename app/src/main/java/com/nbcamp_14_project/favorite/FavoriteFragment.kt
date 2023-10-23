@@ -17,6 +17,7 @@ import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.Source
 import com.nbcamp_14_project.data.model.User
 import com.nbcamp_14_project.databinding.FragmentFavoriteBinding
+import com.nbcamp_14_project.detail.DetailInfo
 import com.nbcamp_14_project.detail.DetailViewModel
 import com.nbcamp_14_project.mainpage.MainActivity
 import com.nbcamp_14_project.ui.login.LoginViewModel
@@ -34,6 +35,8 @@ class FavoriteFragment : Fragment() {
     private val loginViewModel: LoginViewModel by activityViewModels()
     private val uid = FirebaseAuth.getInstance().currentUser?.uid
     private val firestore = FirebaseFirestore.getInstance()
+    private val favoriteViewModel: FavoriteViewModel by activityViewModels()
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -48,6 +51,10 @@ class FavoriteFragment : Fragment() {
 
         super.onViewCreated(view, savedInstanceState)
 
+
+
+        getFavoriteListFromFireStore()
+
         adapter = FavoriteListAdapter { item ->
             val detailInfo = item
             detailViewModel.setDetailInfo(detailInfo)
@@ -59,9 +66,13 @@ class FavoriteFragment : Fragment() {
 
         binding.favoriteList.layoutManager = LinearLayoutManager(context)
         binding.favoriteList.adapter = adapter
+        val lastVisiblePosition = (binding.favoriteList.layoutManager as LinearLayoutManager)!!.findLastCompletelyVisibleItemPosition()
+        Log.d("position", "$lastVisiblePosition")
         viewModel.favoriteList.observe(viewLifecycleOwner) {
             adapter.submitList(it)
         }
+
+
         if (FirebaseAuth.getInstance().currentUser != null) {
             val collectionRef = firestore.collection("User").document(uid!!)
             collectionRef.get().addOnCompleteListener { task ->
@@ -83,5 +94,38 @@ class FavoriteFragment : Fragment() {
 
         }
     }
-    
+
+    private fun getFavoriteListFromFireStore() {
+        val db = FirebaseFirestore.getInstance()
+        val favoriteRef = db.collection("favorites")
+
+        favoriteRef.get()
+            .addOnSuccessListener { querySnapshot ->
+                val favoriteList = mutableListOf<DetailInfo>()
+
+                for (document in querySnapshot) {
+                    val title = document.getString("title")
+                    val description = document.getString("description")
+                    val thumbnail = document.getString("thumbnail")
+                    val author = document.getString("author")
+                    val originalLink = document.getString("originalLink")
+                    val pubDate = document.getString("pubDate")
+
+                    if (title != null && description != null && originalLink != null && pubDate != null) {
+                        val detailInfo = DetailInfo(title, description, thumbnail, author, originalLink, pubDate)
+                        favoriteList.add(detailInfo)
+                    }
+                }
+
+
+                favoriteViewModel.setFavoriteList(favoriteList)
+            }
+            .addOnFailureListener { e ->
+
+            }
+    }
+
+
+
+
 }

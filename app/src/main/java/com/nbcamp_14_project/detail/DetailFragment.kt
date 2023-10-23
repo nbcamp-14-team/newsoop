@@ -20,6 +20,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModel
 import androidx.recyclerview.widget.LinearLayoutManager
 import coil.load
+import com.google.firebase.firestore.FirebaseFirestore
 import com.nbcamp_14_project.R
 
 import com.nbcamp_14_project.databinding.FragmentDetailBinding
@@ -71,10 +72,13 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
                 if (isFavorite) {
                     favoriteViewModel.removeFavoriteItem(detailInfo)
                     binding.imgLike.setImageResource(R.drawable.ic_like)
+                    removeFavoriteFromFireStore(detailInfo)  // Firestore에서도 제거
                 } else {
                     favoriteViewModel.addFavoriteItem(detailInfo)
                     binding.imgLike.setImageResource(R.drawable.ic_check)
+                    addFavoriteToFireStore(detailInfo)  // Firestore에도 추가
                 }
+
             }
         }
 
@@ -109,23 +113,6 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
 
 
     private fun initView() = with(binding) {
-
-        imgLike.setOnClickListener {
-            val detailInfo = viewModel.detailInfo.value
-            if (detailInfo != null) {
-
-                val isFavorite = favoriteViewModel.favoriteList.value?.contains(detailInfo) == true
-
-                if (isFavorite) {
-                    favoriteViewModel.removeFavoriteItem(detailInfo)
-                    binding.imgLike.setImageResource(R.drawable.ic_like)
-                } else {
-
-                    favoriteViewModel.addFavoriteItem(detailInfo)
-                    binding.imgLike.setImageResource(R.drawable.ic_check)
-                }
-            }
-        }
 
 
 //        val data =viewModel.detailInfo.value
@@ -185,6 +172,39 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
         }
 
     }
+
+    private fun addFavoriteToFireStore(detailInfo: DetailInfo) {
+        val db = FirebaseFirestore.getInstance()
+        val favoriteRef = db.collection("favorites")
+        val favoriteData = hashMapOf(
+            "title" to detailInfo.title,
+            "thumbnail" to detailInfo.thumbnail,
+            "description" to detailInfo.description,
+            "author" to detailInfo.author,
+            "originalLink" to detailInfo.originalLink,
+            "pubDate" to detailInfo.pubDate
+        )
+        favoriteRef.add(favoriteData)
+
+    }
+
+    private fun removeFavoriteFromFireStore(detailInfo: DetailInfo) {
+        val db = FirebaseFirestore.getInstance()
+        val favoriteRef = db.collection("favorites")
+        val query = favoriteRef.whereEqualTo("title", detailInfo.title)
+
+        query.get().addOnSuccessListener { documents ->
+            for (document in documents) {
+                document.reference.delete()
+            }
+        }
+    }
+
+
+    fun restoreFavoriteFromFireStore(){
+
+    }
+
 
     override fun onDestroy() {
         if (textToSpeech.isSpeaking) {
