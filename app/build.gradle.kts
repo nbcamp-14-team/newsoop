@@ -3,6 +3,7 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id("com.google.gms.google-services")
     id("kotlin-parcelize")
+    id("kotlin-kapt")
 }
 
 android {
@@ -93,5 +94,10 @@ dependencies {
     //firestore
     implementation("com.google.firebase:firebase-firestore-ktx")
 
+    implementation ("com.google.firebase:firebase-firestore-ktx:24.3.0")
+    implementation ("com.google.firebase:firebase-storage-ktx:20.0.2")
+    implementation ("com.github.bumptech.glide:glide:4.13.2")
+    implementation ("com.firebaseui:firebase-ui-storage:8.0.1")
+    implementation ("com.github.bumptech.glide:compiler:4.13.2")
 
 }
