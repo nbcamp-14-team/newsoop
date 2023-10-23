@@ -58,7 +58,7 @@ class SearchFragment : Fragment() {
         searchRecyclerView.layoutManager = LinearLayoutManager(requireContext())
         searchRecyclerView.adapter = adapter
         searchTagFrame.layoutManager =
-            LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
+            LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, true)
         searchTagFrame.adapter = tagAdapter
         searchInput.setOnEditorActionListener { _, i, _ ->
             var handled = false
@@ -72,6 +72,7 @@ class SearchFragment : Fragment() {
         searchBtn.setOnClickListener {
             query = binding.searchInput.text.toString()
             viewModel.clearAllItems()
+            viewModel.setRecentSearchItem(query)
             viewModel.getSearchNews(query, 5, 1)
             //키보드 내리는 기능
             val imm =
@@ -84,7 +85,6 @@ class SearchFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         initView()
         initViewModel()
-        // TODO :  retrofit2.HttpException: HTTP 400  fix
         binding.searchRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
@@ -102,9 +102,12 @@ class SearchFragment : Fragment() {
 
         tagAdapter.setItemClickListener(object : SearchTagAdapter.OnItemClickListener {
             override fun onClick(v: View, position: Int) {
-                Log.d("TAG", "tag Click : $position")
-                binding.searchInput.setText(tagAdapter.tagList[position])
+                // 최근 검색어 가져오기
+                val list = viewModel.recentSearchList.value!!
+                binding.searchInput.setText(list[position])
                 binding.searchBtn.performClick()
+                // 똑같은 요소 지우기
+                viewModel.removeRecentSearchItem(position)
             }
         })
     }
@@ -113,6 +116,9 @@ class SearchFragment : Fragment() {
         with(viewModel) {
             searchResultList.observe(viewLifecycleOwner) {
                 adapter.submitList(it.toMutableList())
+            }
+            recentSearchList.observe(viewLifecycleOwner) {
+                tagAdapter.submitList(it.toMutableList())
             }
         }
     }

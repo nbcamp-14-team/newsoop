@@ -6,9 +6,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.nbcamp_14_project.domain.GetSearchNewsUseCase
-import com.nbcamp_14_project.Utils
 import com.nbcamp_14_project.api.RetrofitInstance
+import com.nbcamp_14_project.domain.GetSearchNewsUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -122,23 +121,23 @@ class MainFragmentViewModel(
         try {
             withContext(Dispatchers.IO) {
                 val docs = Jsoup.connect(url).get()
-                author = docs.select("meta[name=dable:author]")?.attr("content")
+                author = docs.select("meta[name=dable:author]").attr("content")
                     .toString()//radioKorea에서 가져오는법
 
                 if (author == "") {
-                    author = docs.select("span[class=byline_s]")?.html()//네이버
+                    author = docs.select("span[class=byline_s]").html()//네이버
 
                     Log.d("test", "$author")
                     if (author == "") {
-                        author = docs.select("meta[property=og:article:author]")?.attr("content")
+                        author = docs.select("meta[property=og:article:author]").attr("content")
                         Log.d("test1", "$author")
                         if (author == "") {
-                            author = docs.select("meta[property=article:author]")?.attr("content")
+                            author = docs.select("meta[property=article:author]").attr("content")
                             if (author == "") {
-                                author = docs.select("meta[property=dd:author]")?.attr("content")
+                                author = docs.select("meta[property=dd:author]").attr("content")
                                 if (author == "") {
                                     author = docs.select("meta[name=twitter:creator]")
-                                        ?.attr("content")//월간조선
+                                        .attr("content")//월간조선
                                     if (author == "") {
                                         author = docs.select("em[media_end_head_journalist_name]")
                                             .toString()//작동이 잘 안됨
@@ -192,6 +191,7 @@ class MainFragmentViewModel(
     fun removeHeadLineItem(item: HomeModel?) {//라이브데이터에서 아이템 삭제하는 기능
         _list.value = repository.removeHeadLineItem(item)
     }
+
     fun removeNewsItem(item: HomeModel?) {//라이브데이터에서 아이템 삭제하는 기능
         _newsList.value = repository.removeNewsItem(item)
     }
@@ -199,6 +199,7 @@ class MainFragmentViewModel(
     fun modifyHeadLineItem(item: HomeModel?) {
         _list.value = repository.modifyHeadLineItem(item)
     }
+
     fun modifyItem(item: HomeModel?) {
         _newsList.value = repository.modifyNewsItem(item)
     }
