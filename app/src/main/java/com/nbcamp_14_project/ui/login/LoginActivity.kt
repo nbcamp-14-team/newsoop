@@ -107,13 +107,7 @@ class LoginActivity : AppCompatActivity() {
         auth.signInWithEmailAndPassword(email.toString(), pw.toString())
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
-                    val curUser = auth.currentUser
-                    //fireStore에 이메일, 이름 추가
-                    val user = User()
-                    user.email = curUser?.email
-                    user.name = curUser?.displayName
-                    user.category = null
-                    fbFireStore.collection("User").document(curUser!!.uid).set(user)
+
                     Toast.makeText(this, "complete", Toast.LENGTH_SHORT).show()
                 } else {
                     Log.e("LoginActivity", "login fail")
