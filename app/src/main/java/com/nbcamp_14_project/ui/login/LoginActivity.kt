@@ -5,9 +5,9 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
+import androidx.appcompat.app.AppCompatActivity
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -15,11 +15,6 @@ import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
-import com.navercorp.nid.NaverIdLoginSDK
-import com.navercorp.nid.oauth.NidOAuthLogin
-import com.navercorp.nid.oauth.OAuthLoginCallback
-import com.navercorp.nid.profile.NidProfileCallback
-import com.navercorp.nid.profile.data.NidProfileResponse
 import com.nbcamp_14_project.databinding.ActivityLoginBinding
 import com.nbcamp_14_project.R
 import com.nbcamp_14_project.SignUpActivity
@@ -45,8 +40,6 @@ class LoginActivity : AppCompatActivity() {
         setContentView(binding.root)
         auth = FirebaseAuth.getInstance()
         fbFireStore = FirebaseFirestore.getInstance()
-
-
 
 
 //        val naverClientId = getString(R.string.social_login_info_naver_client_id)
@@ -99,7 +92,6 @@ class LoginActivity : AppCompatActivity() {
     }
 
 
-
     private fun setGoogleLogin() {
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken(getString(R.string.default_web_client_id))
@@ -107,6 +99,7 @@ class LoginActivity : AppCompatActivity() {
             .build()
         googleSignInClient = GoogleSignIn.getClient(this, gso)
     }
+
     private fun googleLogin() {
         val signInIntent = googleSignInClient.signInIntent
         getResult.launch(signInIntent)
@@ -182,25 +175,25 @@ class LoginActivity : AppCompatActivity() {
             }
     }
 
-    private fun getCurrentProfile(){
+    private fun getCurrentProfile() {
         val curUser = GoogleSignIn.getLastSignedInAccount(this)
-        curUser?.let{
+        curUser?.let {
             val user = User()
             val email = curUser.email.toString()
             val displayName = curUser.displayName.toString()
 
-            Log.d("이메일",email)
-            Log.d("이름",displayName)
+            Log.d("이메일", email)
+            Log.d("이름", displayName)
 
         }
     }
-    private fun movePage(user: FirebaseUser?){
-        if (user != null){
+
+    private fun movePage(user: FirebaseUser?) {
+        if (user != null) {
             startActivity(Intent(this, FavoriteFragment::class.java))
             finish()
         }
     }
-
 
 
 }

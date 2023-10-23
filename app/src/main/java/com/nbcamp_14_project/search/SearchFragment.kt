@@ -87,13 +87,13 @@ class SearchFragment : Fragment() {
             val imm =
                 requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             imm.hideSoftInputFromWindow(searchInput.windowToken, 0)
-
+            //edit 비우기
+            binding.searchInput.text.clear()
             CoroutineScope(Dispatchers.Main).launch {
                 dialog.show()
                 delay(3000)
                 dialog.dismiss()
             }
-
         }
     }
 
@@ -153,7 +153,6 @@ class SearchFragment : Fragment() {
             setCancelable(false)
             // 배경 투명하게 바꿔줌
             window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-
         }
     }
 }

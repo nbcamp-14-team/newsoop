@@ -7,5 +7,10 @@
     <Button
         android:id="@+id/search_tag_btn"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="28dp"
+        android:layout_margin="2dp"
+        android:background="@drawable/et_border_radius"
+        android:padding="1dp"
+        android:text="dog"
+        android:textColor="#673AB7" />
 </LinearLayout>
