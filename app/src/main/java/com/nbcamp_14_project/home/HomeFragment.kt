@@ -67,9 +67,10 @@ class HomeFragment(query:String) : Fragment() {
         Log.d("query","$queryInbox")
         initView()
         initViewModel()
-//        viewPagerViewModel.clearAllItems()
         viewPagerViewModel.headLineNews(queryInbox)
         viewPagerViewModel.detailNews(queryInbox)
+//        viewPagerViewModel.clearAllItems()
+
 
 
     }
@@ -99,13 +100,13 @@ class HomeFragment(query:String) : Fragment() {
         rvMainNews.orientation = ViewPager2.ORIENTATION_HORIZONTAL//가로로 설정
         rvMainNews.apply {
             offscreenPageLimit = 1
-            registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
-                override fun onPageSelected(position: Int) {
-                    super.onPageSelected(position)
-                    slideImageHandler.removeCallbacks(slideImageRunnable)//handler에 뷰페이저 이동 꽇음
-                    slideImageHandler.postDelayed(slideImageRunnable, 3000)//handler에 딜레이 추가
-                }
-            })
+//            registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+//                override fun onPageSelected(position: Int) {
+//                    super.onPageSelected(position)
+//                    slideImageHandler.removeCallbacks(slideImageRunnable)//handler에 뷰페이저 이동 꽇음
+//                    slideImageHandler.postDelayed(slideImageRunnable, 3000)//handler에 딜레이 추가
+//                }
+//            })
         }
         rvMainNewsIndicator.setViewPager2(rvMainNews)
         /**
@@ -121,7 +122,8 @@ class HomeFragment(query:String) : Fragment() {
                 Log.d("VisiblePosition","$lastVisiblePosition + $itemCount")
 
                 if(!rvNews.canScrollHorizontally(1) && lastVisiblePosition == itemCount){
-                    infinityAddNews(queryInbox)
+                    Log.d("query1","$queryInbox")
+//                    infinityAddNews(queryInbox)
                 }
             }
         }

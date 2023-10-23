@@ -6,8 +6,12 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
+import com.nbcamp_14_project.Utils
 import com.nbcamp_14_project.databinding.ItemRecyclerviewMainFragmentBinding
 import com.nbcamp_14_project.databinding.ItemRvNewsMainBinding
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.concurrent.TimeUnit
 
 class HomeNewsAdapter(
     private val onClick: (HomeModel) -> Unit
@@ -51,7 +55,10 @@ class HomeNewsAdapter(
             title.text = item.title
             ivThumbnail.load(item.thumbnail)
             author.text = item.author
-            pubDate.text = item.pubDate
+            val value = item.pubDate?.time?.let { Utils.calculationTime(it) } ?: return
+            pubDate.text = value
+
+
             container.setOnClickListener {
                 onClick(
                     item
