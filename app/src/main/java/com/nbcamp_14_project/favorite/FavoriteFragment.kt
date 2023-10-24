@@ -1,10 +1,12 @@
 package com.nbcamp_14_project.favorite
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -20,6 +22,7 @@ import com.nbcamp_14_project.databinding.FragmentFavoriteBinding
 import com.nbcamp_14_project.detail.DetailInfo
 import com.nbcamp_14_project.detail.DetailViewModel
 import com.nbcamp_14_project.mainpage.MainActivity
+import com.nbcamp_14_project.ui.login.LoginActivity
 import com.nbcamp_14_project.ui.login.LoginViewModel
 
 class FavoriteFragment : Fragment() {
@@ -35,7 +38,8 @@ class FavoriteFragment : Fragment() {
     private val loginViewModel: LoginViewModel by activityViewModels()
     private val uid = FirebaseAuth.getInstance().currentUser?.uid
     private val firestore = FirebaseFirestore.getInstance()
-    private val favoriteViewModel: FavoriteViewModel by activityViewModels()
+    private var isLogin = false
+    private var auth = FirebaseAuth.getInstance()
 
 
     override fun onCreateView(
@@ -79,6 +83,8 @@ class FavoriteFragment : Fragment() {
         viewModel.favoriteList.observe(viewLifecycleOwner) {
             adapter.submitList(it)
         }
+
+
 
 
         if (FirebaseAuth.getInstance().currentUser != null) {
@@ -129,13 +135,18 @@ class FavoriteFragment : Fragment() {
                     }
                 }
 
-
-                favoriteViewModel.setFavoriteList(favoriteList)
+                viewModel.setFavoriteList(favoriteList)
             }
             .addOnFailureListener { e ->
 
             }
     }
+
+    fun openLoginActivity(view: View) {
+        val intent = Intent(requireContext(), LoginActivity::class.java)
+        startActivity(intent)
+    }
+
 
 
 
