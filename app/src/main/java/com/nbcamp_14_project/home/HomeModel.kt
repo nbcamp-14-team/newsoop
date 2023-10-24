@@ -22,7 +22,7 @@ fun HomeModel.toDetailInfo(): DetailInfo {
         thumbnail = thumbnail,
         author = author,
         originalLink = link,
-        pubDate = null
+        pubDate = pubDate.toString()
     )
 }
 
