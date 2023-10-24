@@ -60,14 +60,6 @@ class MainActivity : AppCompatActivity() {
                 tab.setText(tabTitle[position])
             }.attach()
 
-            btnGotoLogin.setOnClickListener {
-                val test = Intent(this@MainActivity, LoginActivity::class.java)
-                startActivity(test)
-            }
-
-            btnGotoDetail.setOnClickListener {
-                Firebase.auth.signOut()
-            }
         }
 
     }
