@@ -52,7 +52,7 @@ class FavoriteListAdapter(private val onItemClick: (DetailInfo) -> Unit) : ListA
         fun bind(item: DetailInfo) = with(binding) {
             title.text = item.title
             ivThumbnail.load(item.thumbnail)
-            author.text = item.author
+//            author.text = item.author
             pubDate.text = item.pubDate
         }
     }

@@ -28,7 +28,7 @@ class HomeFragment(query:String) : Fragment() {
     private val binding get() = _binding!!
     // HomeFragment Fragment
     private val headLineAdapter by lazy {
-        HomeHeadLineAdapter(//ViewPager2에서 클릭이 일어났을 때, Detail에 데이터값을 보냄(구현필요)
+        HomeHeadLineAdapter(//ViewPager2에서 클릭이 일어났을 때, Detail에 데이터값을 보냄
             onClick = {item ->
                 val detailInfo = item.toDetailInfo()
                 detailViewModel.setDetailInfo(detailInfo)
@@ -38,7 +38,7 @@ class HomeFragment(query:String) : Fragment() {
         )
     }
     private val newsAdapter by lazy {
-        HomeNewsAdapter(//recyclerView에서 클릭이 일어났을 때, Detail에 데이터값을 보냄(구현필요)
+        HomeNewsAdapter(//recyclerView에서 클릭이 일어났을 때, Detail에 데이터값을 보냄
             onClick = { item ->
                 val detailInfo = item.toDetailInfo()
                 detailViewModel.setDetailInfo(detailInfo)
@@ -69,18 +69,11 @@ class HomeFragment(query:String) : Fragment() {
         initViewModel()
         viewPagerViewModel.headLineNews(queryInbox)
         viewPagerViewModel.detailNews(queryInbox)
-//        viewPagerViewModel.clearAllItems()
+
 
 
 
     }
-//    fun changeCategory(query:String?) = with(binding){
-//        viewPagerViewModel.clearAllItems()
-//        viewPagerViewModel.headLineNews(query!!)
-//        viewPagerViewModel.detailNews(query!!)
-//        category.text = query
-//    }
-
     fun initView() = with(binding) {
         category.text = queryInbox
         val slideImageHandler: Handler = Handler()
@@ -100,13 +93,13 @@ class HomeFragment(query:String) : Fragment() {
         rvMainNews.orientation = ViewPager2.ORIENTATION_HORIZONTAL//가로로 설정
         rvMainNews.apply {
             offscreenPageLimit = 1
-//            registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
-//                override fun onPageSelected(position: Int) {
-//                    super.onPageSelected(position)
-//                    slideImageHandler.removeCallbacks(slideImageRunnable)//handler에 뷰페이저 이동 꽇음
-//                    slideImageHandler.postDelayed(slideImageRunnable, 3000)//handler에 딜레이 추가
-//                }
-//            })
+            registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+                override fun onPageSelected(position: Int) {
+                    super.onPageSelected(position)
+                    slideImageHandler.removeCallbacks(slideImageRunnable)//handler에 뷰페이저 이동 꽇음
+                    slideImageHandler.postDelayed(slideImageRunnable, 3000)//handler에 딜레이 추가
+                }
+            })
         }
         rvMainNewsIndicator.setViewPager2(rvMainNews)
         /**
@@ -123,7 +116,7 @@ class HomeFragment(query:String) : Fragment() {
 
                 if(!rvNews.canScrollHorizontally(1) && lastVisiblePosition == itemCount){
                     Log.d("query1","$queryInbox")
-//                    infinityAddNews(queryInbox)
+                    infinityAddNews(queryInbox)
                 }
             }
         }

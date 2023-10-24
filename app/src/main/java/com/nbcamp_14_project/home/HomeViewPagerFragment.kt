@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.google.android.material.tabs.TabLayoutMediator
+import com.nbcamp_14_project.R
 import com.nbcamp_14_project.databinding.FragmentMainBinding
 import com.nbcamp_14_project.databinding.FragmentViewpagerHomeBinding
 
