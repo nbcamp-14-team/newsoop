@@ -98,8 +98,6 @@ class FavoriteFragment : Fragment() {
                     Log.d("data", "no data")
                 }
             }
-
-
         }
 
 
