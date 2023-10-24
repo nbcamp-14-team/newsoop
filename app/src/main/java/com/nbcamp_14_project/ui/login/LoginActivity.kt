@@ -57,7 +57,6 @@ class LoginActivity : AppCompatActivity() {
                     loginViewModel.getCurrentUser(account.idToken!!)
                     Toast.makeText(this, "로그인 성공", Toast.LENGTH_SHORT)
                         .show()
-                    MyDialog(this).show()
                     finish()
 
                 } catch (e: ApiException) {
@@ -110,10 +109,8 @@ class LoginActivity : AppCompatActivity() {
         auth.signInWithEmailAndPassword(email.toString(), pw.toString())
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
-
                     Toast.makeText(this, "complete", Toast.LENGTH_SHORT).show()
                     finish()
-
                 } else {
                     Log.e("LoginActivity", "login fail")
                 }
