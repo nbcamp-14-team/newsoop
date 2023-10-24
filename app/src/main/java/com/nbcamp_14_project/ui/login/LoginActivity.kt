@@ -13,16 +13,11 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
 import com.nbcamp_14_project.databinding.ActivityLoginBinding
 import com.nbcamp_14_project.R
 import com.nbcamp_14_project.SignUpActivity
-import com.nbcamp_14_project.data.model.FirebaseUserData
 import com.nbcamp_14_project.data.model.User
-import com.nbcamp_14_project.favorite.FavoriteFragment
-import com.nbcamp_14_project.home.HomeFragment
-import com.nbcamp_14_project.mainpage.MainActivity
 
 
 class LoginActivity : AppCompatActivity() {
@@ -32,23 +27,19 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var googleSignInClient: GoogleSignInClient
     private lateinit var auth: FirebaseAuth
     private lateinit var fbFireStore: FirebaseFirestore
-    private var firebaseAuthStateListener: FirebaseAuth.AuthStateListener? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        binding = ActivityLoginBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-        auth = FirebaseAuth.getInstance()
-        fbFireStore = FirebaseFirestore.getInstance()
-
-
-
 
 //        val naverClientId = getString(R.string.social_login_info_naver_client_id)
 //        val naverClientSecret = getString(R.string.social_login_info_naver_client_secret)
 //        val naverClientName = getString(R.string.social_login_info_naver_client_name)
 //        NaverIdLoginSDK.initialize(this, naverClientId, naverClientSecret, naverClientName)
 
+        binding = ActivityLoginBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        auth = FirebaseAuth.getInstance()
+        fbFireStore = FirebaseFirestore.getInstance()
 
         val activityResultLauncher =
             registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
@@ -79,12 +70,13 @@ class LoginActivity : AppCompatActivity() {
 
         binding.btnLogin.setOnClickListener {
             logIn()
+            finish()
         }
 
         binding.ivGoogleLogin.setOnClickListener {
             setGoogleLogin()
             googleLogin()
-            getCurrentProfile()
+            finish()
 
         }
 
@@ -108,7 +100,22 @@ class LoginActivity : AppCompatActivity() {
 
     }
 
-//    private fun naverLogin() {
+    private fun logIn() {
+        val email = binding.etUsername.text
+        val pw = binding.etPassword.text
+        auth = FirebaseAuth.getInstance()
+        auth.signInWithEmailAndPassword(email.toString(), pw.toString())
+            .addOnCompleteListener(this) { task ->
+                if (task.isSuccessful) {
+
+                    Toast.makeText(this, "complete", Toast.LENGTH_SHORT).show()
+                } else {
+                    Log.e("LoginActivity", "login fail")
+                }
+            }
+    }
+
+    //    private fun naverLogin() {
 //        var naverToken: String? = ""
 //
 //        val profileCallback = object : NidProfileCallback<NidProfileResponse> {
@@ -158,44 +165,6 @@ class LoginActivity : AppCompatActivity() {
 //        }
 //        NaverIdLoginSDK.authenticate(this, oauthLoginCallback)
 //    }
-
-    private fun logIn() {
-        val email = binding.etUsername.text
-        val pw = binding.etPassword.text
-        auth = FirebaseAuth.getInstance()
-        auth.signInWithEmailAndPassword(email.toString(), pw.toString())
-            .addOnCompleteListener(this) { task ->
-                if (task.isSuccessful) {
-                    val curUser = auth.currentUser
-                    val user = User()
-                    user.email = auth.currentUser?.email
-                    user.name = auth.currentUser?.displayName
-                    Toast.makeText(this, "complete", Toast.LENGTH_SHORT).show()
-                } else {
-                    Log.e("LoginActivity", "login fail")
-                }
-            }
-    }
-
-    private fun getCurrentProfile(){
-        val curUser = GoogleSignIn.getLastSignedInAccount(this)
-        curUser?.let{
-            val user = User()
-            val email = curUser.email.toString()
-            val displayName = curUser.displayName.toString()
-
-            Log.d("이메일",email)
-            Log.d("이름",displayName)
-
-        }
-    }
-    private fun movePage(user: FirebaseUser?){
-        if (user != null){
-            startActivity(Intent(this, FavoriteFragment::class.java))
-            finish()
-        }
-    }
-
 
 
 }
