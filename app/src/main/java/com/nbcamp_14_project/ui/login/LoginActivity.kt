@@ -18,6 +18,13 @@ import com.nbcamp_14_project.databinding.ActivityLoginBinding
 import com.nbcamp_14_project.R
 import com.nbcamp_14_project.SignUpActivity
 import com.nbcamp_14_project.data.model.User
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import okhttp3.Dispatcher
+import kotlin.coroutines.CoroutineContext
 
 
 class LoginActivity : AppCompatActivity() {
@@ -57,7 +64,9 @@ class LoginActivity : AppCompatActivity() {
                     loginViewModel.getCurrentUser(account.idToken!!)
                     Toast.makeText(this, "로그인 성공", Toast.LENGTH_SHORT)
                         .show()
+//                        CategoryDialog(this).show()
                     finish()
+
 
                 } catch (e: ApiException) {
                     Toast.makeText(this, e.localizedMessage, Toast.LENGTH_SHORT).show()

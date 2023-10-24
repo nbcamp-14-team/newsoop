@@ -8,6 +8,8 @@ import com.nbcamp_14_project.data.LoginRepository
 class LoginViewModel: ViewModel() {
    private val loginRepository: LoginRepository = LoginRepository()
     private val _userLiveData = loginRepository.userLiveData
+    var category: String =""
+
     val userLiveData: LiveData<FirebaseUser>
         get() = _userLiveData
 
