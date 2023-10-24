@@ -1,6 +1,9 @@
 package com.nbcamp_14_project.search
 
+import android.app.Dialog
 import android.content.Context
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -13,13 +16,19 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.nbcamp_14_project.R.layout.item_loading
 import com.nbcamp_14_project.databinding.FragmentSearchBinding
 import com.nbcamp_14_project.detail.DetailViewModel
 import com.nbcamp_14_project.home.toDetailInfo
 import com.nbcamp_14_project.mainpage.MainActivity
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class SearchFragment : Fragment() {
 
+    private val dialog by lazy { LoadingDialog(requireContext()) }
     private var _binding: FragmentSearchBinding? = null
     private val detailViewModel: DetailViewModel by activityViewModels()
 
@@ -58,7 +67,7 @@ class SearchFragment : Fragment() {
         searchRecyclerView.layoutManager = LinearLayoutManager(requireContext())
         searchRecyclerView.adapter = adapter
         searchTagFrame.layoutManager =
-            LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
+            LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, true)
         searchTagFrame.adapter = tagAdapter
         searchInput.setOnEditorActionListener { _, i, _ ->
             var handled = false
@@ -71,12 +80,23 @@ class SearchFragment : Fragment() {
 
         searchBtn.setOnClickListener {
             query = binding.searchInput.text.toString()
+            //최근 검색어에서 같은 단어가 있으면 지우고 새로 넣기
+            viewModel.removeRecentSearchItem(query)
             viewModel.clearAllItems()
+            viewModel.setRecentSearchItem(query)
             viewModel.getSearchNews(query, 5, 1)
+
             //키보드 내리는 기능
             val imm =
                 requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             imm.hideSoftInputFromWindow(searchInput.windowToken, 0)
+            //edit 비우기
+            binding.searchInput.text.clear()
+            CoroutineScope(Dispatchers.Main).launch {
+                dialog.show()
+                delay(3000)
+                dialog.dismiss()
+            }
         }
     }
 
@@ -84,7 +104,6 @@ class SearchFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         initView()
         initViewModel()
-        // TODO :  retrofit2.HttpException: HTTP 400  fix
         binding.searchRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
@@ -92,18 +111,23 @@ class SearchFragment : Fragment() {
                     (binding.searchRecyclerView.layoutManager as LinearLayoutManager).findLastCompletelyVisibleItemPosition()
                 val itemCount = adapter.itemCount - 1
                 Log.d("VisiblePosition", "$lastVisiblePosition + $itemCount")
-
                 if (!binding.searchRecyclerView.canScrollHorizontally(1) && lastVisiblePosition == itemCount) {
                     viewModel.getSearchNews(query, 5, countStart)
                     countStart += 6
+                    CoroutineScope(Dispatchers.Main).launch {
+                        dialog.show()
+                        delay(3000)
+                        dialog.dismiss()
+                    }
                 }
             }
         })
 
         tagAdapter.setItemClickListener(object : SearchTagAdapter.OnItemClickListener {
-            override fun onClick(v: View, position: Int) {
-                Log.d("TAG", "tag Click : $position")
-                binding.searchInput.setText(tagAdapter.tagList[position])
+            override fun onClick(v: View, position: Int, searchWord: String) {
+                // 최근 검색어 가져오기
+                binding.searchInput.setText(searchWord)
+                Log.d("search", "$position : $searchWord")
                 binding.searchBtn.performClick()
             }
         })
@@ -114,6 +138,20 @@ class SearchFragment : Fragment() {
             searchResultList.observe(viewLifecycleOwner) {
                 adapter.submitList(it.toMutableList())
             }
+            recentSearchList.observe(viewLifecycleOwner) {
+                tagAdapter.submitList(it.toMutableList())
+            }
+        }
+    }
+
+    class LoadingDialog(context: Context) : Dialog(context) {
+        override fun onCreate(savedInstanceState: Bundle?) {
+            super.onCreate(savedInstanceState)
+            setContentView(item_loading)
+            // 취소 불가능
+            setCancelable(false)
+            // 배경 투명하게 바꿔줌
+            window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         }
     }
 }

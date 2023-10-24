@@ -6,7 +6,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.nbcamp_14_project.Utils
 import com.nbcamp_14_project.api.RetrofitInstance
 import com.nbcamp_14_project.home.HomeModel
 import kotlinx.coroutines.Dispatchers
@@ -15,6 +14,7 @@ import kotlinx.coroutines.withContext
 import org.jsoup.Jsoup
 import java.io.EOFException
 import java.io.IOException
+import java.util.Date
 import java.util.concurrent.atomic.AtomicInteger
 import java.util.zip.ZipException
 
@@ -23,9 +23,23 @@ class SearchViewModel(
 ) : ViewModel() {
     private val _searchResultList: MutableLiveData<List<HomeModel>> = MutableLiveData()
     val searchResultList: LiveData<List<HomeModel>> get() = _searchResultList
+    private val _recentSearchList: MutableLiveData<List<String>> = MutableLiveData()
+    val recentSearchList: MutableLiveData<List<String>> get() = _recentSearchList
 
     fun clearAllItems() {
         _searchResultList.value = repository.clearList()
+    }
+
+    fun getRecentSearchList() {
+        _recentSearchList.value = repository.getRecentSearchList()
+    }
+
+    fun removeRecentSearchItem(searchWord: String) {
+        _recentSearchList.value = repository.removeRecentSearchItem(searchWord)
+    }
+
+    fun setRecentSearchItem(query: String) {
+        _recentSearchList.value = repository.addRecentSearchList(query)
     }
 
     fun getSearchNews(query: String, display: Int, start: Int) {
@@ -42,6 +56,7 @@ class SearchViewModel(
                     val description = item[i].description
                     val link = item[i].link
                     val pubDate = item[i].pubDate
+                    val date = Date(pubDate)
                     val author = getAuthor(item[i].link.toString())
                     repository.addNewsItem(
                         HomeModel(
@@ -49,7 +64,7 @@ class SearchViewModel(
                             thumbnail = thumbnail,
                             description = description,
                             link = link,
-                            pubDate = null, //임의로 수정
+                            pubDate = date, //임의로 수정
                             author = author,
                             viewType = 1
                         )
@@ -91,23 +106,23 @@ class SearchViewModel(
         try {
             withContext(Dispatchers.IO) {
                 val docs = Jsoup.connect(url).get()
-                author = docs.select("meta[name=dable:author]")?.attr("content")
+                author = docs.select("meta[name=dable:author]").attr("content")
                     .toString()//radioKorea에서 가져오는법
 
                 if (author == "") {
-                    author = docs.select("span[class=byline_s]")?.html()//네이버
+                    author = docs.select("span[class=byline_s]").html()//네이버
 
                     Log.d("test", "$author")
                     if (author == "") {
-                        author = docs.select("meta[property=og:article:author]")?.attr("content")
+                        author = docs.select("meta[property=og:article:author]").attr("content")
                         Log.d("test1", "$author")
                         if (author == "") {
-                            author = docs.select("meta[property=article:author]")?.attr("content")
+                            author = docs.select("meta[property=article:author]").attr("content")
                             if (author == "") {
-                                author = docs.select("meta[property=dd:author]")?.attr("content")
+                                author = docs.select("meta[property=dd:author]").attr("content")
                                 if (author == "") {
                                     author = docs.select("meta[name=twitter:creator]")
-                                        ?.attr("content")//월간조선
+                                        .attr("content")//월간조선
                                     if (author == "") {
                                         author = docs.select("em[media_end_head_journalist_name]")
                                             .toString()//작동이 잘 안됨
