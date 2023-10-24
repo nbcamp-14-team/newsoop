@@ -6,17 +6,23 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContentProviderCompat.requireContext
+import androidx.core.content.ContextCompat.startActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.Source
+import com.google.firebase.ktx.Firebase
+import com.nbcamp_14_project.R
 import com.nbcamp_14_project.data.model.User
 import com.nbcamp_14_project.databinding.FragmentFavoriteBinding
 import com.nbcamp_14_project.detail.DetailInfo
@@ -54,17 +60,42 @@ class FavoriteFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         getFavoriteListFromFireStore()
-        Log.e("onResum", "#hyunsik" )
+        Log.e("onResum", "#hyunsik")
+        // onCreateView 함수 내에서
+        val loginBox = binding.root.findViewById<ConstraintLayout>(R.id.login_box)
+        val profileBox = binding.root.findViewById<ConstraintLayout>(R.id.profile_box)
+
+
+        if (FirebaseAuth.getInstance().currentUser != null) {
+
+            loginBox.visibility = View.INVISIBLE
+            profileBox.visibility = View.VISIBLE
+
+
+        } else {
+            // 로그아웃 상태일 때
+            loginBox.visibility = View.VISIBLE
+            profileBox.visibility = View.INVISIBLE
+        }
+
+        binding.btnLogout.setOnClickListener {
+            Firebase.auth.signOut()
+
+            if (FirebaseAuth.getInstance().currentUser == null) {
+                loginBox.visibility = View.VISIBLE
+                profileBox.visibility = View.INVISIBLE
+
+                viewModel.setFavoriteList(emptyList())
+            }
+        }
+
+
+
     }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
         super.onViewCreated(view, savedInstanceState)
-
-
-
-
-
-
 
 
         adapter = FavoriteListAdapter { item ->
@@ -78,16 +109,25 @@ class FavoriteFragment : Fragment() {
 
         binding.favoriteList.layoutManager = LinearLayoutManager(context)
         binding.favoriteList.adapter = adapter
-        val lastVisiblePosition = (binding.favoriteList.layoutManager as LinearLayoutManager)!!.findLastCompletelyVisibleItemPosition()
+        val lastVisiblePosition =
+            (binding.favoriteList.layoutManager as LinearLayoutManager)!!.findLastCompletelyVisibleItemPosition()
         Log.d("position", "$lastVisiblePosition")
         viewModel.favoriteList.observe(viewLifecycleOwner) {
             adapter.submitList(it)
         }
 
+        binding.tvLogin.setOnClickListener {
+            openLoginActivity(view)
+        }
+
+
+
+
 
 
 
         if (FirebaseAuth.getInstance().currentUser != null) {
+
             val collectionRef = firestore.collection("User").document(uid!!)
             collectionRef.get().addOnCompleteListener { task ->
                 if (task.isSuccessful) {
@@ -95,7 +135,8 @@ class FavoriteFragment : Fragment() {
                     if (document.exists()) {
                         val nameField = document.getString("name")
                         val emailField = document.getString("email")
-                        binding.tvNick.text = "이름: $nameField"
+
+
 
                     } else {
                         Log.d("data", "no data")
@@ -128,7 +169,8 @@ class FavoriteFragment : Fragment() {
                     val pubDate = document.getString("pubDate")
 
                     if (title != null && description != null && originalLink != null && pubDate != null) {
-                        val detailInfo = DetailInfo(title, description, thumbnail, author, originalLink, pubDate)
+                        val detailInfo =
+                            DetailInfo(title, description, thumbnail, author, originalLink, pubDate)
                         favoriteList.add(detailInfo)
                     }
                 }
@@ -144,9 +186,6 @@ class FavoriteFragment : Fragment() {
         val intent = Intent(requireContext(), LoginActivity::class.java)
         startActivity(intent)
     }
-
-
-
 
 
 }

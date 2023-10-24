@@ -10,6 +10,8 @@ class FavoriteViewModel : ViewModel() {
     private val _favoriteList: MutableLiveData<List<DetailInfo>> = MutableLiveData()
     val favoriteList: LiveData<List<DetailInfo>> get() = _favoriteList
 
+    var isLogin: Boolean = false
+
     fun addFavoriteItem(item: DetailInfo) {
         val currentList = _favoriteList.value?.toMutableList() ?: mutableListOf()
         currentList.add(0, item)
