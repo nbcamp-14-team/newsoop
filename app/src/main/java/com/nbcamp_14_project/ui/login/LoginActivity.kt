@@ -64,7 +64,8 @@ class LoginActivity : AppCompatActivity() {
                     loginViewModel.getCurrentUser(account.idToken!!)
                     Toast.makeText(this, "로그인 성공", Toast.LENGTH_SHORT)
                         .show()
-                        finish()
+//                        CategoryDialog(this).show()
+                    finish()
 
 
                 } catch (e: ApiException) {
