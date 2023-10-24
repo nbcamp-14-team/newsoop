@@ -34,7 +34,7 @@ class MainFragmentViewModel(
     fun headLineNews(query: String) {
         viewModelScope.launch {
 
-            val docs = searchNews(query + "헤드라인", 5,sort ="sim")
+            val docs = searchNews(query + "헤드라인", 5, sort = "sim")
             val item = docs.items ?: return@launch
             for (i in item.indices) {//아이템 개수만큼 for문 실행
                 val thumbnail = getThumbnail(item[i].link.toString())
@@ -51,7 +51,7 @@ class MainFragmentViewModel(
                 val pubDate = item[i].pubDate
                 var date = Date(pubDate)
                 date = date
-                Log.d("date","$date")
+                Log.d("date", "$date")
                 val author = getAuthor(item[i].link.toString())
                 _list.value = repository.addHeadLineItem(
                     HomeModel(
@@ -74,7 +74,7 @@ class MainFragmentViewModel(
 
     fun detailNews(query: String, startingNum: Int? = null) {
         viewModelScope.launch {
-            val docs = searchNews(query, 5, startingNum,sort="sim")
+            val docs = searchNews(query, 5, startingNum, sort = "sim")
             val item = docs.items ?: return@launch
             for (i in item.indices) {//아이템 개수만큼 for문 실행
                 val thumbnail = getThumbnail(item[i].link.toString())
@@ -89,7 +89,7 @@ class MainFragmentViewModel(
                 val pubDate = item[i].pubDate
                 var date = Date(pubDate)
                 date = date
-                Log.d("date","$date")
+                Log.d("date", "$date")
                 val author = getAuthor(item[i].link.toString())
                 Log.d("linkRecycler", "$link + $author")
                 _newsList.value = repository.addNewsItem(
@@ -140,17 +140,17 @@ class MainFragmentViewModel(
                 author = docs.select("meta[name=dable:author]")?.attr("content")
                     .toString()//radioKorea에서 가져오는법
                 Log.d("authortest", "$author")
-                Utils.getAuthorName(author)
+                author = Utils.getAuthorName(author)
                 if (author == "") {
                     author = docs.select("em[class=media_end_head_journalist_name]")?.html()
                         .toString()//radioKorea에서 가져오는법
                     Log.d("authortest1", "$author")
-                    Utils.getAuthorName(author)
+                    author = Utils.getAuthorName(author)
                     if (author == "") {
                         author = docs.select("meta[property=dable:author]")?.attr("content")
                             .toString()//radioKorea에서 가져오는법
                         Log.d("authortest2", "$author")
-                        Utils.getAuthorName(author)
+                        author = Utils.getAuthorName(author)
                         if (author == "") {
                             author = docs.select("p[class=byline_p]").select("span").html()
                             Log.d("authortest3", "$author")
@@ -165,124 +165,128 @@ class MainFragmentViewModel(
                                     docs.select("meta[property=og:article:author]")
                                         ?.attr("content")
                                 Log.d("authortest4", "$author")
-                                Utils.getAuthorName(author)
+                                author = Utils.getAuthorName(author)
                                 if (author == "") {
                                     author =
                                         docs.select("meta[property=dd:author]")?.attr("content")
                                     Log.d("authortest5", "$author")
-                                    Utils.getAuthorName(author)
+                                    author = Utils.getAuthorName(author)
                                     if (author == "") {
                                         author =
                                             docs.select("div[class=journalist_name]")?.html()
                                         Log.d("authortest6", "$author")
-                                        Utils.getAuthorName(author)
+                                        author = Utils.getAuthorName(author)
                                         if (author == "") {
                                             author = docs.select("meta[property=dd:author]")
                                                 ?.attr("content")
                                             Log.d("authortest7", "$author")
-                                            Utils.getAuthorName(author)
+                                            author = Utils.getAuthorName(author)
+                                            if (author == "") {
+                                                author =
+                                                    docs.select("span[class=d_newsName]")
+                                                        .html()
+                                                Log.d("authortest8", "$author")
+                                                author = Utils.getAuthorName(author)
                                                 if (author == "") {
                                                     author =
-                                                        docs.select("span[class=d_newsName]")
+                                                        docs.select("span[class=writer]")
                                                             .html()
-                                                    Log.d("authortest8", "$author")
-                                                    Utils.getAuthorName(author)
+                                                    Log.d("authortest9", "$author")
+                                                    author = Utils.getAuthorName(author)
                                                     if (author == "") {
                                                         author =
-                                                            docs.select("span[class=writer]")
-                                                                .html()
-                                                        Log.d("authortest9", "$author")
-                                                        Utils.getAuthorName(author)
+                                                            docs.select("div[class=writer_info]")
+                                                                .attr("span")
+                                                        Log.d("authortest10", "$author")
+                                                        author = Utils.getAuthorName(author)
                                                         if (author == "") {
                                                             author =
-                                                                docs.select("div[class=writer_info]")
-                                                                    .attr("span")
-                                                            Log.d("authortest10", "$author")
-                                                            Utils.getAuthorName(author)
+                                                                docs.select("p[class=wr]")
+                                                                    .html()
+                                                            Log.d(
+                                                                "authortest11",
+                                                                "$author"
+                                                            )
+                                                            author = Utils.getAuthorName(author)
                                                             if (author == "") {
                                                                 author =
-                                                                    docs.select("p[class=wr]")
-                                                                        .html()
+                                                                    docs.select("p[class=article_byline]")
+                                                                        .attr("span")
                                                                 Log.d(
-                                                                    "authortest11",
+                                                                    "authortest12",
                                                                     "$author"
                                                                 )
-                                                                Utils.getAuthorName(author)
+                                                                author = Utils.getAuthorName(author)
                                                                 if (author == "") {
                                                                     author =
-                                                                        docs.select("p[class=article_byline]")
-                                                                            .attr("span")
+                                                                        docs.select("span[class=name]")
+                                                                            .html()
                                                                     Log.d(
-                                                                        "authortest12",
+                                                                        "authortest13",
                                                                         "$author"
                                                                     )
-                                                                    Utils.getAuthorName(author)
-                                                                    if (author == "") {
-                                                                        author =
-                                                                            docs.select("span[class=name]")
-                                                                                .html()
-                                                                        Log.d(
-                                                                            "authortest13",
-                                                                            "$author"
-                                                                        )
+                                                                    author =
                                                                         Utils.getAuthorName(author)
-                                                                    }
-                                                                    if (author == "") {
+                                                                }
+                                                                if (author == "") {
 //                                                                        author =
 //                                                                            docs.select("meta[name=author]")
 //                                                                                .attr("content")
+                                                                    author =
+                                                                        author?.replace(
+                                                                            " ",
+                                                                            ""
+                                                                        )
+                                                                    Log.d(
+                                                                        "authortest14",
+                                                                        "$author"
+                                                                    )
+                                                                    author =
+                                                                        Utils.getAuthorName(author)
+                                                                    if (author == "") {
                                                                         author =
-                                                                            author?.replace(
-                                                                                " ",
-                                                                                ""
+                                                                            docs.select(
+                                                                                "span[id=writeName]"
                                                                             )
+                                                                                .html()
                                                                         Log.d(
-                                                                            "authortest14",
+                                                                            "authortest15",
                                                                             "$author"
                                                                         )
-                                                                        Utils.getAuthorName(author)
+                                                                        author =
+                                                                            Utils.getAuthorName(
+                                                                                author
+                                                                            )
                                                                         if (author == "") {
                                                                             author =
                                                                                 docs.select(
-                                                                                    "span[id=writeName]"
+                                                                                    "p[class=arvdate]"
                                                                                 )
-                                                                                    .html()
+                                                                                    .attr(
+                                                                                        "span"
+                                                                                    )
                                                                             Log.d(
-                                                                                "authortest15",
+                                                                                "authortest16",
                                                                                 "$author"
                                                                             )
-                                                                            Utils.getAuthorName(author)
+                                                                            author =
+                                                                                Utils.getAuthorName(
+                                                                                    author
+                                                                                )
                                                                             if (author == "") {
                                                                                 author =
-                                                                                    docs.select(
-                                                                                        "p[class=arvdate]"
-                                                                                    )
-                                                                                        .attr(
-                                                                                            "span"
-                                                                                        )
-                                                                                Log.d(
-                                                                                    "authortest16",
-                                                                                    "$author"
-                                                                                )
-                                                                                Utils.getAuthorName(author)
-                                                                                if (author == "") {
-                                                                                    author =
-                                                                                        "기자 정보가 없습니다."
-                                                                                }
+                                                                                    "기자 정보가 없습니다."
                                                                             }
                                                                         }
                                                                     }
-
                                                                 }
-
                                                             }
-
                                                         }
                                                     }
                                                 }
+                                            }
                                         }
                                     }
-
                                 }
                             }
                         }
