@@ -42,7 +42,6 @@ class FavoriteFragment : Fragment() {
     private val viewModel: FavoriteViewModel by activityViewModels()
     private val detailViewModel: DetailViewModel by activityViewModels()
     private val loginViewModel: LoginViewModel by activityViewModels()
-    private val uid = FirebaseAuth.getInstance().currentUser?.uid
     private val firestore = FirebaseFirestore.getInstance()
     private var isLogin = false
     private var auth = FirebaseAuth.getInstance()
@@ -65,18 +64,46 @@ class FavoriteFragment : Fragment() {
         val loginBox = binding.root.findViewById<ConstraintLayout>(R.id.login_box)
         val profileBox = binding.root.findViewById<ConstraintLayout>(R.id.profile_box)
 
-
         if (FirebaseAuth.getInstance().currentUser != null) {
-
             loginBox.visibility = View.INVISIBLE
             profileBox.visibility = View.VISIBLE
 
+            val collectionRef = firestore.collection("User").document(FirebaseAuth.getInstance().currentUser?.uid ?: return)
+            collectionRef.get().addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    val document = task.result
+                    if (document.exists()) {
+                        val nameField = document.getString("name")
+                        val emailField = document.getString("email")
+                        binding.tvNick.text = "이름 : $nameField"
 
-        } else {
+
+
+                    } else {
+                        Log.d("data", "no data")
+                    }
+                } else {
+                    Log.d("data", "no data")
+                }
+            }
+        }else {
             // 로그아웃 상태일 때
             loginBox.visibility = View.VISIBLE
             profileBox.visibility = View.INVISIBLE
         }
+
+
+//        if (FirebaseAuth.getInstance().currentUser != null) {
+//
+//            loginBox.visibility = View.INVISIBLE
+//            profileBox.visibility = View.VISIBLE
+//
+//
+//        } else {
+//            // 로그아웃 상태일 때
+//            loginBox.visibility = View.VISIBLE
+//            profileBox.visibility = View.INVISIBLE
+//        }
 
         binding.btnLogout.setOnClickListener {
             Firebase.auth.signOut()
@@ -126,26 +153,27 @@ class FavoriteFragment : Fragment() {
 
 
 
-        if (FirebaseAuth.getInstance().currentUser != null) {
-
-            val collectionRef = firestore.collection("User").document(uid!!)
-            collectionRef.get().addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    val document = task.result
-                    if (document.exists()) {
-                        val nameField = document.getString("name")
-                        val emailField = document.getString("email")
-
-
-
-                    } else {
-                        Log.d("data", "no data")
-                    }
-                } else {
-                    Log.d("data", "no data")
-                }
-            }
-        }
+//        if (FirebaseAuth.getInstance().currentUser != null) {
+//
+//            val collectionRef = firestore.collection("User").document(uid!!)
+//            collectionRef.get().addOnCompleteListener { task ->
+//                if (task.isSuccessful) {
+//                    val document = task.result
+//                    if (document.exists()) {
+//                        val nameField = document.getString("name")
+//                        val emailField = document.getString("email")
+//                        binding.tvNick.text = "이름 : $nameField"
+//
+//
+//
+//                    } else {
+//                        Log.d("data", "no data")
+//                    }
+//                } else {
+//                    Log.d("data", "no data")
+//                }
+//            }
+//        }
 
 
     }
