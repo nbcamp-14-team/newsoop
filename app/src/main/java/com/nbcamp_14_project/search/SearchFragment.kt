@@ -80,9 +80,12 @@ class SearchFragment : Fragment() {
 
         searchBtn.setOnClickListener {
             query = binding.searchInput.text.toString()
+            //최근 검색어에서 같은 단어가 있으면 지우고 새로 넣기
+            viewModel.removeRecentSearchItem(query)
             viewModel.clearAllItems()
             viewModel.setRecentSearchItem(query)
             viewModel.getSearchNews(query, 5, 1)
+
             //키보드 내리는 기능
             val imm =
                 requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
@@ -108,9 +111,6 @@ class SearchFragment : Fragment() {
                     (binding.searchRecyclerView.layoutManager as LinearLayoutManager).findLastCompletelyVisibleItemPosition()
                 val itemCount = adapter.itemCount - 1
                 Log.d("VisiblePosition", "$lastVisiblePosition + $itemCount")
-
-                // TODO : 최근 검색어에서 같은 단어가 있으면 지우고 새로 넣기
-
                 if (!binding.searchRecyclerView.canScrollHorizontally(1) && lastVisiblePosition == itemCount) {
                     viewModel.getSearchNews(query, 5, countStart)
                     countStart += 6
