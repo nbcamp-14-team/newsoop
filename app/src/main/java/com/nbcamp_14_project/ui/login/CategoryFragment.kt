@@ -46,7 +46,7 @@ class CategoryFragment : Fragment() {
                     if (switch){
                         button.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(requireContext(),R.color.green))
                         val text = button.text.toString()
-                        loginViewModel.category = text
+                        loginViewModel.category.value = text
                     }else{
                         button.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(requireContext(),R.color.white))
                     }
@@ -55,6 +55,7 @@ class CategoryFragment : Fragment() {
             }
             btnComplete.setOnClickListener {
                 parentFragmentManager.popBackStack()
+
             }
         }
     }
