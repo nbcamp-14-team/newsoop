@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="24dp"
+    android:id="@+id/cl_signup"
     tools:context=".SignUpActivity">
 
     <TextView
@@ -21,6 +22,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <ScrollView
+        android:id="@+id/scrollView2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -66,15 +68,15 @@
                 android:id="@+id/et_password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:imeOptions="actionNext"
-                android:hint="비밀번호를 입력해주세요" />
+                android:hint="비밀번호를 입력해주세요"
+                android:imeOptions="actionNext" />
 
             <EditText
                 android:id="@+id/et_check_pw"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:imeOptions="actionNext"
-                android:hint="비밀번호를 확인해주세요" />
+                android:hint="비밀번호를 확인해주세요"
+                android:imeOptions="actionNext" />
 
             <TextView
                 android:id="@+id/tv_name"
@@ -89,17 +91,47 @@
                 android:id="@+id/et_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:imeOptions="actionNext"
-                android:hint="이름을 입력해주세요" />
+                android:hint="이름을 입력해주세요"
+                android:imeOptions="actionNext" />
+
+            <TextView
+                android:id="@+id/tv_category"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:text="카테고리"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tv_choose_category"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="클릭해서 선택하기"
+                android:textSize="20sp"
+                android:textStyle="bold"/>
+
 
             <Button
                 android:id="@+id/btn_sign_up"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
                 android:layout_gravity="center"
+                android:layout_marginTop="20dp"
                 android:text="회원가입" />
+
+
+
         </androidx.appcompat.widget.LinearLayoutCompat>
     </ScrollView>
+
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/frag_category"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
