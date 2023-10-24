@@ -206,7 +206,7 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
 
             favoriteCollection.add(favoriteData)
         } else {
-            Toast.makeText(requireContext(), "로그인을 해주세요.", Toast.LENGTH_SHORT).show()
+//            Toast.makeText(requireContext(), "로그인을 해주세요".toString() )show()
         }
 
     }
@@ -224,6 +224,11 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
                 document.reference.delete()
             }
         }
+    }
+
+
+    fun restoreFavoriteFromFireStore() {
+
     }
 
 
