@@ -37,8 +37,8 @@ class SignUpActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivitySignUpBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        setTextWatcher()
         fbFireStore = FirebaseFirestore.getInstance()
+        setTextWatcher()
         shakeAnimation = AnimationUtils.loadAnimation(this, R.anim.shake)
         //회원가입 완료버튼
         binding.btnSignUp.setOnClickListener {
