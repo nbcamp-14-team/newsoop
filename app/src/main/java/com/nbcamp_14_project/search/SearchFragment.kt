@@ -129,8 +129,6 @@ class SearchFragment : Fragment() {
                 binding.searchInput.setText(searchWord)
                 Log.d("search", "$position : $searchWord")
                 binding.searchBtn.performClick()
-                // 똑같은 검색어 지우기
-                viewModel.removeRecentSearchItem(searchWord)
             }
         })
     }
