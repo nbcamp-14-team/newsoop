@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
+import com.nbcamp_14_project.Utils
 import com.nbcamp_14_project.databinding.FragmentSearchItemBinding
 import com.nbcamp_14_project.home.HomeModel
 
@@ -52,7 +53,7 @@ class SearchListAdapter(
     ) : RecyclerView.ViewHolder(binding.root) {
         fun bind(item: HomeModel) = with(binding) {
             searchTitle.text = item.title
-            searchDate.text = item.pubDate?.toString()
+            searchDate.text = item.pubDate?.time?.let { Utils.calculationTime(it) } ?: ""
             searchImage.load(item.thumbnail)
             cardView.setOnClickListener {
                 onClick(

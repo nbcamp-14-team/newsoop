@@ -109,6 +109,8 @@ class SearchFragment : Fragment() {
                 val itemCount = adapter.itemCount - 1
                 Log.d("VisiblePosition", "$lastVisiblePosition + $itemCount")
 
+                // TODO : 최근 검색어에서 같은 단어가 있으면 지우고 새로 넣기
+
                 if (!binding.searchRecyclerView.canScrollHorizontally(1) && lastVisiblePosition == itemCount) {
                     viewModel.getSearchNews(query, 5, countStart)
                     countStart += 6
@@ -122,14 +124,13 @@ class SearchFragment : Fragment() {
         })
 
         tagAdapter.setItemClickListener(object : SearchTagAdapter.OnItemClickListener {
-            override fun onClick(v: View, position: Int) {
-
+            override fun onClick(v: View, position: Int, searchWord: String) {
                 // 최근 검색어 가져오기
-                val list = viewModel.recentSearchList.value!!
-                binding.searchInput.setText(list[position])
+                binding.searchInput.setText(searchWord)
+                Log.d("search", "$position : $searchWord")
                 binding.searchBtn.performClick()
                 // 똑같은 검색어 지우기
-                viewModel.removeRecentSearchItem(position)
+                viewModel.removeRecentSearchItem(searchWord)
             }
         })
     }

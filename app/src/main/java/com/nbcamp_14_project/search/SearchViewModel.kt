@@ -14,6 +14,7 @@ import kotlinx.coroutines.withContext
 import org.jsoup.Jsoup
 import java.io.EOFException
 import java.io.IOException
+import java.util.Date
 import java.util.concurrent.atomic.AtomicInteger
 import java.util.zip.ZipException
 
@@ -33,8 +34,8 @@ class SearchViewModel(
         _recentSearchList.value = repository.getRecentSearchList()
     }
 
-    fun removeRecentSearchItem(position: Int) {
-        _recentSearchList.value = repository.removeRecentSearchItem(position)
+    fun removeRecentSearchItem(searchWord: String) {
+        _recentSearchList.value = repository.removeRecentSearchItem(searchWord)
     }
 
     fun setRecentSearchItem(query: String) {
@@ -55,6 +56,7 @@ class SearchViewModel(
                     val description = item[i].description
                     val link = item[i].link
                     val pubDate = item[i].pubDate
+                    val date = Date(pubDate)
                     val author = getAuthor(item[i].link.toString())
                     repository.addNewsItem(
                         HomeModel(
@@ -62,7 +64,7 @@ class SearchViewModel(
                             thumbnail = thumbnail,
                             description = description,
                             link = link,
-                            pubDate = null, //임의로 수정
+                            pubDate = date, //임의로 수정
                             author = author,
                             viewType = 1
                         )

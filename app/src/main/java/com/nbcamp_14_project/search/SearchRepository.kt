@@ -21,7 +21,7 @@ interface SearchRepository {
     fun clearList(): List<HomeModel>
     fun getRecentSearchList(): List<String>
     fun addRecentSearchList(searchWord: String): List<String>
-    fun removeRecentSearchItem(position: Int): List<String>
+    fun removeRecentSearchItem(searchWord: String): List<String>
 }
 
 class SearchRepositoryImpl(
@@ -71,8 +71,8 @@ class SearchRepositoryImpl(
         return recentSearchList
     }
 
-    override fun removeRecentSearchItem(position: Int): List<String> {
-        recentSearchList.removeAt(position)
+    override fun removeRecentSearchItem(searchWord: String): List<String> {
+        recentSearchList.remove(searchWord)
         return recentSearchList
     }
 }

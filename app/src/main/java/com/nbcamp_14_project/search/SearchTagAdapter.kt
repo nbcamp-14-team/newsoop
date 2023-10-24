@@ -43,15 +43,16 @@ class SearchTagAdapter : ListAdapter<String, SearchTagAdapter.ViewHolder>(
 //    }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.btn.text = getItem(position)
+        val text = getItem(position)
+        holder.btn.text = text
         holder.btn.setOnClickListener {
-            itemClickListener.onClick(it, position)
+            itemClickListener.onClick(it, position, text)
         }
     }
 
     // (2) 리스너 인터페이스
     interface OnItemClickListener {
-        fun onClick(v: View, position: Int)
+        fun onClick(v: View, position: Int, searchWord: String)
     }
 
     // (3) 외부에서 클릭 시 이벤트 설정
