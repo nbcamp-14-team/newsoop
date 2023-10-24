@@ -57,9 +57,14 @@ class LoginActivity : AppCompatActivity() {
                     loginViewModel.getCurrentUser(account.idToken!!)
                     Toast.makeText(this, "로그인 성공", Toast.LENGTH_SHORT)
                         .show()
+                    MyDialog(this).show()
+                    finish()
+
                 } catch (e: ApiException) {
                     Toast.makeText(this, e.localizedMessage, Toast.LENGTH_SHORT).show()
                 }
+            }else{
+                Toast.makeText(this,"로그인 실패",Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -70,13 +75,13 @@ class LoginActivity : AppCompatActivity() {
 
         binding.btnLogin.setOnClickListener {
             logIn()
-            finish()
+
         }
 
         binding.ivGoogleLogin.setOnClickListener {
+            loginViewModel.signOut()
             setGoogleLogin()
             googleLogin()
-            finish()
 
         }
 
@@ -84,8 +89,6 @@ class LoginActivity : AppCompatActivity() {
 //            naverLogin()
         }
     }
-
-
 
     private fun setGoogleLogin() {
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -109,10 +112,12 @@ class LoginActivity : AppCompatActivity() {
                 if (task.isSuccessful) {
 
                     Toast.makeText(this, "complete", Toast.LENGTH_SHORT).show()
+                    finish()
+
                 } else {
                     Log.e("LoginActivity", "login fail")
                 }
-            }
+
     }
 
     //    private fun naverLogin() {
@@ -167,4 +172,4 @@ class LoginActivity : AppCompatActivity() {
 //    }
 
 
-}
+}}
