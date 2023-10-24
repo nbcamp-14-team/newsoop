@@ -16,7 +16,6 @@ class HomeViewPagerAdapter(fragmentActivity: FragmentActivity):FragmentStateAdap
         HomeFragmentTabs(HomeFragment("IT"),"IT"),
         HomeFragmentTabs(HomeFragment("과학"),"과학"),
         HomeFragmentTabs(HomeFragment("세계"),"세계"),
-
     )
 
     override fun getItemCount(): Int {
