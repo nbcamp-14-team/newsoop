@@ -9,6 +9,8 @@ import android.text.TextWatcher
 import android.util.Log
 import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.nbcamp_14_project.data.model.User
 import com.nbcamp_14_project.databinding.ActivityLoginBinding
 import com.nbcamp_14_project.databinding.ActivitySignUpBinding
 import com.nbcamp_14_project.ui.login.LoginActivity
@@ -17,11 +19,13 @@ class SignUpActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySignUpBinding
     private lateinit var auth: FirebaseAuth
+    private lateinit var fbFireStore: FirebaseFirestore
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySignUpBinding.inflate(layoutInflater)
         setContentView(binding.root)
         emailTextWatcher()
+        fbFireStore = FirebaseFirestore.getInstance()
         binding.btnSignUp.setOnClickListener {
             signUp()
         }
@@ -31,12 +35,16 @@ class SignUpActivity : AppCompatActivity() {
     private fun signUp(){
         val email = binding.etEmail.text
         val pw = binding.etPassword.text
+        val name = binding.etName.text
         auth = FirebaseAuth.getInstance()
         auth.createUserWithEmailAndPassword(email.toString(), pw.toString())
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
-                    val user = auth.currentUser
-                    Log.d("LoginActivity", "login success! ${user?.email}")
+                    val curUser = auth.currentUser
+                    val user = User()
+                    user.email = curUser?.email
+                    user.name = name.toString()
+                    fbFireStore.collection("User").document(curUser!!.uid).set(user)
                     val intent = Intent(this, LoginActivity::class.java).apply {
                         putExtra("id", email.toString())
                     }
