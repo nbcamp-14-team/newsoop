@@ -4,5 +4,5 @@
     <color name="white">#FFFFFFFF</color>
     <color name="green">#229627</color>
     <color name="transparentBackground">#CC000000</color>
-    <color name="buttonColor">#FF5733</color>
+    <color name="wrongColor">#FF5733</color>
 </resources>

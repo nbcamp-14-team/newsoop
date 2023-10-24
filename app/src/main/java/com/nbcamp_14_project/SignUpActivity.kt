@@ -7,9 +7,16 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
+import android.view.View
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.core.content.ContextCompat
+import androidx.core.widget.addTextChangedListener
+import androidx.databinding.adapters.TextViewBindingAdapter.setTextWatcher
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.google.firebase.firestore.FirebaseFirestore
 import com.nbcamp_14_project.data.model.User
 import com.nbcamp_14_project.databinding.ActivityLoginBinding
@@ -25,31 +32,61 @@ class SignUpActivity : AppCompatActivity() {
     private lateinit var auth: FirebaseAuth
     private lateinit var fbFireStore: FirebaseFirestore
     private val loginViewModel: LoginViewModel by viewModels()
+    private lateinit var shakeAnimation: Animation
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySignUpBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        emailTextWatcher()
+        setTextWatcher()
         fbFireStore = FirebaseFirestore.getInstance()
+        shakeAnimation = AnimationUtils.loadAnimation(this, R.anim.shake)
+        //회원가입 완료버튼
         binding.btnSignUp.setOnClickListener {
             signUp()
         }
-        binding.tvCategory.setOnClickListener {
+        //카테고리 버튼
+        binding.tvChooseCategory.setOnClickListener {
             showCategory()
         }
-
     }
 
-    private fun showCategory(){
+    private fun checkEmail() {
+        val emailToCheck = binding.etEmail.text.toString()
+        fbFireStore.collection("User")
+            .whereEqualTo("email", emailToCheck)
+            .get()
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    val querySnapshot = task.result
+                    if (querySnapshot != null && !querySnapshot.isEmpty) {
+                        // 중복된 이메일이 이미 존재함
+                        binding.btnCheckExist.startAnimation(shakeAnimation)
+                        Toast.makeText(this, "중복된 이메일이 존재합니다", Toast.LENGTH_SHORT).show()
+                    } else {
+                        // 이메일이 중복되지 않음
+                        Toast.makeText(this, "사용가능 합니다", Toast.LENGTH_SHORT).show()
+                        binding.tvEmailWatcher.text = "사용가능한 아이디입니다."
+                        binding.btnCheckExist.visibility = View.INVISIBLE
+                        binding.ivCheck.visibility = View.VISIBLE
+                    }
+                }
+            }
+    }
+
+    private fun showCategory() {
         val detailFragment = CategoryFragment()
         val transaction = supportFragmentManager.beginTransaction()
         transaction.add(R.id.frag_category, detailFragment)
         transaction.setReorderingAllowed(true)
         transaction.addToBackStack(null)
         transaction.commit()
-        binding.tvChooseCategory.text = loginViewModel.category
+        loginViewModel.category.observe(this) { text ->
+            binding.tvChooseCategory.text = text
+        }
+
     }
-    private fun signUp(){
+
+    private fun signUp() {
         val email = binding.etEmail.text
         val pw = binding.etPassword.text
         val name = binding.etName.text
@@ -61,12 +98,12 @@ class SignUpActivity : AppCompatActivity() {
                     val user = User()
                     user.email = curUser?.email
                     user.name = name.toString()
-                    user.category = loginViewModel.category
+                    user.category = loginViewModel.category.value
                     fbFireStore.collection("User").document(curUser!!.uid).set(user)
                     val intent = Intent(this, LoginActivity::class.java).apply {
                         putExtra("id", email.toString())
                     }
-                    setResult(RESULT_OK,intent)
+                    setResult(RESULT_OK, intent)
                     if (!isFinishing) finish()
                 } else {
                     Log.e("LoginActivity", "login fail")
@@ -75,37 +112,183 @@ class SignUpActivity : AppCompatActivity() {
             }
     }
 
-    private fun emailTextWatcher(){
-        binding.etEmail.addTextChangedListener(object: TextWatcher {
+    private fun setTextWatcher() {
+        binding.etEmail.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
 
             }
+
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-
+                binding.btnCheckExist.visibility = View.VISIBLE
+                binding.ivCheck.visibility = View.INVISIBLE
             }
+
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                emailPattern()
+                binding.run {
+                    val length: Int = s?.length ?: 0
+                    //커서 따라가기
+                    etEmail.requestFocus()
+                    //아이디의 길이에 따른 에러메세지
+                    when (length) {
+                        0 -> {
+                            tvEmailWatcher.text = "6-25자의 이메일 형식으로 입력해주세요"
+                            tvEmailWatcher.setTextColor(
+                                ContextCompat.getColor(
+                                    this@SignUpActivity,
+                                    R.color.wrongColor
+                                )
+                            )
+                        }
+
+                        in 1..5 -> {
+                            tvEmailWatcher.text = "아이디가 너무 짧아요"
+                            tvEmailWatcher.setTextColor(
+                                ContextCompat.getColor(
+                                    this@SignUpActivity,
+                                    R.color.wrongColor
+                                )
+                            )
+                        }
+
+                        in 6..25 ->
+                            if (!emailPattern()) {
+                                tvEmailWatcher.text = "이메일 형식이 아니에요"
+                            } else {
+                                tvEmailWatcher.text = "중복체크를 해주세요."
+                                binding.btnCheckExist.setOnClickListener {
+                                    checkEmail()
+                                }
+                                tvEmailWatcher.setTextColor(
+                                    ContextCompat.getColor(
+                                        this@SignUpActivity,
+                                        R.color.green
+                                    )
+                                )
+                            }
+
+                        else -> {
+                            tvEmailWatcher.text = "아이디가 너무 길어요"
+                            tvEmailWatcher.setTextColor(
+                                ContextCompat.getColor(
+                                    this@SignUpActivity,
+                                    R.color.wrongColor
+                                )
+                            )
+                        }
+                    }
+                }
+
 
             }
-
 
 
         })
+        binding.etPassword.addTextChangedListener(
+            object : TextWatcher {
+                override fun afterTextChanged(s: Editable?) {
+
+                }
+
+                override fun beforeTextChanged(
+                    s: CharSequence?,
+                    start: Int,
+                    count: Int,
+                    after: Int,
+                ) {
+
+                }
+
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                    binding.run {
+                        val length: Int = s?.length ?: 0
+                        etPassword.requestFocus()
+                        val regex = "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[!@#$%^&+=]).+\$".toRegex()
+                        when (length) {
+                            0 -> {
+                                tvPasswordWatcher.text = "6자 이상, 1개 이상의 숫자와 기호를 포함해주세요"
+                                tvPasswordWatcher.setTextColor(
+                                    ContextCompat.getColor(
+                                        this@SignUpActivity,
+                                        R.color.wrongColor
+                                    )
+                                )
+                            }
+
+                            in 1..5 -> {
+                                tvPasswordWatcher.text = "비밀번호가 너무 짧아요"
+                                tvPasswordWatcher.setTextColor(
+                                    ContextCompat.getColor(
+                                        this@SignUpActivity,
+                                        R.color.wrongColor
+                                    )
+                                )
+                            }
+
+                            in 6..25 ->
+                                if (!regex.matches(s.toString())) {
+                                    tvPasswordWatcher.text = "1개 이상의 숫자와 기호를 포함해주세요"
+                                } else {
+                                    tvPasswordWatcher.text = "사용 가능한 비밀번호 입니다."
+                                    tvPasswordWatcher.setTextColor(
+                                        ContextCompat.getColor(
+                                            this@SignUpActivity,
+                                            R.color.green
+                                        )
+                                    )
+                                }
+
+                            else -> {
+                                tvPasswordWatcher.text = "아이디가 너무 길어요"
+                                tvPasswordWatcher.setTextColor(
+                                    ContextCompat.getColor(
+                                        this@SignUpActivity,
+                                        R.color.wrongColor
+                                    )
+                                )
+                            }
+                        }
+                    }
+
+
+                }
+
+
+            })
+        binding.etCheckPw.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+
+            }
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                binding.etCheckPw.requestFocus()
+                val checkedPw = binding.etPassword.text
+                if ((binding.tvPasswordWatcher.text == "사용 가능한 비밀번호 입니다.") && (checkedPw.toString() == binding.etCheckPw.text.toString())) {
+                    binding.tvCheckPw.text = "확인되었습니다."
+                }
+
+            }
+        })
     }
 
-    private fun emailPattern():Boolean{
-        val email = binding.etEmail.text.toString().trim()
-        val pattern = android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()
+        private fun emailPattern(): Boolean {
+            val email = binding.etEmail.text.toString().trim()
+            val pattern = android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()
 
-        if (pattern){
-            //이메일 형식일 때
-            binding.etEmail.setBackgroundResource(R.drawable.et_border_radius)
-            return true
-        }else{
-            //이메일 형식이 아닐때
-            binding.etEmail.setBackgroundResource(R.drawable.et_border_radius_red)
-            return false
+            if (pattern) {
+                //이메일 형식일 때
+                binding.etEmail.setBackgroundResource(R.drawable.et_border_radius)
+                return true
+            } else {
+                //이메일 형식이 아닐때
+                binding.etEmail.setBackgroundResource(R.drawable.et_border_radius_red)
+                return false
+            }
         }
+
     }
 
-}
+
