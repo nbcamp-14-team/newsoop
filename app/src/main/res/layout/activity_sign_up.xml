@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="24dp"
+    android:background="@drawable/bg_login"
     tools:context=".SignUpActivity">
 
     <TextView
@@ -14,8 +15,10 @@
         android:layout_height="wrap_content"
         android:text="회원가입"
         android:textColor="@color/black"
-        android:textSize="28sp"
-        android:textStyle="bold"
+        android:paddingHorizontal="20dp"
+        android:paddingVertical="8dp"
+        android:textSize="24sp"
+
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
@@ -45,6 +48,7 @@
                 android:layout_marginTop="36dp"
                 android:text="이메일"
                 android:textSize="16sp"
+                android:textColor="@color/black"
                 android:textStyle="bold" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -68,6 +72,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="중복확인"
+                    android:background="@drawable/et_round_white"
+                    android:textColor="@color/loginText"
+                    android:textStyle="bold"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"/>
@@ -96,6 +103,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="26dp"
                 android:text="비밀번호"
+                android:textColor="@color/black"
                 android:textSize="16sp"
                 android:textStyle="bold" />
 
@@ -133,6 +141,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="36dp"
                 android:text="이름"
+                android:textColor="@color/black"
                 android:textSize="16sp"
                 android:textStyle="bold" />
 
@@ -141,6 +150,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="이름을 입력해주세요"
+                android:textColor="@color/black"
                 android:imeOptions="actionNext" />
 
             <TextView
@@ -149,6 +159,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
                 android:text="카테고리"
+                android:textColor="@color/black"
                 android:textSize="16sp"
                 android:textStyle="bold" />
 
@@ -156,7 +167,9 @@
                 android:id="@+id/tv_choose_category"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
                 android:text="클릭해서 선택하기"
+
                 android:textSize="20sp"
                 android:textStyle="bold" />
 
@@ -165,6 +178,9 @@
                 android:id="@+id/btn_sign_up"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:background="@drawable/et_round_white"
+                android:textColor="@color/loginText"
+                android:textStyle="bold"
                 android:layout_gravity="center"
                 android:layout_marginTop="20dp"
                 android:text="회원가입" />
