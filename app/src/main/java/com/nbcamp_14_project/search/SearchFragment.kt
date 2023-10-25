@@ -136,9 +136,19 @@ class SearchFragment : Fragment() {
     private fun initViewModel() {
         with(viewModel) {
             searchResultList.observe(viewLifecycleOwner) {
+                if (it.isEmpty()) {
+                    binding.searchNot.visibility = View.VISIBLE
+                } else {
+                    binding.searchNot.visibility = View.GONE
+                }
                 adapter.submitList(it.toMutableList())
             }
             recentSearchList.observe(viewLifecycleOwner) {
+                if (it.isEmpty()) {
+                    binding.recentSearchNot.visibility = View.VISIBLE
+                } else {
+                    binding.recentSearchNot.visibility = View.GONE
+                }
                 tagAdapter.submitList(it.toMutableList())
             }
         }
