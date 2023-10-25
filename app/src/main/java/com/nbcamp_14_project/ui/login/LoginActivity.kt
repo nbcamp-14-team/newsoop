@@ -12,7 +12,11 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
+import com.google.android.recaptcha.RecaptchaAction
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseAuthException
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
+import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import com.google.firebase.firestore.FirebaseFirestore
 import com.nbcamp_14_project.databinding.ActivityLoginBinding
 import com.nbcamp_14_project.R
@@ -71,8 +75,8 @@ class LoginActivity : AppCompatActivity() {
                 } catch (e: ApiException) {
                     Toast.makeText(this, e.localizedMessage, Toast.LENGTH_SHORT).show()
                 }
-            }else{
-                Toast.makeText(this,"로그인 실패",Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(this, "로그인 실패", Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -82,7 +86,7 @@ class LoginActivity : AppCompatActivity() {
         }
 
         binding.btnLogin.setOnClickListener {
-            logIn()
+            passLogin()
 
         }
 
@@ -105,28 +109,47 @@ class LoginActivity : AppCompatActivity() {
             .build()
         googleSignInClient = GoogleSignIn.getClient(this, gso)
     }
+
     private fun googleLogin() {
         val signInIntent = googleSignInClient.signInIntent
         getResult.launch(signInIntent)
 
     }
 
+    private fun passLogin() {
+        val loginId = binding.etUsername.text.toString()
+        val loginPw = binding.etPassword.text.toString()
+        if (loginId.isNotEmpty() && loginPw.isNotEmpty()) {
+
+                logIn()
+
+
+        }else {
+            Toast.makeText(this, "빈칸을 확인해주세요", Toast.LENGTH_SHORT).show()
+        }
+    }
+
     private fun logIn() {
         val email = binding.etUsername.text
         val pw = binding.etPassword.text
+        val pattern = android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()
         auth = FirebaseAuth.getInstance()
         auth.signInWithEmailAndPassword(email.toString(), pw.toString())
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
-                    Toast.makeText(this, "complete", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "환영합니다", Toast.LENGTH_SHORT).show()
                     finish()
                 } else {
-                    Log.e("LoginActivity", "login fail")
+                    if(!pattern){
+                        Toast.makeText(this, "이메일 형식이 아닙니다.", Toast.LENGTH_SHORT).show()
+                    }else{
+                        Toast.makeText(this, "아이디, 비밀번호를 확인해주세요.", Toast.LENGTH_SHORT).show()
+                    }
+
                 }
+            }
 
-    }
-
-    //    private fun naverLogin() {
+        //    private fun naverLogin() {
 //        var naverToken: String? = ""
 //
 //        val profileCallback = object : NidProfileCallback<NidProfileResponse> {
@@ -178,4 +201,5 @@ class LoginActivity : AppCompatActivity() {
 //    }
 
 
-}}
+    }
+}
