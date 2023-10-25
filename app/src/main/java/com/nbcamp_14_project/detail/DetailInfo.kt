@@ -1,6 +1,7 @@
 package com.nbcamp_14_project.detail
 
 import android.os.Parcelable
+import android.text.BoringLayout
 import kotlinx.parcelize.Parcelize
 import java.io.Serializable
 import java.sql.Date
@@ -13,4 +14,5 @@ data class DetailInfo (
     val author: String? = null,
     val originalLink: String?,
     val pubDate: String?,
+    val isLike:Boolean?
 ):Parcelable

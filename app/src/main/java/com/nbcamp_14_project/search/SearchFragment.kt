@@ -54,7 +54,7 @@ class SearchFragment : Fragment() {
                 val detailInfo = item.toDetailInfo()
                 if(item.isLike == false){
                     Log.d("isRemove","remooove")
-                    favoriteViewModel.removeFavoriteItem(detailInfo)
+                    favoriteViewModel.removeFavoriteItemToPosition(detailInfo)
                 }else{
                     favoriteViewModel.addFavoriteItem(detailInfo)
                 }
