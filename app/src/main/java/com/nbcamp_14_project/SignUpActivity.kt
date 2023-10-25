@@ -268,6 +268,7 @@ class SignUpActivity : AppCompatActivity() {
         binding.etCheckPw.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
 
+
             }
 
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
@@ -279,6 +280,8 @@ class SignUpActivity : AppCompatActivity() {
                 val checkedPw = binding.etPassword.text
                 if ((binding.tvPasswordWatcher.text == "사용 가능한 비밀번호 입니다.") && (checkedPw.toString() == binding.etCheckPw.text.toString())) {
                     binding.tvCheckPw.text = "확인되었습니다."
+                }else{
+                    binding.tvCheckPw.text=""
                 }
 
             }
