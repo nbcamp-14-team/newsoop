@@ -5,15 +5,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#FFFFFF"
-    tools:context=".detail.DetailFragment"
-    android:backgroundTint="@color/background_green">
+    android:backgroundTint="@color/background_green"
+    tools:context=".detail.DetailFragment">
 
 
     <ImageView
         android:id="@+id/img_back"
         android:layout_width="20dp"
         android:layout_height="20dp"
-        android:layout_marginLeft="10dp"
+        android:layout_marginLeft="16dp"
         android:layout_marginTop="24dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -23,7 +23,7 @@
         android:id="@+id/img_mic"
         android:layout_width="25dp"
         android:layout_height="25dp"
-        android:layout_marginLeft="270dp"
+        android:layout_marginLeft="265dp"
         app:layout_constraintStart_toEndOf="@+id/img_back"
         app:layout_constraintTop_toTopOf="@+id/img_back"
         app:srcCompat="@drawable/ic_mic" />
@@ -47,38 +47,39 @@
         app:srcCompat="@drawable/ic_like" />
 
     <ImageView
-       android:id="@+id/img_thumbnail"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:id="@+id/img_thumbnail"
+        android:layout_width="match_parent"
+        android:layout_height="230dp"
         android:layout_marginTop="16dp"
-        android:scaleType="fitCenter"
+        android:background="@drawable/bg_round"
+        android:src="@drawable/img_muhandojeon"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/img_back"
-        android:src="@drawable/img_muhandojeon"
-        android:background="@drawable/bg_round" />
+        app:layout_constraintTop_toBottomOf="@+id/img_back" />
 
     <TextView
         android:id="@+id/tv_title"
-        android:layout_width="310dp"
-        android:layout_height="wrap_content"
+        android:layout_width="333dp"
+        android:layout_height="52dp"
+        android:layout_marginLeft="16dp"
         android:layout_marginTop="20dp"
-        android:layout_marginLeft="10dp"
-        android:textStyle="bold"
-        android:textSize="20dp"
+        android:textColor="@color/black"
+        android:layout_marginEnd="50dp"
         android:text="Title: Unmasking the Truth\nInvestigative Report expo"
-        app:layout_constraintStart_toStartOf="parent"
+        android:textSize="20dp"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/img_thumbnail" />
 
     <TextView
         android:id="@+id/tv_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:textStyle="bold"
-        android:textSize="20dp"
+        android:layout_marginTop="20dp"
         android:text="정현식"
+        android:textSize="20dp"
+        android:textStyle="bold"
         app:layout_constraintStart_toStartOf="@+id/tv_title"
         app:layout_constraintTop_toBottomOf="@+id/tv_title" />
 
@@ -87,10 +88,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
+        android:text="Following"
+        android:textColor="#2196F3"
         android:textSize="20dp"
         android:textStyle="bold"
-        android:textColor="#2196F3"
-        android:text="Following"
         app:layout_constraintStart_toEndOf="@+id/tv_name"
         app:layout_constraintTop_toTopOf="@+id/tv_name" />
 
@@ -98,47 +99,50 @@
         android:id="@+id/tv_date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="256dp"
+        android:layout_marginBottom="8dp"
+        android:gravity="top"
         android:text="date: 2023-10-23"
-        app:layout_constraintStart_toStartOf="@+id/tv_name"
-        app:layout_constraintTop_toBottomOf="@+id/tv_name" />
+        app:layout_constraintBottom_toBottomOf="@+id/tv_name"
+        app:layout_constraintStart_toStartOf="@+id/tv_name" />
 
     <ScrollView
         android:id="@+id/sv_description"
-        android:layout_width="match_parent"
-        android:layout_height="150dp"
-        android:layout_marginTop="16dp"
+        android:layout_width="409dp"
+        android:layout_height="200dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_date"
+        app:layout_constraintTop_toBottomOf="@id/tv_name"
         app:layout_constraintVertical_bias="0.0">
 
         <TextView
             android:id="@+id/tv_description"
-            android:layout_width="310dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
+            android:layout_marginTop="20dp"
+            android:textColorHint="@color/black"
             android:layout_marginHorizontal="16dp"
             android:text="The nuclear-powered USS Ronald Reagan aircraft carrier arrived at the southeastern port of Busan following trilateral naval drills involving the United States, South Korea and Japan in a show of force against North Korea."
             android:textColor="@color/black"
-            android:textSize="14dp" />
+            android:textSize="17dp" />
 
     </ScrollView>
 
     <Button
         android:id="@+id/btn_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="230dp"
+        android:layout_height="35dp"
         android:layout_marginTop="4dp"
-        android:backgroundTint="#D1DDCB"
-        android:text="See more"
-        android:textColor="#716C6C"
+        android:text="View original text"
+        android:textColor="#717070"
         android:textSize="20dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/sv_description" />
+        app:layout_constraintTop_toBottomOf="@+id/sv_description"
+        android:background="@drawable/btn_white_border"/>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
