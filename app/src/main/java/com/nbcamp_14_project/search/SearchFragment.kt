@@ -19,6 +19,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.nbcamp_14_project.R.layout.item_loading
 import com.nbcamp_14_project.databinding.FragmentSearchBinding
 import com.nbcamp_14_project.detail.DetailViewModel
+import com.nbcamp_14_project.favorite.FavoriteViewModel
+import com.nbcamp_14_project.home.HomeViewModel
 import com.nbcamp_14_project.home.toDetailInfo
 import com.nbcamp_14_project.mainpage.MainActivity
 import kotlinx.coroutines.CoroutineScope
@@ -31,6 +33,7 @@ class SearchFragment : Fragment() {
     private val dialog by lazy { LoadingDialog(requireContext()) }
     private var _binding: FragmentSearchBinding? = null
     private val detailViewModel: DetailViewModel by activityViewModels()
+    private val favoriteViewModel: FavoriteViewModel by activityViewModels()
 
     private val binding get() = _binding!!
 
@@ -45,7 +48,16 @@ class SearchFragment : Fragment() {
                 val detailInfo = item.toDetailInfo()
                 detailViewModel.setDetailInfo(detailInfo)
                 val mainActivity = (activity as MainActivity)
-                mainActivity.test()
+                mainActivity.runDetailFragment()
+            },
+            onSwitch = { item ->
+                val detailInfo = item.toDetailInfo()
+                if(item.isLike == false){
+                    Log.d("isRemove","remooove")
+                    favoriteViewModel.removeFavoriteItem(detailInfo)
+                }else{
+                    favoriteViewModel.addFavoriteItem(detailInfo)
+                }
             }
         )
     }
