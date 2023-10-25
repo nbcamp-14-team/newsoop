@@ -42,11 +42,33 @@ class SignUpActivity : AppCompatActivity() {
         shakeAnimation = AnimationUtils.loadAnimation(this, R.anim.shake)
         //회원가입 완료버튼
         binding.btnSignUp.setOnClickListener {
-            signUp()
+            passSignUp()
         }
         //카테고리 버튼
         binding.tvChooseCategory.setOnClickListener {
             showCategory()
+        }
+    }
+
+    private fun passSignUp() {
+
+        val signIdText = binding.etEmail.text.toString()
+        val signPwText = binding.etPassword.text.toString()
+        val signPwCheckText = binding.etCheckPw.text.toString()
+        val nameText = binding.etName.text.toString()
+        val signIdWatcher = binding.tvEmailWatcher.text.toString()
+        val signPwCheckWatcher = binding.tvCheckPw.text.toString()
+        if (signIdText.isEmpty() || signPwText.isEmpty() || signPwCheckText.isEmpty() || nameText.isEmpty()) {
+            Toast.makeText(this, "입력되지 않은 정보가 있습니다.", Toast.LENGTH_SHORT).show()
+        } else if (signIdWatcher != "사용가능한 아이디입니다.") {
+            when(signIdWatcher){
+                "중복체크를 해주세요." -> {Toast.makeText(this, "중복확인을 완료해주세요.", Toast.LENGTH_SHORT).show()}
+                else ->{Toast.makeText(this, "아이디를 확인해주세요.", Toast.LENGTH_SHORT).show()}
+            }
+        }else if (signPwCheckWatcher != "확인되었습니다."){
+            Toast.makeText(this, "비밀번호를 확인해주세요.", Toast.LENGTH_SHORT).show()
+        }else {
+            signUp()
         }
     }
 
@@ -107,7 +129,6 @@ class SignUpActivity : AppCompatActivity() {
                     if (!isFinishing) finish()
                 } else {
                     Log.e("LoginActivity", "login fail")
-
                 }
             }
     }
@@ -131,7 +152,7 @@ class SignUpActivity : AppCompatActivity() {
                     //아이디의 길이에 따른 에러메세지
                     when (length) {
                         0 -> {
-                            tvEmailWatcher.text = "6-25자의 이메일 형식으로 입력해주세요"
+                            tvEmailWatcher.text = "이메일 형식으로 입력해주세요"
                             tvEmailWatcher.setTextColor(
                                 ContextCompat.getColor(
                                     this@SignUpActivity,
@@ -140,19 +161,9 @@ class SignUpActivity : AppCompatActivity() {
                             )
                         }
 
-                        in 1..5 -> {
-                            tvEmailWatcher.text = "아이디가 너무 짧아요"
-                            tvEmailWatcher.setTextColor(
-                                ContextCompat.getColor(
-                                    this@SignUpActivity,
-                                    R.color.wrongColor
-                                )
-                            )
-                        }
-
-                        in 6..25 ->
+                        in 1..25 ->
                             if (!emailPattern()) {
-                                tvEmailWatcher.text = "이메일 형식이 아니에요"
+                                tvEmailWatcher.text = "이메일 형식으로 입력해주세요"
                             } else {
                                 tvEmailWatcher.text = "중복체크를 해주세요."
                                 binding.btnCheckExist.setOnClickListener {
@@ -205,7 +216,7 @@ class SignUpActivity : AppCompatActivity() {
                         val regex = "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[!@#$%^&+=]).+\$".toRegex()
                         when (length) {
                             0 -> {
-                                tvPasswordWatcher.text = "6자 이상, 1개 이상의 숫자와 기호를 포함해주세요"
+                                tvPasswordWatcher.text = "6자 이상, 숫자 기호 문자를 각각 하나 이상씩 포함해주세요"
                                 tvPasswordWatcher.setTextColor(
                                     ContextCompat.getColor(
                                         this@SignUpActivity,
@@ -226,7 +237,7 @@ class SignUpActivity : AppCompatActivity() {
 
                             in 6..25 ->
                                 if (!regex.matches(s.toString())) {
-                                    tvPasswordWatcher.text = "1개 이상의 숫자와 기호를 포함해주세요"
+                                    tvPasswordWatcher.text = "1개 이상의 숫자, 기호, 문자를 포함해주세요"
                                 } else {
                                     tvPasswordWatcher.text = "사용 가능한 비밀번호 입니다."
                                     tvPasswordWatcher.setTextColor(
@@ -274,21 +285,21 @@ class SignUpActivity : AppCompatActivity() {
         })
     }
 
-        private fun emailPattern(): Boolean {
-            val email = binding.etEmail.text.toString().trim()
-            val pattern = android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()
+    private fun emailPattern(): Boolean {
+        val email = binding.etEmail.text.toString().trim()
+        val pattern = android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()
 
-            if (pattern) {
-                //이메일 형식일 때
-                binding.etEmail.setBackgroundResource(R.drawable.et_border_radius)
-                return true
-            } else {
-                //이메일 형식이 아닐때
-                binding.etEmail.setBackgroundResource(R.drawable.et_border_radius_red)
-                return false
-            }
+        if (pattern) {
+            //이메일 형식일 때
+            binding.etEmail.setBackgroundResource(R.drawable.et_border_radius)
+            return true
+        } else {
+            //이메일 형식이 아닐때
+            binding.etEmail.setBackgroundResource(R.drawable.et_border_radius_red)
+            return false
         }
-
     }
+
+}
 
 
