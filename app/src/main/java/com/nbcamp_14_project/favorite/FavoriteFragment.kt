@@ -74,8 +74,10 @@ class FavoriteFragment : Fragment() {
                     val document = task.result
                     if (document.exists()) {
                         val nameField = document.getString("name")
-                        val emailField = document.getString("email")
+                        val categoryField = document.getString("category")
                         binding.tvNick.text = "이름 : $nameField"
+                        binding.tvCategory.text = "이름 : $categoryField"
+
 
 
 

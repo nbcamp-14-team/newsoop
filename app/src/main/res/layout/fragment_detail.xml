@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#FFFFFF"
-    tools:context=".detail.DetailFragment">
+    tools:context=".detail.DetailFragment"
+    android:backgroundTint="@color/background_green">
 
 
     <ImageView
@@ -13,7 +14,7 @@
         android:layout_width="20dp"
         android:layout_height="20dp"
         android:layout_marginLeft="10dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="24dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_back" />
@@ -47,23 +48,24 @@
 
     <ImageView
        android:id="@+id/img_thumbnail"
-        android:layout_width="400dp"
-        android:layout_height="242dp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
+        android:scaleType="fitCenter"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.454"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/img_back"
-        app:srcCompat="@drawable/img_muhandojeon" />
+        android:src="@drawable/img_muhandojeon"
+        android:background="@drawable/bg_round" />
 
     <TextView
         android:id="@+id/tv_title"
-        android:layout_width="wrap_content"
+        android:layout_width="310dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:layout_marginLeft="10dp"
         android:textStyle="bold"
-        android:textSize="28dp"
+        android:textSize="20dp"
         android:text="Title: Unmasking the Truth\nInvestigative Report expo"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -114,12 +116,13 @@
 
         <TextView
             android:id="@+id/tv_description"
-            android:layout_width="match_parent"
+            android:layout_width="310dp"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:layout_marginHorizontal="16dp"
             android:text="The nuclear-powered USS Ronald Reagan aircraft carrier arrived at the southeastern port of Busan following trilateral naval drills involving the United States, South Korea and Japan in a show of force against North Korea."
             android:textColor="@color/black"
-            android:textSize="18sp" />
+            android:textSize="14dp" />
 
     </ScrollView>
 

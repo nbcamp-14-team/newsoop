@@ -20,6 +20,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModel
 import androidx.recyclerview.widget.LinearLayoutManager
 import coil.load
+import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.nbcamp_14_project.R
@@ -97,7 +98,9 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
             Log.d("info", "#hyunsik")
             binding.tvTitle.text = info.title
             binding.tvDate.text = info.pubDate
-            binding.imgThumbnail.load(info.thumbnail)
+            Glide.with(this)
+                .load(info.thumbnail)
+                .into(binding.imgThumbnail)
             binding.tvDescription.text = info.description
             binding.tvName.text = info.author
         }
