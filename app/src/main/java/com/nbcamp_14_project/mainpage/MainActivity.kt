@@ -35,7 +35,7 @@ class MainActivity : AppCompatActivity() {
         MainViewPagerAdapter(this)
     }
 
-    fun test(){
+    fun runDetailFragment(){
         val detailFragment = DetailFragment()
         val transaction = supportFragmentManager.beginTransaction()
         transaction.add(R.id.detailFragmentContainer, detailFragment)
