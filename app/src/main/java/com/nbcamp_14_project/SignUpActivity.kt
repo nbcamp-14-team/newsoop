@@ -237,7 +237,7 @@ class SignUpActivity : AppCompatActivity() {
 
                             in 6..25 ->
                                 if (!regex.matches(s.toString())) {
-                                    tvPasswordWatcher.text = "1개 이상의 숫자와 기호를 포함해주세요"
+                                    tvPasswordWatcher.text = "1개 이상의 숫자, 기호, 문자를 포함해주세요"
                                 } else {
                                     tvPasswordWatcher.text = "사용 가능한 비밀번호 입니다."
                                     tvPasswordWatcher.setTextColor(
