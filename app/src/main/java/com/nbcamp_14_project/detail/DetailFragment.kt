@@ -20,6 +20,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModel
 import androidx.recyclerview.widget.LinearLayoutManager
 import coil.load
+import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.nbcamp_14_project.R
@@ -30,6 +31,8 @@ import com.nbcamp_14_project.databinding.FragmentFavoriteBinding
 import com.nbcamp_14_project.databinding.FragmentSearchBinding
 import com.nbcamp_14_project.favorite.FavoriteListAdapter
 import com.nbcamp_14_project.favorite.FavoriteViewModel
+import com.nbcamp_14_project.ui.login.LoginActivity
+import com.nbcamp_14_project.ui.login.LoginViewModel
 import java.util.Date
 import java.util.Locale
 
@@ -48,6 +51,7 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
     private var isAnimating = false
     private lateinit var textToSpeech: TextToSpeech
     private val favoriteViewModel: FavoriteViewModel by activityViewModels()
+    private val loginViewModel: LoginViewModel by activityViewModels()
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -70,20 +74,29 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
 
 
         binding.imgLike.setOnClickListener {
-            if (detailInfo != null) {
-                val isFavorite = favoriteViewModel.favoriteList.value?.contains(detailInfo) == true
-                if (isFavorite) {
-                    favoriteViewModel.removeFavoriteItem(detailInfo)
-                    binding.imgLike.setImageResource(R.drawable.ic_like)
-                    removeFavoriteFromFireStore(detailInfo)  // Firestore에서도 제거
-                } else {
-                    favoriteViewModel.addFavoriteItem(detailInfo)
-                    binding.imgLike.setImageResource(R.drawable.ic_check)
-                    addFavoriteToFireStore(detailInfo)  // Firestore에도 추가
+            val user = FirebaseAuth.getInstance().currentUser
+            if (user != null) {
+                // 사용자가 로그인한 경우
+                if (detailInfo != null) {
+                    val isFavorite = favoriteViewModel.favoriteList.value?.contains(detailInfo) == true
+                    if (isFavorite) {
+                        favoriteViewModel.removeFavoriteItem(detailInfo)
+                        binding.imgLike.setImageResource(R.drawable.ic_like)
+                        removeFavoriteFromFireStore(detailInfo)  // Firestore에서도 제거
+                    } else {
+                        favoriteViewModel.addFavoriteItem(detailInfo)
+                        binding.imgLike.setImageResource(R.drawable.ic_check)
+                        addFavoriteToFireStore(detailInfo)  // Firestore에도 추가
+                    }
                 }
-
+            } else {
+                // 사용자가 로그인하지 않은 경우
+                Toast.makeText(requireContext(), "로그인을 해주세요", Toast.LENGTH_SHORT).show()
+                val intent = Intent(requireContext(), LoginActivity::class.java)
+                startActivity(intent)
             }
         }
+
 
         textToSpeech = TextToSpeech(requireContext()) { status ->
             if (status == TextToSpeech.SUCCESS) {
@@ -101,7 +114,11 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
             var date = Date(info.pubDate)// 날짜로 변환
             val value = date.time?.let { Utils.calculationTime(it) }
             binding.tvDate.text = value
-            binding.imgThumbnail.load(info.thumbnail)
+            binding.tvDate.text = info.pubDate
+            Glide.with(this)
+                .load(info.thumbnail)
+                .centerCrop()
+                .into(binding.imgThumbnail)
             binding.tvDescription.text = info.description
             binding.tvName.text = info.author
         }
@@ -205,7 +222,8 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
                 "description" to detailInfo.description,
                 "author" to detailInfo.author,
                 "originalLink" to detailInfo.originalLink,
-                "pubDate" to detailInfo.pubDate
+                "pubDate" to detailInfo.pubDate,
+                "created" to Date()
             )
 
             favoriteCollection.add(favoriteData)

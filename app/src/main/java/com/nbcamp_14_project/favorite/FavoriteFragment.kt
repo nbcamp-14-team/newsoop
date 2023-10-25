@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -13,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 import com.google.firebase.ktx.Firebase
 import com.nbcamp_14_project.R
 import com.nbcamp_14_project.databinding.FragmentFavoriteBinding
@@ -49,15 +51,31 @@ class FavoriteFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
+
         getFavoriteListFromFireStore()
         Log.e("onResum", "#hyunsik")
         // onCreateView 함수 내에서
         val loginBox = binding.root.findViewById<ConstraintLayout>(R.id.login_box)
         val profileBox = binding.root.findViewById<ConstraintLayout>(R.id.profile_box)
+        val logoutButton = binding.root.findViewById<Button>(R.id.btn_logout)
+
+        binding.btnLogout.setOnClickListener {
+            Firebase.auth.signOut()
+
+            if (FirebaseAuth.getInstance().currentUser == null) {
+                loginBox.visibility = View.VISIBLE
+                profileBox.visibility = View.INVISIBLE
+
+                viewModel.setFavoriteList(emptyList())
+            }
+        }
+
 
         if (FirebaseAuth.getInstance().currentUser != null) {
             loginBox.visibility = View.INVISIBLE
             profileBox.visibility = View.VISIBLE
+            logoutButton.visibility = View.VISIBLE
+
 
             val collectionRef = firestore.collection("User").document(FirebaseAuth.getInstance().currentUser?.uid ?: return)
             collectionRef.get().addOnCompleteListener { task ->
@@ -65,8 +83,10 @@ class FavoriteFragment : Fragment() {
                     val document = task.result
                     if (document.exists()) {
                         val nameField = document.getString("name")
-                        val emailField = document.getString("email")
+                        val categoryField = document.getString("category")
                         binding.tvNick.text = "이름 : $nameField"
+                        binding.tvCategory.text = "선호 카테고리 : $categoryField"
+
 
 
 
@@ -81,6 +101,8 @@ class FavoriteFragment : Fragment() {
             // 로그아웃 상태일 때
             loginBox.visibility = View.VISIBLE
             profileBox.visibility = View.INVISIBLE
+            logoutButton.visibility = View.INVISIBLE
+
         }
 
 
@@ -96,16 +118,7 @@ class FavoriteFragment : Fragment() {
 //            profileBox.visibility = View.INVISIBLE
 //        }
 
-        binding.btnLogout.setOnClickListener {
-            Firebase.auth.signOut()
 
-            if (FirebaseAuth.getInstance().currentUser == null) {
-                loginBox.visibility = View.VISIBLE
-                profileBox.visibility = View.INVISIBLE
-
-                viewModel.setFavoriteList(emptyList())
-            }
-        }
 
 
 
@@ -175,7 +188,8 @@ class FavoriteFragment : Fragment() {
         val db = FirebaseFirestore.getInstance()
         val favoriteCollection = db.collection("User").document(userUID).collection("favorites")
 
-        favoriteCollection.get()
+
+        favoriteCollection.orderBy("created", Query.Direction.DESCENDING).get()
             .addOnSuccessListener { querySnapshot ->
                 val favoriteList = mutableListOf<DetailInfo>()
 
