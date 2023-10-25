@@ -23,12 +23,14 @@ import coil.load
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.nbcamp_14_project.R
+import com.nbcamp_14_project.Utils
 
 import com.nbcamp_14_project.databinding.FragmentDetailBinding
 import com.nbcamp_14_project.databinding.FragmentFavoriteBinding
 import com.nbcamp_14_project.databinding.FragmentSearchBinding
 import com.nbcamp_14_project.favorite.FavoriteListAdapter
 import com.nbcamp_14_project.favorite.FavoriteViewModel
+import java.util.Date
 import java.util.Locale
 
 
@@ -96,7 +98,9 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
         viewModel.detailInfo.observe(viewLifecycleOwner) { info ->
             Log.d("info", "#hyunsik")
             binding.tvTitle.text = info.title
-            binding.tvDate.text = info.pubDate
+            var date = Date(info.pubDate)// 날짜로 변환
+            val value = date.time?.let { Utils.calculationTime(it) }
+            binding.tvDate.text = value
             binding.imgThumbnail.load(info.thumbnail)
             binding.tvDescription.text = info.description
             binding.tvName.text = info.author
