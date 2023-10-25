@@ -6,24 +6,15 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.content.ContentProviderCompat.requireContext
-import androidx.core.content.ContextCompat.startActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.android.gms.tasks.OnCompleteListener
-import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
-import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.Query
-import com.google.firebase.firestore.Source
 import com.google.firebase.ktx.Firebase
 import com.nbcamp_14_project.R
-import com.nbcamp_14_project.data.model.User
 import com.nbcamp_14_project.databinding.FragmentFavoriteBinding
 import com.nbcamp_14_project.detail.DetailInfo
 import com.nbcamp_14_project.detail.DetailViewModel
@@ -129,7 +120,7 @@ class FavoriteFragment : Fragment() {
             val detailInfo = item
             detailViewModel.setDetailInfo(detailInfo)
             val mainActivity = (activity as MainActivity)
-            mainActivity.test()
+            mainActivity.runDetailFragment()
         }
 
 
@@ -198,7 +189,7 @@ class FavoriteFragment : Fragment() {
 
                     if (title != null && description != null && originalLink != null && pubDate != null) {
                         val detailInfo =
-                            DetailInfo(title, description, thumbnail, author, originalLink, pubDate)
+                            DetailInfo(title, description, thumbnail, author, originalLink, pubDate, isLike = true)
                         favoriteList.add(detailInfo)
                     }
                 }

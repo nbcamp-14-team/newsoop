@@ -13,7 +13,7 @@ data class HomeModel(
     val link: String? = null,//원문 링크
     val pubDate: Date? = null,//발간일자
     val viewType: Int,
-    val isLike: Boolean? = false
+    var isLike: Boolean? = false//좋아요 확인
 )
 
 fun HomeModel.toDetailInfo(): DetailInfo {
@@ -23,7 +23,8 @@ fun HomeModel.toDetailInfo(): DetailInfo {
         thumbnail = thumbnail,
         author = author,
         originalLink = link,
-        pubDate = pubDate.toString()
+        pubDate = pubDate.toString(),
+        isLike = isLike
     )
 }
 
