@@ -54,7 +54,6 @@ class HomeNewsAdapter(
         fun bind(item: HomeModel) = with(binding) {
             title.text = item.title
             ivThumbnail.load(item.thumbnail)
-//            author.text = item.author + " 기자"
             val value = item.pubDate?.time?.let { Utils.calculationTime(it) } ?: return
             pubDate.text = item.author + " 기자" + " · " + value + " 작성"
 

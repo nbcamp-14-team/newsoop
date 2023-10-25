@@ -19,7 +19,7 @@ import java.util.Date
 import java.util.concurrent.atomic.AtomicInteger
 import java.util.zip.ZipException
 
-class MainFragmentViewModel(
+class HomeViewModel(
     private val searchNews: GetSearchNewsUseCase, private val repository: MainFragmentRepositoryImpl
 ) : ViewModel() {
     private val _list: MutableLiveData<List<HomeModel>> = MutableLiveData()
@@ -88,7 +88,6 @@ class MainFragmentViewModel(
                 val link = item[i].link
                 val pubDate = item[i].pubDate
                 var date = Date(pubDate)
-                date = date
                 Log.d("date", "$date")
                 val author = getAuthor(item[i].link.toString())
                 Log.d("linkRecycler", "$link + $author")
@@ -341,15 +340,15 @@ class MainFragmentViewModel(
     }
 }
 
-class MainFragmentModelFactory : ViewModelProvider.Factory {
+class HomeModelFactory : ViewModelProvider.Factory {
 
     private val repository = MainFragmentRepositoryImpl(
         AtomicInteger(0), RetrofitInstance.search
     )
 
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(MainFragmentViewModel::class.java)) {
-            return MainFragmentViewModel(
+        if (modelClass.isAssignableFrom(HomeViewModel::class.java)) {
+            return HomeViewModel(
                 GetSearchNewsUseCase(repository), repository
             ) as T
         } else {

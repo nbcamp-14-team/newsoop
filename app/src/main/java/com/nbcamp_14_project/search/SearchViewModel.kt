@@ -112,7 +112,7 @@ class SearchViewModel(
                 if (author == "") {
                     author = docs.select("span[class=byline_s]").html()//네이버
 
-                    Log.d("test", "$author")
+                    Log.d("runDetailFragment", "$author")
                     if (author == "") {
                         author = docs.select("meta[property=og:article:author]").attr("content")
                         Log.d("test1", "$author")

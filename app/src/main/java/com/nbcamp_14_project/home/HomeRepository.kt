@@ -24,6 +24,7 @@ interface MainFragmentRepository {
     fun modifyNewsItem(item: HomeModel?):List<HomeModel>
     fun clearNewsItems():List<HomeModel>
     fun clearHeadLineItems():List<HomeModel>
+
 }
 
 class MainFragmentRepositoryImpl(
@@ -145,4 +146,6 @@ class MainFragmentRepositoryImpl(
         list.clear()
         return ArrayList<HomeModel>(list)
     }
+
+
 }

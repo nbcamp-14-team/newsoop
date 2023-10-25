@@ -30,27 +30,27 @@ class HomeFragment(query:String) : Fragment() {
     private val headLineAdapter by lazy {
         HomeHeadLineAdapter(//ViewPager2에서 클릭이 일어났을 때, Detail에 데이터값을 보냄
             onClick = {item ->
-                val detailInfo = item.toDetailInfo()
-                detailViewModel.setDetailInfo(detailInfo)
+                val detailInfo = item.toDetailInfo()//클릭된 아이템의 data class를 toDetailInfo data class로 수정
+                detailViewModel.setDetailInfo(detailInfo)//뷰모델로 전송
                 val mainActivity = (activity as MainActivity)
-                mainActivity.test()
+                mainActivity.runDetailFragment()//DetailFragment 실행
             }
         )
     }
     private val newsAdapter by lazy {
         HomeNewsAdapter(//recyclerView에서 클릭이 일어났을 때, Detail에 데이터값을 보냄
             onClick = { item ->
-                val detailInfo = item.toDetailInfo()
-                detailViewModel.setDetailInfo(detailInfo)
+                val detailInfo = item.toDetailInfo()//클릭된 아이템의 data class를 toDetailInfo data class로 수정
+                detailViewModel.setDetailInfo(detailInfo)//뷰모델로 전송
                 val mainActivity = (activity as MainActivity)
-                mainActivity.test()
+                mainActivity.runDetailFragment()//DetailFragment 실행
             }
         )
     }
-    private val viewPagerViewModel: MainFragmentViewModel by lazy {
+    private val viewPagerViewModel: HomeViewModel by lazy {
         ViewModelProvider(
-            this, MainFragmentModelFactory()
-        )[MainFragmentViewModel::class.java]
+            this, HomeModelFactory()
+        )[HomeViewModel::class.java]
     }
     private var startingNum:Int = 6// 인피니티스크롤 시작지점 지정 변수
 
@@ -65,19 +65,16 @@ class HomeFragment(query:String) : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         Log.d("query","$queryInbox")
-        initView()
-        initViewModel()
-        viewPagerViewModel.headLineNews(queryInbox)
-        viewPagerViewModel.detailNews(queryInbox)
-
-
-
+        initView()//화면 설정 함수
+        initViewModel()//뷰모델 설정 함수
+        viewPagerViewModel.headLineNews(queryInbox)//메인 ViewPager에 헤드라인 뉴스 출력
+        viewPagerViewModel.detailNews(queryInbox)//하단 리사이클러뷰에 뉴스 출력
 
     }
     fun initView() = with(binding) {
-        category.text = queryInbox
+        category.text = queryInbox //
         val slideImageHandler: Handler = Handler()
-        val slideImageRunnable = Runnable {
+        val slideImageRunnable = Runnable {// 메인 ViewPager 자동 스와이프 관련 runnable 함수
             if (rvMainNews.currentItem - 1 == headLineAdapter.itemCount) {
                 rvMainNews.currentItem = 0
             }
@@ -107,11 +104,11 @@ class HomeFragment(query:String) : Fragment() {
          */
 
         rvNews.adapter = newsAdapter//어뎁터 연결
-        rvNews.addOnScrollListener(object :RecyclerView.OnScrollListener(){
-            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+        rvNews.addOnScrollListener(object :RecyclerView.OnScrollListener(){//인피니티 스크롤 구현
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {//스크롤 상태가 변화할 때,
                 super.onScrollStateChanged(recyclerView, newState)
-                val lastVisiblePosition = (rvNews.layoutManager as LinearLayoutManager)!!.findLastCompletelyVisibleItemPosition()
-                val itemCount = newsAdapter.itemCount - 1
+                val lastVisiblePosition = (rvNews.layoutManager as LinearLayoutManager)!!.findLastCompletelyVisibleItemPosition()//마지막으로 보인 Item에 포지션변수
+                val itemCount = newsAdapter.itemCount - 1//Adapter아이템 개수
                 Log.d("VisiblePosition","$lastVisiblePosition + $itemCount")
 
                 if(!rvNews.canScrollHorizontally(1) && lastVisiblePosition == itemCount){
@@ -121,7 +118,6 @@ class HomeFragment(query:String) : Fragment() {
             }
         }
         )
-
 
     }
 

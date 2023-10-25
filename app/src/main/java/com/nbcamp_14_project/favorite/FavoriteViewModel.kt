@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.nbcamp_14_project.detail.DetailInfo
+import com.nbcamp_14_project.home.HomeModel
 
 class FavoriteViewModel : ViewModel() {
 
@@ -27,13 +28,28 @@ class FavoriteViewModel : ViewModel() {
 
 
     }
+    fun removeFavoriteItemToPosition(item: DetailInfo){
+        val currentList = _favoriteList.value?.toMutableList() ?: return
+        fun findIndex(item: DetailInfo?):Int{
+            if(item == null) return 0
+            val findItem = currentList.find{
+                it.thumbnail == item.thumbnail
+            }
+            return currentList.indexOf(findItem)
+        }
+        val findPosition = findIndex(item)
+        if(findPosition < 0){
+            return
+        }
+        if(item == null) return
+        currentList.removeAt(findPosition)
+        _favoriteList.value = currentList
+
+    }
 
     fun setFavoriteList(list: List<DetailInfo>) {
         _favoriteList.value = list
     }
-
-
-
 
 
 
