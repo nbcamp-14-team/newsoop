@@ -196,7 +196,7 @@ class FavoriteFragment : Fragment() {
         val favoriteCollection = db.collection("User").document(userUID).collection("favorites")
 
 
-        favoriteCollection.get()
+        favoriteCollection.orderBy("created", Query.Direction.DESCENDING).get()
             .addOnSuccessListener { querySnapshot ->
                 val favoriteList = mutableListOf<DetailInfo>()
 

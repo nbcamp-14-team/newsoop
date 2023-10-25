@@ -222,7 +222,8 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
                 "description" to detailInfo.description,
                 "author" to detailInfo.author,
                 "originalLink" to detailInfo.originalLink,
-                "pubDate" to detailInfo.pubDate
+                "pubDate" to detailInfo.pubDate,
+                "created" to Date()
             )
 
             favoriteCollection.add(favoriteData)
