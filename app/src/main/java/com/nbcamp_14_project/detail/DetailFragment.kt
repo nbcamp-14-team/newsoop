@@ -114,7 +114,6 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
             var date = Date(info.pubDate)// 날짜로 변환
             val value = date.time?.let { Utils.calculationTime(it) }
             binding.tvDate.text = value
-            binding.tvDate.text = info.pubDate
             Glide.with(this)
                 .load(info.thumbnail)
                 .centerCrop()
