@@ -20,7 +20,6 @@ import com.nbcamp_14_project.R.layout.item_loading
 import com.nbcamp_14_project.databinding.FragmentSearchBinding
 import com.nbcamp_14_project.detail.DetailViewModel
 import com.nbcamp_14_project.favorite.FavoriteViewModel
-import com.nbcamp_14_project.home.HomeViewModel
 import com.nbcamp_14_project.home.toDetailInfo
 import com.nbcamp_14_project.mainpage.MainActivity
 import kotlinx.coroutines.CoroutineScope
@@ -34,9 +33,7 @@ class SearchFragment : Fragment() {
     private var _binding: FragmentSearchBinding? = null
     private val detailViewModel: DetailViewModel by activityViewModels()
     private val favoriteViewModel: FavoriteViewModel by activityViewModels()
-
     private val binding get() = _binding!!
-
     private val viewModel: SearchViewModel by lazy {
         ViewModelProvider(
             this, SearchViewModelFactory()
@@ -52,17 +49,16 @@ class SearchFragment : Fragment() {
             },
             onSwitch = { item ->
                 val detailInfo = item.toDetailInfo()
-                if(item.isLike == false){
-                    Log.d("isRemove","remooove")
+                if (item.isLike == false) {
+                    Log.d("isRemove", "remove")
                     favoriteViewModel.removeFavoriteItemToPosition(detailInfo)
-                }else{
+                } else {
                     favoriteViewModel.addFavoriteItem(detailInfo)
                 }
             }
         )
     }
     private val tagAdapter by lazy { SearchTagAdapter() }
-
     private var query = ""
     private var countStart = 6
 
@@ -126,6 +122,7 @@ class SearchFragment : Fragment() {
                 if (!binding.searchRecyclerView.canScrollHorizontally(1) && lastVisiblePosition == itemCount) {
                     viewModel.getSearchNews(query, 5, countStart)
                     countStart += 6
+                    //검색 로딩 딜레이 주기 : 3초
                     CoroutineScope(Dispatchers.Main).launch {
                         dialog.show()
                         delay(3000)
@@ -148,24 +145,27 @@ class SearchFragment : Fragment() {
     private fun initViewModel() {
         with(viewModel) {
             searchResultList.observe(viewLifecycleOwner) {
-                if (it.isEmpty()) {
-                    binding.searchNot.visibility = View.VISIBLE
-                } else {
+                // 리스트가 비어 있으면 로고를 표시, 반대면 비표시
+                if (it.isNotEmpty()) {
                     binding.searchNot.visibility = View.GONE
+                } else {
+                    binding.searchNot.visibility = View.VISIBLE
                 }
                 adapter.submitList(it.toMutableList())
             }
             recentSearchList.observe(viewLifecycleOwner) {
-                if (it.isEmpty()) {
-                    binding.recentSearchNot.visibility = View.VISIBLE
-                } else {
+                // 최근 검색어가 없으면 없음 표시, 반대면 비표시
+                if (it.isNotEmpty()) {
                     binding.recentSearchNot.visibility = View.GONE
+                } else {
+                    binding.recentSearchNot.visibility = View.VISIBLE
                 }
                 tagAdapter.submitList(it.toMutableList())
             }
         }
     }
 
+    // 리스트 로딩을 위한 Dialog
     class LoadingDialog(context: Context) : Dialog(context) {
         override fun onCreate(savedInstanceState: Bundle?) {
             super.onCreate(savedInstanceState)
