@@ -58,6 +58,7 @@ class SearchListAdapter(
         fun bind(item: HomeModel) = with(binding) {
             searchTitle.text = item.title
             searchDate.text = item.pubDate?.time?.let { Utils.calculationTime(it) } ?: ""
+            searchImage.clipToOutline = true
             searchImage.load(item.thumbnail)
             cardView.setOnClickListener {
                 onClick(
@@ -65,10 +66,10 @@ class SearchListAdapter(
                 )
             }
             searchSwitch.setOnClickListener {
-                if(item.isLike != searchSwitch.isChecked){// Item의 isLike 상태와 스위치의 상태가 다르면 실행
+                if (item.isLike != searchSwitch.isChecked) {// Item의 isLike 상태와 스위치의 상태가 다르면 실행
 
                     item.isLike = searchSwitch.isChecked
-                    Log.d("ischecked?","${item.isLike}")
+                    Log.d("ischecked?", "${item.isLike}")
                     onSwitch(
                         item.copy(
                             isLike = searchSwitch.isChecked
