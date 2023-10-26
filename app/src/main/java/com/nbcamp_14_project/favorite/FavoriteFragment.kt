@@ -55,7 +55,7 @@ class FavoriteFragment : Fragment() {
 
         getFavoriteListFromFireStore()
         Log.e("onResum", "#hyunsik")
-        // onCreateView 함수 내에서
+
         val loginBox = binding.root.findViewById<ConstraintLayout>(R.id.login_box)
         val profileBox = binding.root.findViewById<ConstraintLayout>(R.id.profile_box)
         val logoutButton = binding.root.findViewById<Button>(R.id.btn_logout)
@@ -75,7 +75,7 @@ class FavoriteFragment : Fragment() {
         }
 
 
-        if (FirebaseAuth.getInstance().currentUser != null) {
+        if (FirebaseAuth.getInstance().currentUser != null ) {
             loginBox.visibility = View.INVISIBLE
             profileBox.visibility = View.VISIBLE
             logoutButton.visibility = View.VISIBLE
