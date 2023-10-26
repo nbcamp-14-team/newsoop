@@ -7,10 +7,12 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
+import com.nbcamp_14_project.Utils
 import com.nbcamp_14_project.databinding.FragmentFavoriteBinding
 import com.nbcamp_14_project.databinding.ItemRvNewsMainBinding
 import com.nbcamp_14_project.detail.DetailInfo
 import com.nbcamp_14_project.detail.DetailViewModel
+import java.util.Date
 
 class FavoriteListAdapter(private val onItemClick: (DetailInfo) -> Unit) : ListAdapter<DetailInfo, FavoriteListAdapter.ViewHolder>(
     object : DiffUtil.ItemCallback<DetailInfo>() {
@@ -53,7 +55,9 @@ class FavoriteListAdapter(private val onItemClick: (DetailInfo) -> Unit) : ListA
             title.text = item.title
             ivThumbnail.load(item.thumbnail)
 //            author.text = item.author
-            pubDate.text = item.pubDate
+            val date = Date(item.pubDate)
+            val value = date.time?.let { Utils.calculationTime(it) }
+            pubDate.text = value
         }
     }
 }

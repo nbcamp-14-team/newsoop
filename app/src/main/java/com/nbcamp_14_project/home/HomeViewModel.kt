@@ -34,7 +34,7 @@ class HomeViewModel(
     fun headLineNews(query: String) {
         viewModelScope.launch {
 
-            val docs = searchNews(query + "헤드라인", 5, sort = "sim")
+            val docs = searchNews("오늘의" + query , 5, sort = "sim")
             val item = docs.items ?: return@launch
             for (i in item.indices) {//아이템 개수만큼 for문 실행
                 val thumbnail = getThumbnail(item[i].link.toString())
