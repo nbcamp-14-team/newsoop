@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -54,10 +55,11 @@ class FavoriteFragment : Fragment() {
 
         getFavoriteListFromFireStore()
         Log.e("onResum", "#hyunsik")
-        // onCreateView 함수 내에서
+
         val loginBox = binding.root.findViewById<ConstraintLayout>(R.id.login_box)
         val profileBox = binding.root.findViewById<ConstraintLayout>(R.id.profile_box)
         val logoutButton = binding.root.findViewById<Button>(R.id.btn_logout)
+        val textview2 = binding.root.findViewById<TextView>(R.id.textView2)
 
         binding.btnLogout.setOnClickListener {
             Firebase.auth.signOut()
@@ -65,16 +67,19 @@ class FavoriteFragment : Fragment() {
             if (FirebaseAuth.getInstance().currentUser == null) {
                 loginBox.visibility = View.VISIBLE
                 profileBox.visibility = View.INVISIBLE
+                textview2.visibility = View.VISIBLE
+
 
                 viewModel.setFavoriteList(emptyList())
             }
         }
 
 
-        if (FirebaseAuth.getInstance().currentUser != null) {
+        if (FirebaseAuth.getInstance().currentUser != null ) {
             loginBox.visibility = View.INVISIBLE
             profileBox.visibility = View.VISIBLE
             logoutButton.visibility = View.VISIBLE
+            binding.textView2.visibility = View.GONE
 
 
             val collectionRef = firestore.collection("User").document(FirebaseAuth.getInstance().currentUser?.uid ?: return)
@@ -83,9 +88,9 @@ class FavoriteFragment : Fragment() {
                     val document = task.result
                     if (document.exists()) {
                         val nameField = document.getString("name")
-                        val categoryField = document.getString("category")
+//                        val categoryField = document.getString("category")
                         binding.tvNick.text = "이름 : $nameField"
-                        binding.tvCategory.text = "선호 카테고리 : $categoryField"
+//                        binding.tvCategory.text = "선호 카테고리 : $categoryField"
 
 
 
@@ -102,6 +107,7 @@ class FavoriteFragment : Fragment() {
             loginBox.visibility = View.VISIBLE
             profileBox.visibility = View.INVISIBLE
             logoutButton.visibility = View.INVISIBLE
+            binding.textView2.visibility = View.VISIBLE
 
         }
 
