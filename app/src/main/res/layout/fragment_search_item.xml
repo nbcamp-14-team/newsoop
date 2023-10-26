@@ -20,6 +20,8 @@
             android:id="@+id/search_image"
             android:layout_width="100dp"
             android:layout_height="100dp"
+            android:layout_marginEnd="5dp"
+            android:background="@drawable/iv_home"
             android:scaleType="centerCrop"
             android:src="@drawable/ic_search" />
 
