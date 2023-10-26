@@ -69,7 +69,12 @@ class LoginActivity : AppCompatActivity() {
                     Toast.makeText(this, "로그인 성공", Toast.LENGTH_SHORT)
                         .show()
 //                        CategoryDialog(this).show()
-                    finish()
+
+                    GlobalScope.launch(Dispatchers.IO) {
+                        delay(1000) // 1000 milliseconds = 1 second
+                        finish()
+                    }
+
 
 
                 } catch (e: ApiException) {
