@@ -88,9 +88,9 @@ class FavoriteFragment : Fragment() {
                     val document = task.result
                     if (document.exists()) {
                         val nameField = document.getString("name")
-                        val categoryField = document.getString("category")
+//                        val categoryField = document.getString("category")
                         binding.tvNick.text = "이름 : $nameField"
-                        binding.tvCategory.text = "선호 카테고리 : $categoryField"
+//                        binding.tvCategory.text = "선호 카테고리 : $categoryField"
 
 
 
