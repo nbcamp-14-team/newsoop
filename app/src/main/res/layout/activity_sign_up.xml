@@ -67,12 +67,13 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/btn_check_exist" />
 
-                <Button
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/btn_check_exist"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="중복확인"
-                    android:background="@drawable/et_round_white"
+                    app:cornerRadius="100dp"
+                    android:backgroundTint="@color/white"
                     android:textColor="@color/loginText"
                     android:textStyle="bold"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -174,11 +175,12 @@
                 android:textStyle="bold" />
 
 
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_sign_up"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/et_round_white"
+                app:cornerRadius="100dp"
+                android:backgroundTint="@color/white"
                 android:textColor="@color/loginText"
                 android:textStyle="bold"
                 android:layout_gravity="center"
