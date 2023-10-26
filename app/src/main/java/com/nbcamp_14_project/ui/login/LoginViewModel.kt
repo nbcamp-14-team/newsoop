@@ -24,4 +24,6 @@ class LoginViewModel: ViewModel() {
     fun signOut(){
         loginRepository.signOut()
     }
+
+
 }
