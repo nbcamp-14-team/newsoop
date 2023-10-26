@@ -1,15 +1,21 @@
 package com.nbcamp_14_project.search
 
+import android.content.Intent
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.core.content.ContentProviderCompat.requireContext
+import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
+import com.google.firebase.auth.FirebaseAuth
 import com.nbcamp_14_project.Utils
 import com.nbcamp_14_project.databinding.FragmentSearchItemBinding
 import com.nbcamp_14_project.home.HomeModel
+import com.nbcamp_14_project.ui.login.LoginActivity
 
 class SearchListAdapter(
     private val onClick: (HomeModel) -> Unit,
@@ -65,8 +71,17 @@ class SearchListAdapter(
                     item
                 )
             }
+            val user = FirebaseAuth.getInstance().currentUser
             searchSwitch.setOnClickListener {
-                if (item.isLike != searchSwitch.isChecked) {// Item의 isLike 상태와 스위치의 상태가 다르면 실행
+                if(user == null){
+                        searchSwitch.isChecked = !searchSwitch.isChecked
+                    onSwitch(
+                        item.copy(
+                            isLike = searchSwitch.isChecked
+                        )
+                    )
+
+                }else if (item.isLike != searchSwitch.isChecked) {// Item의 isLike 상태와 스위치의 상태가 다르면 실행
 
                     item.isLike = searchSwitch.isChecked
                     Log.d("ischecked?", "${item.isLike}")
@@ -75,6 +90,7 @@ class SearchListAdapter(
                             isLike = searchSwitch.isChecked
                         )
                     )
+
                 }
 
             }
