@@ -69,6 +69,7 @@ class SearchListAdapter(
             searchDate.text = item.pubDate?.time?.let { Utils.calculationTime(it) } ?: ""
             searchImage.clipToOutline = true
             searchImage.load(item.thumbnail)
+            searchSwitch.isChecked = item.isLike!!
             cardView.setOnClickListener {
                 onClick(
                     item

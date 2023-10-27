@@ -52,7 +52,7 @@ class MainActivity : AppCompatActivity() {
         auth = Firebase.auth
 
         // 앱이 시작될 때 자동 로그아웃 실행
-        autoLogoutUser()
+//        autoLogoutUser()
 
         with(binding) {
 

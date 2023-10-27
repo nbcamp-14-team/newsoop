@@ -36,7 +36,7 @@ class HomeViewPagerFragment:Fragment() {
             viewpager.run {
                 isUserInputEnabled = false
             }
-            viewpager.offscreenPageLimit = 4//생명주기 관련 코드
+            viewpager.offscreenPageLimit = 1//생명주기 관련 코드
             TabLayoutMediator(tabLayout, viewpager) { tab, position ->
                 tab.setText(viewPagerAdapter.getTitle(position))
             }.attach()

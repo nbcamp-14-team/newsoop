@@ -14,5 +14,5 @@ data class DetailInfo (
     val author: String? = null,
     val originalLink: String?,
     val pubDate: String?,
-    val isLike:Boolean?
+    var isLike:Boolean?
 ):Parcelable

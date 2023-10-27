@@ -18,6 +18,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import coil.load
 import com.bumptech.glide.Glide
@@ -32,6 +33,8 @@ import com.nbcamp_14_project.databinding.FragmentSearchBinding
 import com.nbcamp_14_project.favorite.FavoriteListAdapter
 import com.nbcamp_14_project.favorite.FavoriteViewModel
 import com.nbcamp_14_project.search.SearchListAdapter
+import com.nbcamp_14_project.search.SearchViewModel
+import com.nbcamp_14_project.search.SearchViewModelFactory
 import com.nbcamp_14_project.ui.login.LoginActivity
 import com.nbcamp_14_project.ui.login.LoginViewModel
 import java.util.Date
@@ -53,7 +56,11 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
     private lateinit var textToSpeech: TextToSpeech
     private val favoriteViewModel: FavoriteViewModel by activityViewModels()
     private val loginViewModel: LoginViewModel by activityViewModels()
-
+    private val searchViewModel: SearchViewModel by lazy {
+        ViewModelProvider(
+            requireActivity(), SearchViewModelFactory()
+        )[SearchViewModel::class.java]
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
@@ -82,10 +89,12 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
                     val isFavorite = favoriteViewModel.favoriteList.value?.contains(detailInfo) == true
                     if (isFavorite) {
                         favoriteViewModel.removeFavoriteItem(detailInfo)
+                        searchViewModel.modifyFavoriteItemToPosition(detailInfo)
                         binding.imgLike.setImageResource(R.drawable.ic_like)
                         removeFavoriteFromFireStore(detailInfo)  // Firestore에서도 제거
                     } else {
                         favoriteViewModel.addFavoriteItem(detailInfo)
+                        searchViewModel.modifyFavoriteItemToPosition(detailInfo)
                         binding.imgLike.setImageResource(R.drawable.ic_check)
                         addFavoriteToFireStore(detailInfo)  // Firestore에도 추가
                     }
