@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.nbcamp_14_project.Utils
 import com.nbcamp_14_project.api.RetrofitInstance
+import com.nbcamp_14_project.detail.DetailInfo
 import com.nbcamp_14_project.home.HomeModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -41,6 +42,30 @@ class SearchViewModel(
 
     fun setRecentSearchItem(query: String) {
         _recentSearchList.value = repository.addRecentSearchList(query)
+    }
+    fun modifyFavoriteItemToPosition(item: DetailInfo){// DetailInfo 아이템 값 수정
+        item.isLike = !item.isLike!!
+        Log.d("search","search")
+        val currentList = _searchResultList.value?.toMutableList() ?: return
+        Log.d("searchCurrentList","$currentList")
+        fun findIndex(item: DetailInfo?):Int{
+            if(item == null) return 0
+            val findItem = currentList.find{
+                it.thumbnail == item.thumbnail
+            }
+            return currentList.indexOf(findItem!!)
+        }
+        val findPosition = findIndex(item)
+        Log.d("findPosition","$findPosition")
+        if(findPosition < 0){
+            return
+        }
+        currentList[findPosition] = currentList[findPosition].copy(
+            isLike = item.isLike
+        )
+        Log.d("searchList","${currentList[findPosition]}")
+        _searchResultList.value = currentList
+
     }
 
     fun getSearchNews(query: String, display: Int, start: Int) {

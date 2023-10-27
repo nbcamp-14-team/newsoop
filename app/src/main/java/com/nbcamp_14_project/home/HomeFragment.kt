@@ -15,6 +15,7 @@ import androidx.viewpager2.widget.ViewPager2
 import com.nbcamp_14_project.databinding.FragmentMainBinding
 import com.nbcamp_14_project.detail.DetailViewModel
 import com.nbcamp_14_project.mainpage.MainActivity
+import kotlinx.coroutines.delay
 
 class HomeFragment(query:String) : Fragment() {
     companion object {
@@ -75,11 +76,11 @@ class HomeFragment(query:String) : Fragment() {
         category.text = queryInbox //
         val slideImageHandler: Handler = Handler()
         val slideImageRunnable = Runnable {// 메인 ViewPager 자동 스와이프 관련 runnable 함수
-            if (rvMainNews.currentItem - 1 == headLineAdapter.itemCount) {
+
+            rvMainNews.currentItem = rvMainNews.currentItem + 1
+            if (rvMainNews.currentItem  == headLineAdapter.itemCount) {
                 rvMainNews.currentItem = 0
             }
-            rvMainNews.currentItem = rvMainNews.currentItem + 1
-
         }// viewpager의 Item Position을 1 추가하여 페이지 이동하게 구현
 
         /**

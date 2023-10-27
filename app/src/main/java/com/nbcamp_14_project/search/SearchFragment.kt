@@ -48,7 +48,7 @@ class SearchFragment : Fragment() {
     private val binding get() = _binding!!
     private val viewModel: SearchViewModel by lazy {
         ViewModelProvider(
-            this, SearchViewModelFactory()
+            requireActivity(), SearchViewModelFactory()
         )[SearchViewModel::class.java]
     }
     var user = FirebaseAuth.getInstance().currentUser
