@@ -40,7 +40,6 @@ class FavoriteFragment : Fragment() {
     private var isLogin = false
     private var auth = FirebaseAuth.getInstance()
 
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -53,15 +52,18 @@ class FavoriteFragment : Fragment() {
     override fun onResume() {
         super.onResume()
 
+        // 즐겨찾기 목록 업데이트
         getFavoriteListFromFireStore()
         Log.e("onResum", "#hyunsik")
 
+        // 로그인 상태에 따른 화면 처리
         val loginBox = binding.root.findViewById<ConstraintLayout>(R.id.login_box)
         val profileBox = binding.root.findViewById<ConstraintLayout>(R.id.profile_box)
         val logoutButton = binding.root.findViewById<Button>(R.id.btn_logout)
         val textview2 = binding.root.findViewById<TextView>(R.id.textView2)
 
         binding.btnLogout.setOnClickListener {
+            // 로그아웃 버튼 클릭 시 Firebase에서 로그아웃
             Firebase.auth.signOut()
 
             if (FirebaseAuth.getInstance().currentUser == null) {
@@ -69,18 +71,16 @@ class FavoriteFragment : Fragment() {
                 profileBox.visibility = View.INVISIBLE
                 textview2.visibility = View.VISIBLE
 
-
                 viewModel.setFavoriteList(emptyList())
             }
         }
 
-
-        if (FirebaseAuth.getInstance().currentUser != null ) {
+        if (FirebaseAuth.getInstance().currentUser != null) {
+            // 로그인 상태일 때
             loginBox.visibility = View.INVISIBLE
             profileBox.visibility = View.VISIBLE
             logoutButton.visibility = View.VISIBLE
             binding.textView2.visibility = View.GONE
-
 
             val collectionRef = firestore.collection("User").document(FirebaseAuth.getInstance().currentUser?.uid ?: return)
             collectionRef.get().addOnCompleteListener { task ->
@@ -88,13 +88,7 @@ class FavoriteFragment : Fragment() {
                     val document = task.result
                     if (document.exists()) {
                         val nameField = document.getString("name")
-//                        val categoryField = document.getString("category")
                         binding.tvNick.text = "이름 : $nameField"
-//                        binding.tvCategory.text = "선호 카테고리 : $categoryField"
-
-
-
-
                     } else {
                         Log.d("data", "no data")
                     }
@@ -102,39 +96,19 @@ class FavoriteFragment : Fragment() {
                     Log.d("data", "no data")
                 }
             }
-        }else {
+        } else {
             // 로그아웃 상태일 때
             loginBox.visibility = View.VISIBLE
             profileBox.visibility = View.INVISIBLE
             logoutButton.visibility = View.INVISIBLE
             binding.textView2.visibility = View.VISIBLE
-
         }
-
-
-//        if (FirebaseAuth.getInstance().currentUser != null) {
-//
-//            loginBox.visibility = View.INVISIBLE
-//            profileBox.visibility = View.VISIBLE
-//
-//
-//        } else {
-//            // 로그아웃 상태일 때
-//            loginBox.visibility = View.VISIBLE
-//            profileBox.visibility = View.INVISIBLE
-//        }
-
-
-
-
-
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-
         super.onViewCreated(view, savedInstanceState)
 
-
+        // RecyclerView 어댑터 초기화
         adapter = FavoriteListAdapter { item ->
             val detailInfo = item
             detailViewModel.setDetailInfo(detailInfo)
@@ -142,13 +116,11 @@ class FavoriteFragment : Fragment() {
             mainActivity.runDetailFragment()
         }
 
-
-
+        // RecyclerView 설정
         binding.favoriteList.layoutManager = LinearLayoutManager(context)
         binding.favoriteList.adapter = adapter
-        val lastVisiblePosition =
-            (binding.favoriteList.layoutManager as LinearLayoutManager)!!.findLastCompletelyVisibleItemPosition()
-        Log.d("position", "$lastVisiblePosition")
+
+        // 즐겨찾기 목록 갱신
         viewModel.favoriteList.observe(viewLifecycleOwner) {
             adapter.submitList(it)
         }
@@ -156,44 +128,14 @@ class FavoriteFragment : Fragment() {
         binding.tvLogin.setOnClickListener {
             openLoginActivity(view)
         }
-
-
-
-
-
-
-
-//        if (FirebaseAuth.getInstance().currentUser != null) {
-//
-//            val collectionRef = firestore.collection("User").document(uid!!)
-//            collectionRef.get().addOnCompleteListener { task ->
-//                if (task.isSuccessful) {
-//                    val document = task.result
-//                    if (document.exists()) {
-//                        val nameField = document.getString("name")
-//                        val emailField = document.getString("email")
-//                        binding.tvNick.text = "이름 : $nameField"
-//
-//
-//
-//                    } else {
-//                        Log.d("data", "no data")
-//                    }
-//                } else {
-//                    Log.d("data", "no data")
-//                }
-//            }
-//        }
-
-
     }
 
+    // Firebase에서 즐겨찾기 목록을 가져오는 함수
     private fun getFavoriteListFromFireStore() {
         val user = FirebaseAuth.getInstance().currentUser
         val userUID = user?.uid ?: return
         val db = FirebaseFirestore.getInstance()
         val favoriteCollection = db.collection("User").document(userUID).collection("favorites")
-
 
         favoriteCollection.orderBy("created", Query.Direction.DESCENDING).get()
             .addOnSuccessListener { querySnapshot ->
@@ -217,14 +159,13 @@ class FavoriteFragment : Fragment() {
                 viewModel.setFavoriteList(favoriteList)
             }
             .addOnFailureListener { e ->
-
+                // 실패 시 처리
             }
     }
 
+    // 로그인 화면으로 이동하는 함수
     fun openLoginActivity(view: View) {
         val intent = Intent(requireContext(), LoginActivity::class.java)
         startActivity(intent)
     }
-
-
 }

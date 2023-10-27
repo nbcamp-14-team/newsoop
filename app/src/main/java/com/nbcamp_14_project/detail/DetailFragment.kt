@@ -40,13 +40,11 @@ import com.nbcamp_14_project.ui.login.LoginViewModel
 import java.util.Date
 import java.util.Locale
 
-
 class DetailFragment : Fragment(R.layout.fragment_detail) {
 
     companion object {
-
+        // Fragment를 생성하기 위한 companion object
         fun newInstance() = DetailFragment()
-
     }
 
     private var _binding: FragmentDetailBinding? = null
@@ -63,16 +61,14 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-
         super.onViewCreated(view, savedInstanceState)
-
 
         _binding = FragmentDetailBinding.bind(view)
 
-
+        // Detail 정보 가져오기
         val detailInfo = viewModel.detailInfo.value
 
-
+        // 즐겨찾기 여부 확인
         val isFavorite = favoriteViewModel.favoriteList.value?.contains(detailInfo) == true
         if (isFavorite) {
             binding.imgLike.setImageResource(R.drawable.ic_check)
@@ -80,7 +76,7 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
             binding.imgLike.setImageResource(R.drawable.ic_like)
         }
 
-
+        // 즐겨찾기 버튼 클릭 리스너
         binding.imgLike.setOnClickListener {
             val user = FirebaseAuth.getInstance().currentUser
             if (user != null) {
@@ -107,7 +103,7 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
             }
         }
 
-
+        // 텍스트 음성 출력 설정
         textToSpeech = TextToSpeech(requireContext()) { status ->
             if (status == TextToSpeech.SUCCESS) {
                 val result = textToSpeech.setLanguage(Locale.KOREA)
@@ -117,7 +113,7 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
             }
         }
 
-
+        // Detail 정보 변경 시 UI 업데이트
         viewModel.detailInfo.observe(viewLifecycleOwner) { info ->
             Log.d("info", "#hyunsik")
             binding.tvTitle.text = info.title
@@ -133,8 +129,6 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
         }
 
         initView()
-
-
     }
 
     override fun onDestroyView() {
@@ -142,28 +136,15 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
         _binding = null
     }
 
-
     private fun initView() = with(binding) {
-
-
-//        val data =viewModel.detailInfo.value
-//        binding.tvTitle.text = viewModel.detailInfo.value?.title
-//        binding.tvDate.text = viewModel.detailInfo.value?.title
-//        binding.imgThumbnail.load(data?.thumbnail)
-//        binding.tvDescription.text = viewModel.detailInfo.value?.title
-//        binding.tvName.text = viewModel.detailInfo.value?.author
-
+        // 뷰 초기화 및 이벤트 핸들러 설정
 
         btnText.setOnClickListener {
-
             val url = viewModel.detailInfo.value?.originalLink
-
-
             if (url != null) {
                 val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
                 startActivity(intent)
             } else {
-
                 Toast.makeText(requireContext(), "링크가 없습니다.", Toast.LENGTH_SHORT).show()
             }
         }
@@ -171,7 +152,6 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
         binding.imgBack.setOnClickListener {
             parentFragmentManager.popBackStack()
         }
-
 
         imgShare.setOnClickListener {
             val newsurl = viewModel.detailInfo.value?.originalLink
@@ -181,48 +161,24 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
             intent.putExtra(Intent.EXTRA_TEXT, sendMessage)
             val shareIntent = Intent.createChooser(intent, "비디오 공유")
             startActivity(shareIntent)
-
         }
 
         imgMic.setOnClickListener {
             val descriptionText = tvDescription.text.toString()
-
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 textToSpeech.speak(descriptionText, TextToSpeech.QUEUE_FLUSH, null, null)
             } else {
                 textToSpeech.speak(descriptionText, TextToSpeech.QUEUE_FLUSH, null)
             }
         }
-
-    }
-
-    private fun initViewModel() {
-        with(viewModel) {
-
-
-        }
-
     }
 
     private fun addFavoriteToFireStore(detailInfo: DetailInfo) {
-//        val db = FirebaseFirestore.getInstance()
-//        val favoriteRef = db.collection("favorites")
-//        val favoriteData = hashMapOf(
-//            "title" to detailInfo.title,
-//            "thumbnail" to detailInfo.thumbnail,
-//            "description" to detailInfo.description,
-//            "author" to detailInfo.author,
-//            "originalLink" to detailInfo.originalLink,
-//            "pubDate" to detailInfo.pubDate
-//        )
-//        favoriteRef.add(favoriteData)
-
-        // 1. 사용자가 로그인한 후 사용자 UID 가져오기
+        // Firestore에 즐겨찾기 추가
         val user = FirebaseAuth.getInstance().currentUser
         val userUID = user?.uid
 
         if (userUID != null) {
-            // 2. Firestore에서 해당 사용자의 favorite 컬렉션 참조
             val db = FirebaseFirestore.getInstance()
             val favoriteCollection = db.collection("User").document(userUID).collection("favorites")
             val favoriteData = hashMapOf(
@@ -236,13 +192,11 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
             )
 
             favoriteCollection.add(favoriteData)
-        } else {
-//            Toast.makeText(requireContext(), "로그인을 해주세요".toString() )show()
         }
-
     }
 
     private fun removeFavoriteFromFireStore(detailInfo: DetailInfo) {
+        // Firestore에서 즐겨찾기 삭제
         val user = FirebaseAuth.getInstance().currentUser
         val userUID = user?.uid ?: return
 
@@ -257,22 +211,16 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
         }
     }
 
-
     fun restoreFavoriteFromFireStore() {
-
+        // Firestore에서 즐겨찾기 복원 (구현 필요)
     }
 
-
     override fun onDestroy() {
+        // 화면 종료 시 TextToSpeech 정리
         if (textToSpeech.isSpeaking) {
             textToSpeech.stop()
         }
         textToSpeech.shutdown()
         super.onDestroy()
     }
-
-
 }
-
-
-
