@@ -4,52 +4,80 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".SearchFragment">
+    android:background="@color/background_green"
+    android:paddingHorizontal="25dp"
+    tools:context=".search.SearchFragment">
 
     <LinearLayout
         android:id="@+id/searchView"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="@drawable/et_border_radius_green"
         android:orientation="horizontal"
+        android:paddingStart="10dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
-        <ImageView
-            android:id="@+id/search_search_btn"
-            android:layout_weight="1"
-            android:layout_gravity="center_vertical"
-            android:src="@drawable/ic_search"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+
         <EditText
             android:id="@+id/search_input"
-            android:layout_weight="8"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:hint="검색어를 입력해 주세요."/>
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:background="@color/white"
+            android:hint="검색어를 입력해 주세요."
+            android:maxLines="1"
+            android:singleLine="true" />
+
+        <ImageButton
+            android:id="@+id/search_btn"
+            android:layout_width="40dp"
+            android:layout_height="30dp"
+            android:layout_gravity="center_vertical"
+            android:background="@android:color/transparent"
+            android:src="@drawable/ic_search" />
     </LinearLayout>
 
-    <HorizontalScrollView
-        android:id="@+id/search_tag_frame"
-        android:layout_width="0dp"
+    <TextView
+        android:id="@+id/recent_search_not"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:gravity="center_horizontal"
+        android:text="최근 검색 결과가 없습니다."
+        android:visibility="visible"
+        app:layout_constraintBottom_toTopOf="@id/search_tag_frame"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/searchView">
-
-        <Button
-            android:text="Sample"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
-    </HorizontalScrollView>
+        app:layout_constraintTop_toBottomOf="@+id/searchView" />
 
     <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/search_tag_frame"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:orientation="horizontal"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/recent_search_not" />
+
+    <ImageView
+        android:id="@+id/search_not"
+        android:layout_width="match_parent"
+        android:layout_height="550dp"
+        android:src="@drawable/img_app_logo"
+        android:visibility="visible"
+        app:layout_constraintBottom_toTopOf="@+id/search_recyclerView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/search_tag_frame" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/search_recyclerView"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        tools:listitem="@layout/fragment_search_item"
-        app:layout_constraintTop_toBottomOf="@+id/search_tag_frame" />
+        app:layout_constraintTop_toBottomOf="@+id/search_not"
+        tools:listitem="@layout/fragment_search_item" />
 </androidx.constraintlayout.widget.ConstraintLayout>

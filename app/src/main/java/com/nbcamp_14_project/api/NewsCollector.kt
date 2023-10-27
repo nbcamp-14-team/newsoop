@@ -1,23 +1,21 @@
 package com.nbcamp_14_project.api
 
-import android.view.Display
-import retrofit2.Call
 import retrofit2.http.GET
-import retrofit2.http.Header
 import retrofit2.http.Query
 
 interface NewsCollector {
-    companion object{
+    companion object {
         const val NEWS_URL = "https://openapi.naver.com/"
-        const val ID = "XFBo9h4LO1TqscFAuCKO"
-        const val SECRET = "hi8mfNOW0V"
     }
+
+    /**
+     * api를 통해서 뉴스를 가져오는 명령어입니다.
+     */
     @GET("v1/search/news.json")
-    fun getNews(
-        @Header("X-Naver-Client-Id")id:String?,//앱 ID
-        @Header("X-Naver-Client-Secret")secret:String?, // 앱 비밀번호
-        @Query("query")query: String?,//검색어
-        @Query("display")display: Int? = null,//출력개수
-        @Query("start")start:Int? = null,//출력 시작점
-    ): Call<NewsDTO>
+    suspend fun getNews(
+        @Query("query") query: String?,//검색어
+        @Query("display") display: Int? = null,//출력개수
+        @Query("start") start: Int? = null,//출력 시작점
+        @Query("sort") sort: String? = null,//검색 결과 정렬 방법
+    ): NewsDTO
 }

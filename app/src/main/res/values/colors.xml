@@ -3,4 +3,12 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="green">#229627</color>
+    <color name="background_green">#D1DDCB</color>
+    <color name="transparentBackground">#CC000000</color>
+    <color name="wrongColor">#FF5733</color>
+    <color name="loginText">#27754A</color>
+    <color name="signUpBtn">#569B4A</color>
+    <color name="lightGray">#d3d3d3</color>
+    <color name="strokeGray">#a9a9a9</color>
+
 </resources>

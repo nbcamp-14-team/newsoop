@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/search_tag_container"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/search_tag_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="28dp"
+        android:layout_marginVertical="5dp"
+        android:layout_marginEnd="5dp"
+        android:background="@drawable/iv_search"
+        android:backgroundTint="@color/green"
+        android:text="dog"
+        android:textAllCaps="false"
+        android:textColor="@color/green" />
+</LinearLayout>
