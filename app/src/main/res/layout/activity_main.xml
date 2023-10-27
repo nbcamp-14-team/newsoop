@@ -19,7 +19,7 @@
         <ImageView
             android:layout_width="350dp"
             android:layout_height="wrap_content"
-            android:background="@drawable/ic_logo"
+            android:src="@drawable/img_app_logo"
             android:scaleType="centerCrop"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

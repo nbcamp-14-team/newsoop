@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.nbcamp_14_project.Utils
 import com.nbcamp_14_project.api.RetrofitInstance
 import com.nbcamp_14_project.home.HomeModel
 import kotlinx.coroutines.Dispatchers
@@ -50,10 +51,14 @@ class SearchViewModel(
                 val item = docs.items ?: return@launch
                 for (i in item.indices) {//아이템 개수만큼 for문 실행
                     val thumbnail = getThumbnail(item[i].link.toString())
-                    var title = item[i].title?.replace("<b>", "") ?: "제목 없음"
+                    var title = item[i].title!!.replace("<b>", "")
+                    Log.d("title", "$title")
                     title = title.replace("</b>", "")
                     title = title.replace("&quot;", "\"")
-                    val description = item[i].description
+                    title = title.replace("&amp;", "&")
+                    var description = item[i].description?.replace("<b>", "")
+                    description = description?.replace("</b>", "")
+                    description = description?.replace("&quot;", "\"")
                     val link = item[i].link
                     val pubDate = item[i].pubDate
                     val date = Date(pubDate)
@@ -106,57 +111,176 @@ class SearchViewModel(
         try {
             withContext(Dispatchers.IO) {
                 val docs = Jsoup.connect(url).get()
-                author = docs.select("meta[name=dable:author]").attr("content")
+                author = docs.select("meta[name=dable:author]")?.attr("content")
                     .toString()//radioKorea에서 가져오는법
-
+                Log.d("authortest", "$author")
+                author = Utils.getAuthorName(author)
                 if (author == "") {
-                    author = docs.select("span[class=byline_s]").html()//네이버
-
-                    Log.d("runDetailFragment", "$author")
+                    author = docs.select("em[class=media_end_head_journalist_name]")?.html()
+                        .toString()//radioKorea에서 가져오는법
+                    Log.d("authortest1", "$author")
+                    author = Utils.getAuthorName(author)
                     if (author == "") {
-                        author = docs.select("meta[property=og:article:author]").attr("content")
-                        Log.d("test1", "$author")
+                        author = docs.select("meta[property=dable:author]")?.attr("content")
+                            .toString()//radioKorea에서 가져오는법
+                        Log.d("authortest2", "$author")
+                        author = Utils.getAuthorName(author)
                         if (author == "") {
-                            author = docs.select("meta[property=article:author]").attr("content")
+                            author = docs.select("p[class=byline_p]").select("span").html()
+                            Log.d("authortest3", "$author")
+                            if (author?.length!!.toInt() > 3) {
+                                val position = Utils.findStringIndex(author, "=")
+                                if (position != null) {
+                                    author = author?.substring(position + 1, position + 4)
+                                }
+                            }
                             if (author == "") {
-                                author = docs.select("meta[property=dd:author]").attr("content")
+                                author =
+                                    docs.select("meta[property=og:article:author]")
+                                        ?.attr("content")
+                                Log.d("authortest4", "$author")
+                                author = Utils.getAuthorName(author)
                                 if (author == "") {
-                                    author = docs.select("meta[name=twitter:creator]")
-                                        .attr("content")//월간조선
+                                    author =
+                                        docs.select("meta[property=dd:author]")?.attr("content")
+                                    Log.d("authortest5", "$author")
+                                    author = Utils.getAuthorName(author)
                                     if (author == "") {
-                                        author = docs.select("em[media_end_head_journalist_name]")
-                                            .toString()//작동이 잘 안됨
+                                        author =
+                                            docs.select("div[class=journalist_name]")?.html()
+                                        Log.d("authortest6", "$author")
+                                        author = Utils.getAuthorName(author)
                                         if (author == "") {
-                                            author = docs.select("span[class=d_newsName]").html()
+                                            author = docs.select("meta[property=dd:author]")
+                                                ?.attr("content")
+                                            Log.d("authortest7", "$author")
+                                            author = Utils.getAuthorName(author)
                                             if (author == "") {
-                                                author = docs.select("span[class=writer]").html()
+                                                author =
+                                                    docs.select("span[class=d_newsName]")
+                                                        .html()
+                                                Log.d("authortest8", "$author")
+                                                author = Utils.getAuthorName(author)
                                                 if (author == "") {
-                                                    author = "기자 정보가 없습니다."
+                                                    author =
+                                                        docs.select("span[class=writer]")
+                                                            .html()
+                                                    Log.d("authortest9", "$author")
+                                                    author = Utils.getAuthorName(author)
+                                                    if (author == "") {
+                                                        author =
+                                                            docs.select("div[class=writer_info]")
+                                                                .attr("span")
+                                                        Log.d("authortest10", "$author")
+                                                        author = Utils.getAuthorName(author)
+                                                        if (author == "") {
+                                                            author =
+                                                                docs.select("p[class=wr]")
+                                                                    .html()
+                                                            Log.d(
+                                                                "authortest11",
+                                                                "$author"
+                                                            )
+                                                            author = Utils.getAuthorName(author)
+                                                            if (author == "") {
+                                                                author =
+                                                                    docs.select("p[class=article_byline]")
+                                                                        .attr("span")
+                                                                Log.d(
+                                                                    "authortest12",
+                                                                    "$author"
+                                                                )
+                                                                author = Utils.getAuthorName(author)
+                                                                if (author == "") {
+                                                                    author =
+                                                                        docs.select("span[class=name]")
+                                                                            .html()
+                                                                    Log.d(
+                                                                        "authortest13",
+                                                                        "$author"
+                                                                    )
+                                                                    author =
+                                                                        Utils.getAuthorName(author)
+                                                                }
+                                                                if (author == "") {
+//                                                                        author =
+//                                                                            docs.select("meta[name=author]")
+//                                                                                .attr("content")
+                                                                    author =
+                                                                        author?.replace(
+                                                                            " ",
+                                                                            ""
+                                                                        )
+                                                                    Log.d(
+                                                                        "authortest14",
+                                                                        "$author"
+                                                                    )
+                                                                    author =
+                                                                        Utils.getAuthorName(author)
+                                                                    if (author == "") {
+                                                                        author =
+                                                                            docs.select(
+                                                                                "span[id=writeName]"
+                                                                            )
+                                                                                .html()
+                                                                        Log.d(
+                                                                            "authortest15",
+                                                                            "$author"
+                                                                        )
+                                                                        author =
+                                                                            Utils.getAuthorName(
+                                                                                author
+                                                                            )
+                                                                        if (author == "") {
+                                                                            author =
+                                                                                docs.select(
+                                                                                    "p[class=arvdate]"
+                                                                                )
+                                                                                    .attr(
+                                                                                        "span"
+                                                                                    )
+                                                                            Log.d(
+                                                                                "authortest16",
+                                                                                "$author"
+                                                                            )
+                                                                            author =
+                                                                                Utils.getAuthorName(
+                                                                                    author
+                                                                                )
+                                                                            if (author == "") {
+                                                                                author =
+                                                                                    "기자 정보가 없습니다."
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    }
                                                 }
                                             }
                                         }
                                     }
                                 }
                             }
-
                         }
                     }
                 }
+
+
+
                 Log.d("author", "$author")
             }
             if (author == null) return author
             return author
         } catch (e: ZipException) { //ZipException 예외처리
             Log.d("errorAtZip", "$url")
-            return null
         } catch (e: IOException) {//IOException 에외처리
             e.printStackTrace()//디버깅 추적을 돕기위한 메서드
-            return null
         } catch (e: EOFException) {
             Log.d("errAtZipEOFE", "$url")
-            return null
         }
-
+        return null
     }
 }
 

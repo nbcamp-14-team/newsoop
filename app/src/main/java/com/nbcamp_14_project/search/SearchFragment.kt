@@ -2,6 +2,7 @@ package com.nbcamp_14_project.search
 
 import android.app.Dialog
 import android.content.Context
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
@@ -11,23 +12,34 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.nbcamp_14_project.R
 import com.nbcamp_14_project.R.layout.item_loading
 import com.nbcamp_14_project.databinding.FragmentSearchBinding
+import com.nbcamp_14_project.detail.DetailInfo
 import com.nbcamp_14_project.detail.DetailViewModel
 import com.nbcamp_14_project.favorite.FavoriteViewModel
+import com.nbcamp_14_project.home.HomeFragment
 import com.nbcamp_14_project.home.toDetailInfo
 import com.nbcamp_14_project.mainpage.MainActivity
+import com.nbcamp_14_project.ui.login.LoginActivity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.util.Date
 
 class SearchFragment : Fragment() {
+    companion object {
+        fun newInstance() = SearchFragment()
+    }
 
     private val dialog by lazy { LoadingDialog(requireContext()) }
     private var _binding: FragmentSearchBinding? = null
@@ -39,6 +51,7 @@ class SearchFragment : Fragment() {
             this, SearchViewModelFactory()
         )[SearchViewModel::class.java]
     }
+    var user = FirebaseAuth.getInstance().currentUser
     private val adapter by lazy {
         SearchListAdapter(
             onClick = { item ->
@@ -49,11 +62,24 @@ class SearchFragment : Fragment() {
             },
             onSwitch = { item ->
                 val detailInfo = item.toDetailInfo()
-                if (item.isLike == false) {
-                    Log.d("isRemove", "remove")
-                    favoriteViewModel.removeFavoriteItemToPosition(detailInfo)
+                Log.d("searchuserFragment","$user")
+                if (user != null) {
+                    // 사용자가 로그인한 경우
+                    if (detailInfo != null) {
+                        val isFavorite = detailInfo.isLike
+                        if (!isFavorite!!) {
+                            favoriteViewModel.removeFavoriteItem(detailInfo)
+                            removeFavoriteFromFireStore(detailInfo)  // Firestore에서도 제거
+                        } else {
+                            favoriteViewModel.addFavoriteItem(detailInfo)
+                            addFavoriteToFireStore(detailInfo)  // Firestore에도 추가
+                        }
+                    }
                 } else {
-                    favoriteViewModel.addFavoriteItem(detailInfo)
+                    // 사용자가 로그인하지 않은 경우
+                    Toast.makeText(requireContext(), "로그인을 해주세요", Toast.LENGTH_SHORT).show()
+                    val intent = Intent(requireContext(), LoginActivity::class.java)
+                    startActivity(intent)
                 }
             }
         )
@@ -106,6 +132,11 @@ class SearchFragment : Fragment() {
                 dialog.dismiss()
             }
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        user = FirebaseAuth.getInstance().currentUser
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -164,6 +195,59 @@ class SearchFragment : Fragment() {
             }
         }
     }
+    private fun addFavoriteToFireStore(detailInfo: DetailInfo) {
+//        val db = FirebaseFirestore.getInstance()
+//        val favoriteRef = db.collection("favorites")
+//        val favoriteData = hashMapOf(
+//            "title" to detailInfo.title,
+//            "thumbnail" to detailInfo.thumbnail,
+//            "description" to detailInfo.description,
+//            "author" to detailInfo.author,
+//            "originalLink" to detailInfo.originalLink,
+//            "pubDate" to detailInfo.pubDate
+//        )
+//        favoriteRef.add(favoriteData)
+
+        // 1. 사용자가 로그인한 후 사용자 UID 가져오기
+        val user = FirebaseAuth.getInstance().currentUser
+        val userUID = user?.uid
+
+        if (userUID != null) {
+            // 2. Firestore에서 해당 사용자의 favorite 컬렉션 참조
+            val db = FirebaseFirestore.getInstance()
+            val favoriteCollection = db.collection("User").document(userUID).collection("favorites")
+            val favoriteData = hashMapOf(
+                "title" to detailInfo.title,
+                "thumbnail" to detailInfo.thumbnail,
+                "description" to detailInfo.description,
+                "author" to detailInfo.author,
+                "originalLink" to detailInfo.originalLink,
+                "pubDate" to detailInfo.pubDate,
+                "created" to Date()
+            )
+
+            favoriteCollection.add(favoriteData)
+        } else {
+//            Toast.makeText(requireContext(), "로그인을 해주세요".toString() )show()
+        }
+
+    }
+
+    private fun removeFavoriteFromFireStore(detailInfo: DetailInfo) {
+        val user = FirebaseAuth.getInstance().currentUser
+        val userUID = user?.uid ?: return
+
+        val db = FirebaseFirestore.getInstance()
+        val favoriteCollection = db.collection("User").document(userUID).collection("favorites")
+        val query = favoriteCollection.whereEqualTo("title", detailInfo.title)
+
+        query.get().addOnSuccessListener { documents ->
+            for (document in documents) {
+                document.reference.delete()
+            }
+        }
+    }
+
 
     // 리스트 로딩을 위한 Dialog
     class LoadingDialog(context: Context) : Dialog(context) {
