@@ -62,11 +62,12 @@ class SearchFragment : Fragment() {
             },
             onSwitch = { item ->
                 val detailInfo = item.toDetailInfo()
+                Log.d("searchuserFragment","$user")
                 if (user != null) {
                     // 사용자가 로그인한 경우
                     if (detailInfo != null) {
-                        val isFavorite = favoriteViewModel.favoriteList.value?.contains(detailInfo) == true
-                        if (isFavorite) {
+                        val isFavorite = detailInfo.isLike
+                        if (!isFavorite!!) {
                             favoriteViewModel.removeFavoriteItem(detailInfo)
                             removeFavoriteFromFireStore(detailInfo)  // Firestore에서도 제거
                         } else {
