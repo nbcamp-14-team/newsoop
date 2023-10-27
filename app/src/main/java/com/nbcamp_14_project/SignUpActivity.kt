@@ -1,27 +1,23 @@
 package com.nbcamp_14_project
 
 import android.content.Intent
-import android.os.Binder
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.view.View
+import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.core.content.ContextCompat
-import androidx.core.widget.addTextChangedListener
-import androidx.databinding.adapters.TextViewBindingAdapter.setTextWatcher
+import androidx.core.view.isVisible
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.google.firebase.firestore.FirebaseFirestore
 import com.nbcamp_14_project.data.model.User
-import com.nbcamp_14_project.databinding.ActivityLoginBinding
 import com.nbcamp_14_project.databinding.ActivitySignUpBinding
-import com.nbcamp_14_project.detail.DetailFragment
 import com.nbcamp_14_project.ui.login.CategoryFragment
 import com.nbcamp_14_project.ui.login.LoginActivity
 import com.nbcamp_14_project.ui.login.LoginViewModel
@@ -39,6 +35,9 @@ class SignUpActivity : AppCompatActivity() {
         setContentView(binding.root)
         fbFireStore = FirebaseFirestore.getInstance()
         setTextWatcher()
+        binding.ivSignUpBack.setOnClickListener {
+            finish()
+        }
         shakeAnimation = AnimationUtils.loadAnimation(this, R.anim.shake)
         //회원가입 완료버튼
         binding.btnSignUp.setOnClickListener {
@@ -57,15 +56,15 @@ class SignUpActivity : AppCompatActivity() {
         val signPwCheckText = binding.etCheckPw.text.toString()
         val nameText = binding.etName.text.toString()
         val signIdWatcher = binding.tvEmailWatcher.text.toString()
-        val signPwCheckWatcher = binding.tvCheckPw.text.toString()
+        val signPwCheckWatcher = binding.tvCheckPw
         if (signIdText.isEmpty() || signPwText.isEmpty() || signPwCheckText.isEmpty() || nameText.isEmpty()) {
             Toast.makeText(this, "입력되지 않은 정보가 있습니다.", Toast.LENGTH_SHORT).show()
-        } else if (signIdWatcher != "사용가능한 아이디입니다.") {
+        } else if (signIdWatcher != "사용가능한 이메일입니다.") {
             when(signIdWatcher){
                 "중복체크를 해주세요." -> {Toast.makeText(this, "중복확인을 완료해주세요.", Toast.LENGTH_SHORT).show()}
-                else ->{Toast.makeText(this, "아이디를 확인해주세요.", Toast.LENGTH_SHORT).show()}
+                else ->{Toast.makeText(this, "이메일을 확인해주세요.", Toast.LENGTH_SHORT).show()}
             }
-        }else if (signPwCheckWatcher != "확인되었습니다."){
+        }else if (!signPwCheckWatcher.isVisible){
             Toast.makeText(this, "비밀번호를 확인해주세요.", Toast.LENGTH_SHORT).show()
         }else {
             signUp()
@@ -87,7 +86,7 @@ class SignUpActivity : AppCompatActivity() {
                     } else {
                         // 이메일이 중복되지 않음
                         Toast.makeText(this, "사용가능 합니다", Toast.LENGTH_SHORT).show()
-                        binding.tvEmailWatcher.text = "사용가능한 아이디입니다."
+                        binding.tvEmailWatcher.text = "사용가능한 이메일입니다."
                         binding.btnCheckExist.visibility = View.INVISIBLE
                         binding.ivCheck.visibility = View.VISIBLE
                     }
@@ -152,6 +151,7 @@ class SignUpActivity : AppCompatActivity() {
                     //아이디의 길이에 따른 에러메세지
                     when (length) {
                         0 -> {
+                            binding.etEmail.setBackgroundResource(R.drawable.et_border_radius_red)
                             tvEmailWatcher.text = "이메일 형식으로 입력해주세요"
                             tvEmailWatcher.setTextColor(
                                 ContextCompat.getColor(
@@ -178,7 +178,8 @@ class SignUpActivity : AppCompatActivity() {
                             }
 
                         else -> {
-                            tvEmailWatcher.text = "아이디가 너무 길어요"
+                            tvEmailWatcher.text = "이메일이 너무 길어요"
+                            binding.etEmail.setBackgroundResource(R.drawable.et_border_radius_red)
                             tvEmailWatcher.setTextColor(
                                 ContextCompat.getColor(
                                     this@SignUpActivity,
@@ -217,6 +218,7 @@ class SignUpActivity : AppCompatActivity() {
                         when (length) {
                             0 -> {
                                 tvPasswordWatcher.text = "6자 이상, 숫자 기호 문자를 각각 하나 이상씩 포함해주세요"
+                                binding.etPassword.setBackgroundResource(R.drawable.et_border_radius_red)
                                 tvPasswordWatcher.setTextColor(
                                     ContextCompat.getColor(
                                         this@SignUpActivity,
@@ -227,6 +229,7 @@ class SignUpActivity : AppCompatActivity() {
 
                             in 1..5 -> {
                                 tvPasswordWatcher.text = "비밀번호가 너무 짧아요"
+                                binding.etPassword.setBackgroundResource(R.drawable.et_border_radius_red)
                                 tvPasswordWatcher.setTextColor(
                                     ContextCompat.getColor(
                                         this@SignUpActivity,
@@ -235,10 +238,11 @@ class SignUpActivity : AppCompatActivity() {
                                 )
                             }
 
-                            in 6..25 ->
+                            else ->
                                 if (!regex.matches(s.toString())) {
                                     tvPasswordWatcher.text = "1개 이상의 숫자, 기호, 문자를 포함해주세요"
                                 } else {
+                                    binding.etPassword.setBackgroundResource(R.drawable.et_border_radius_green)
                                     tvPasswordWatcher.text = "사용 가능한 비밀번호 입니다."
                                     tvPasswordWatcher.setTextColor(
                                         ContextCompat.getColor(
@@ -248,15 +252,6 @@ class SignUpActivity : AppCompatActivity() {
                                     )
                                 }
 
-                            else -> {
-                                tvPasswordWatcher.text = "아이디가 너무 길어요"
-                                tvPasswordWatcher.setTextColor(
-                                    ContextCompat.getColor(
-                                        this@SignUpActivity,
-                                        R.color.wrongColor
-                                    )
-                                )
-                            }
                         }
                     }
 
@@ -279,9 +274,11 @@ class SignUpActivity : AppCompatActivity() {
                 binding.etCheckPw.requestFocus()
                 val checkedPw = binding.etPassword.text
                 if ((binding.tvPasswordWatcher.text == "사용 가능한 비밀번호 입니다.") && (checkedPw.toString() == binding.etCheckPw.text.toString())) {
-                    binding.tvCheckPw.text = "확인되었습니다."
+                    binding.tvCheckPw.visibility = View.VISIBLE
+                    binding.etCheckPw.setBackgroundResource(R.drawable.et_border_radius_green)
                 }else{
-                    binding.tvCheckPw.text=""
+                    binding.tvCheckPw.visibility = View.INVISIBLE
+                    binding.etCheckPw.setBackgroundResource(R.drawable.et_border_radius_red)
                 }
 
             }
@@ -294,7 +291,7 @@ class SignUpActivity : AppCompatActivity() {
 
         if (pattern) {
             //이메일 형식일 때
-            binding.etEmail.setBackgroundResource(R.drawable.et_border_radius)
+            binding.etEmail.setBackgroundResource(R.drawable.et_border_radius_green)
             return true
         } else {
             //이메일 형식이 아닐때
