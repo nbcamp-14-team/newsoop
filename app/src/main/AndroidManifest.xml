@@ -28,6 +28,7 @@
 
         <activity
             android:name=".SignUpActivity"
+            android:windowSoftInputMode="adjustNothing"
             android:exported="false" />
         <activity
             android:name=".mainpage.MainActivity"

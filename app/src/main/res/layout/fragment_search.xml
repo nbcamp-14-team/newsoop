@@ -12,7 +12,7 @@
         android:id="@+id/searchView"
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:background="@drawable/et_border_radius"
+        android:background="@drawable/et_border_radius_green"
         android:orientation="horizontal"
         android:paddingStart="10dp"
         app:layout_constraintEnd_toEndOf="parent"

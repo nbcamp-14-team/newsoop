@@ -104,6 +104,11 @@ class LoginActivity : AppCompatActivity() {
 
         binding.ivNaver.setOnClickListener {
 //            naverLogin()
+            Toast.makeText(this, "구현 중입니다..!", Toast.LENGTH_SHORT).show()
+        }
+
+        binding.ivKakao.setOnClickListener {
+            Toast.makeText(this, "구현 중입니다..!", Toast.LENGTH_SHORT).show()
         }
     }
 
