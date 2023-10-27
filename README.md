@@ -55,88 +55,78 @@
 
 </br>
 
-## 📼 **구현 클래스 & 상세기능**
+##  **구현 클래스 & 상세기능**
 
 ### **1) HomeFragment**
 
-<img width="200" alt="finder6" src="https://github.com/Android-Team-13-Maniacs/android_project_maniacs/assets/106515742/20340abc-de8e-4bd8-b22a-29757b185f0e">
+<img width="200" alt="finder6" src="https://ifh.cc/g/LByqsc.png">
 
 
-* **YouTube API**를 사용하여 동영상과, title 출력
-
-- **상단 배너** 인기 비디오 리스트 와 타이틀 출력
-  - 3초마다 **자동으로 스크롤** 되고 , 인디케이터를 부착하여 몇번째 영상인지 표시
-
-- **다양한 카테고리** 추천 Video 및 타이틀 출력 (가로 슬라이드)
-  - 스피너를 선택하여 **카테고리 이동** 가능
-
-- 선택한 카데고리에 맞춰 **채널 추천** (가로 슬라이드)
-
-- 모든 아이템은 클릭할시 **디테일 페이지로 이동**
+- 메인 액티비티 구성, 네이버 뉴스 api 받아오기
   
-- NullPointerException 예외 처리하여 영상을 불러오지 못한 경우 Toast Message 출력
+- 메인 프래그먼트 화면 구성(viewtype활용)
+  
+  
+
+</br>
+### **2) LogInActivity**
+
+<img width="200" alt="finder1" src="https://ifh.cc/g/6J3tXN.png"><img width="205" alt="finder5" src="https://ifh.cc/g/gvaCQf.png">
+
+
+
+- 로그인, 회원가입화면 구성
+  
+- 소셜로그인 기능
+  
+- 회원 정보 파이어베이스에 저장하기
 
 </br>
 
 ### **2) SearchFragment**
 
-<img width="200" alt="finder1" src="https://github.com/Android-Team-13-Maniacs/android_project_maniacs/assets/106515742/ad55c86f-99da-43c1-9b17-811ef87eb456"><img width="200" alt="finder5" src="https://github.com/Android-Team-13-Maniacs/android_project_maniacs/assets/106515742/a3a1cf8c-cdf2-4b96-9c48-3cfdeb29d42e">
+<img width="200" alt="finder1" src="https://ifh.cc/g/Or8ptg.png"><img width="210" alt="finder5" src="https://ifh.cc/g/Rdh9qb.png">
 
 
 
-- SearchView 로 **원하는 키워드 검색** 가능
+- 검색화면 구성
 
-- 동영상이 없을때는 "검색해주세요" 라는 **키워드 노출**
-
-- **버튼 클릭**으로 원하는 순서대로 **정렬** 가능 (DATE, RATING, TITLE COUNT)
-
-- 동영상 검색 결과를 아래로 스크롤 하면 페이지가 하나씩 추가되도록하여, **무한 스크롤 기능 구현**
-
-- **Floating Button** 클릭 시 최상단 이동(아래로 슬라이드시에는 보이지 않음, 상단슬라이드시 노출)
-
-- 모든 아이템은 클릭할시 **디테일 페이지로 이동**
-
-- NullPointerException 예외 처리하여 영상을 불러오지 못한 경우 Toast Message 출력
+- 키워드 검색 기능
+  
+- 검색 기능
+  
+- 태그 기능
+  
+- 무한 스크롤 기능
 
 </br>
 
 ### **3) DetailActivtiy**
 
-<img width="200" alt="finder7" src="https://github.com/Android-Team-13-Maniacs/android_project_maniacs/assets/106515742/8abb4f5e-cd07-4e4d-9c95-71ff7ff2ce78">
+<img width="200" alt="finder7" src="https://ifh.cc/g/zmzZ4h.png">
 
 
-* **YouTube API**를 사용
-  - **영상 제목**, **설명**, **게시 일자 출력** / Channel API 활용 **채널 썸네일** 출력
-
-- My List (+) 버튼 클릭 시 해당 영상이 **My VIDEOS 에 저장**
-
-- Like 버튼 클릭 시 **좋아요** 기능 구현
-
-- Share 버튼 클릭시  **Android의 공유** 인텐트를 사용하여 다른 앱으로 비디오 제목 전송
-
-- Detail page 시작과 종료시 **Fade Effect** 추가
-
-- NullPointerException 예외 처리하여 영상을 불러오지 못한 경우 Toast Message 출력
+- 상세페이지 기능 구현(MVVM패턴 적용)
+- 홈화면, 검색화면에서 기사 클릭시 상세페이지로 데이터 받기
+- 음성인식 기능
+- 공유하기 기능
+- 북마크 기능 클릭시 즐겨찾기 페이지에 추가 및 FireStore에 데이터 저장 및 저장이 되어있으면 삭제 - 로그인이 안되어있는 상태로 북마크 버튼 클릭시 로그인 페이지로 이동
+- 원문 보기 클릭시 원문URL로 이동
 
 </br>
 
 ### **4) MyPageFragment**
 
-<img width="200" alt="finder4" src="https://github.com/Android-Team-13-Maniacs/android_project_maniacs/assets/106515742/119fb69e-670c-4246-9993-6fdb5c1339e1"><img width="200" alt="finder3" src="https://github.com/Android-Team-13-Maniacs/android_project_maniacs/assets/106515742/6cfb20fb-cdef-46c9-85c5-24ca7218eae6">
+<img width="200" src="https://ifh.cc/g/kjdZDc.png"><img width="193" alt="finder3" src="https://ifh.cc/g/yAppvj.jpg">
 
 
 
-- **My List(+) 추가**를 선택한 Video 리스트 출력 
-
-- 상단 수정 버튼으로 **프로필 이름 및 사진 수정** 가능
-  - 둘중 하나만 수정해도 반영되도록 구현
-  - 닉네임은 10자이하로만 할 수 있도록 예외처리
-  - 닉네임을 입력하지 않고 저장했을시, "닉네임을 입력해주세요" 라는 팝업문구가 뜨게됨
-  - 다이얼로그 취소버튼 클릭시 정말 취소 하겠냐는 팝업문구 띄워짐
-
-- My Video 및 좋아요 Shared Preference 저장 되어 있어서 어플을 종료해도 화면에 반영됨
-
-- NullPointerException 예외 처리하여 영상을 불러오지 못한 경우 Toast Message 출력
+- **My List(+) 추가**를 선택한 기사 리스트 출력 
+- MVVM 패턴 적
+- 로그인시 Firestore에 저장되어있는 데이터를 즐겨찾기페이지에 바로 적용
+- 구글 로그인시 Firestore에 저장되어있는 데이터를 즐겨찾기페이지에 바로 적용
+- 로그아웃 버튼 클릭시 즐겨찾기 페이지를 클리어하고 로그인UI 로 변경
+- 앱종료시 자동 로그아웃 기능
 
 </br>
 
