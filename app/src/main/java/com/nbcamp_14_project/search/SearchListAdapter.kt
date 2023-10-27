@@ -38,6 +38,7 @@ class SearchListAdapter(
     }) {
 
 
+
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = getItem(position)
         holder.bind(item)
@@ -62,6 +63,7 @@ class SearchListAdapter(
         private val onClick: (HomeModel) -> Unit,
         private val onSwitch: (HomeModel) -> Unit
     ) : RecyclerView.ViewHolder(binding.root) {
+
         fun bind(item: HomeModel) = with(binding) {
             searchTitle.text = item.title
             searchDate.text = item.pubDate?.time?.let { Utils.calculationTime(it) } ?: ""
@@ -72,7 +74,6 @@ class SearchListAdapter(
                     item
                 )
             }
-
             searchSwitch.setOnClickListener {
                 val searchFragment = SearchFragment.newInstance()
                 val user = searchFragment.user

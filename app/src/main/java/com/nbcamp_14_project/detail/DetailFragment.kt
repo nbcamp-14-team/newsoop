@@ -31,6 +31,7 @@ import com.nbcamp_14_project.databinding.FragmentFavoriteBinding
 import com.nbcamp_14_project.databinding.FragmentSearchBinding
 import com.nbcamp_14_project.favorite.FavoriteListAdapter
 import com.nbcamp_14_project.favorite.FavoriteViewModel
+import com.nbcamp_14_project.search.SearchListAdapter
 import com.nbcamp_14_project.ui.login.LoginActivity
 import com.nbcamp_14_project.ui.login.LoginViewModel
 import java.util.Date
