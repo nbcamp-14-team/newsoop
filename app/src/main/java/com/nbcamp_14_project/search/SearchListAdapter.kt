@@ -56,6 +56,7 @@ class SearchListAdapter(
         )
     }
 
+
     class ViewHolder(
         private val binding: FragmentSearchItemBinding,
         private val onClick: (HomeModel) -> Unit,
@@ -71,8 +72,11 @@ class SearchListAdapter(
                     item
                 )
             }
-            val user = FirebaseAuth.getInstance().currentUser
+
             searchSwitch.setOnClickListener {
+                val searchFragment = SearchFragment.newInstance()
+                val user = searchFragment.user
+                Log.d("searchuser","$user")
                 if(user == null){
                         searchSwitch.isChecked = !searchSwitch.isChecked
                     onSwitch(

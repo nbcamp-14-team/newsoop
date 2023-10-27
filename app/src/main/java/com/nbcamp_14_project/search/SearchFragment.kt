@@ -26,6 +26,7 @@ import com.nbcamp_14_project.databinding.FragmentSearchBinding
 import com.nbcamp_14_project.detail.DetailInfo
 import com.nbcamp_14_project.detail.DetailViewModel
 import com.nbcamp_14_project.favorite.FavoriteViewModel
+import com.nbcamp_14_project.home.HomeFragment
 import com.nbcamp_14_project.home.toDetailInfo
 import com.nbcamp_14_project.mainpage.MainActivity
 import com.nbcamp_14_project.ui.login.LoginActivity
@@ -36,6 +37,9 @@ import kotlinx.coroutines.launch
 import java.util.Date
 
 class SearchFragment : Fragment() {
+    companion object {
+        fun newInstance() = SearchFragment()
+    }
 
     private val dialog by lazy { LoadingDialog(requireContext()) }
     private var _binding: FragmentSearchBinding? = null
@@ -47,7 +51,7 @@ class SearchFragment : Fragment() {
             this, SearchViewModelFactory()
         )[SearchViewModel::class.java]
     }
-    private val user = FirebaseAuth.getInstance().currentUser
+    var user = FirebaseAuth.getInstance().currentUser
     private val adapter by lazy {
         SearchListAdapter(
             onClick = { item ->
@@ -127,6 +131,11 @@ class SearchFragment : Fragment() {
                 dialog.dismiss()
             }
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        user = FirebaseAuth.getInstance().currentUser
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

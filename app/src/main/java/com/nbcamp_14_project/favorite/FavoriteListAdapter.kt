@@ -54,10 +54,9 @@ class FavoriteListAdapter(private val onItemClick: (DetailInfo) -> Unit) : ListA
         fun bind(item: DetailInfo) = with(binding) {
             title.text = item.title
             ivThumbnail.load(item.thumbnail)
-//            author.text = item.author
             val date = Date(item.pubDate)
             val value = date.time?.let { Utils.calculationTime(it) }
-            pubDate.text = value
+            pubDate.text = item.author + " 기자" + " · " + value + " 작성"
         }
     }
 }
