@@ -11,6 +11,7 @@ import androidx.activity.viewModels
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.common.SignInButton
 import com.google.android.gms.common.api.ApiException
 import com.google.android.recaptcha.RecaptchaAction
 import com.google.firebase.auth.FirebaseAuth
@@ -48,7 +49,7 @@ class LoginActivity : AppCompatActivity() {
 
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
+        binding.ivGoogleLogin.setSize(SignInButton.SIZE_WIDE)
         auth = FirebaseAuth.getInstance()
         fbFireStore = FirebaseFirestore.getInstance()
 
@@ -85,7 +86,7 @@ class LoginActivity : AppCompatActivity() {
             }
         }
 
-        binding.tvSignup.setOnClickListener {
+        binding.btnSignup.setOnClickListener {
             val intent = Intent(this, SignUpActivity::class.java)
             activityResultLauncher.launch(intent)
         }
@@ -102,14 +103,6 @@ class LoginActivity : AppCompatActivity() {
 
         }
 
-        binding.ivNaver.setOnClickListener {
-//            naverLogin()
-            Toast.makeText(this, "구현 중입니다..!", Toast.LENGTH_SHORT).show()
-        }
-
-        binding.ivKakao.setOnClickListener {
-            Toast.makeText(this, "구현 중입니다..!", Toast.LENGTH_SHORT).show()
-        }
     }
 
     private fun setGoogleLogin() {

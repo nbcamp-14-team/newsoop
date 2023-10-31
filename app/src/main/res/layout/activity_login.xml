@@ -16,7 +16,7 @@
         android:id="@+id/iv_login_logo"
         android:layout_width="300dp"
         android:layout_height="100dp"
-        android:layout_marginTop="150dp"
+        android:layout_marginTop="100dp"
         android:scaleType="centerCrop"
         android:src="@drawable/img_app_logo"
         app:layout_constraintEnd_toEndOf="parent"
@@ -64,75 +64,57 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="28dp"
-        app:cornerRadius="100dp"
         android:backgroundTint="@color/white"
         android:text="@string/action_sign_in"
         android:textColor="@color/black"
         android:textStyle="bold"
+        app:cornerRadius="100dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/et_password" />
 
-    <ImageView
-        android:id="@+id/iv_kakao"
-        android:layout_width="50dp"
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_signup"
+        android:layout_width="320dp"
         android:layout_height="50dp"
-        android:layout_marginEnd="16dp"
-        android:scaleType="centerCrop"
-        android:src="@drawable/ic_kakao"
-        app:layout_constraintBottom_toBottomOf="@+id/iv_naver"
-        app:layout_constraintEnd_toStartOf="@+id/iv_naver"
-        app:layout_constraintTop_toTopOf="@+id/iv_naver" />
-
-
-    <ImageView
-        android:id="@+id/iv_naver"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_marginTop="24dp"
-        android:scaleType="centerCrop"
-        android:src="@drawable/ic_naver"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btn_login" />
-
-    <ImageView
-        android:id="@+id/iv_google_login"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_marginStart="16dp"
-        android:scaleType="centerCrop"
-        android:src="@drawable/ic_google"
-        app:layout_constraintBottom_toBottomOf="@+id/iv_naver"
-        app:layout_constraintStart_toEndOf="@+id/iv_naver"
-        app:layout_constraintTop_toTopOf="@+id/iv_naver" />
-
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="48dp"
-        android:text="회원이 아니신가요?"
-        android:textStyle="bold"
-        android:textColor="@color/black"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.367"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/iv_naver" />
-
-    <TextView
-        android:id="@+id/tv_signup"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:text="@string/join_us"
         android:textStyle="bold"
+        app:cornerRadius="10dp"
+        android:backgroundTint="@color/white"
         android:textColor="@color/black"
-        android:layout_marginStart="20dp"
-        app:layout_constraintBottom_toBottomOf="@+id/textView"
-        app:layout_constraintStart_toEndOf="@+id/textView"
-        app:layout_constraintTop_toTopOf="@+id/textView" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btn_login"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="28dp"/>
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="10dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btn_signup">
+
+
+
+
+        <com.google.android.gms.common.SignInButton
+            android:id="@+id/iv_google_login"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_google"
+
+
+      />
+    </androidx.cardview.widget.CardView>
+
+
+
+
+
+
+
 
     <ProgressBar
         android:id="@+id/loading"
