@@ -10,6 +10,8 @@ class LoginViewModel: ViewModel() {
    private val loginRepository: LoginRepository = LoginRepository()
     private val _userLiveData = loginRepository.userLiveData
     var category = MutableLiveData<String>()
+    var secondCategory = MutableLiveData<String>()
+    var thirdCategory = MutableLiveData<String>()
 
 
     val userLiveData: LiveData<FirebaseUser>
