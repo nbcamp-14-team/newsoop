@@ -26,14 +26,16 @@ class HomeViewModel(
     val list: LiveData<List<HomeModel>> get() = _list
     private val _newsList: MutableLiveData<List<HomeModel>> = MutableLiveData()
     val newsList: LiveData<List<HomeModel>> get() = _newsList
+    var isLoading: Boolean = false
 
     init {
         _list.value = repository.getList()
     }
+    private val VIEW_TYPE_ITEM = 0
+    private val VIEW_TYPE_LOADING = 1
 
     fun headLineNews(query: String) {
         viewModelScope.launch {
-
             val docs = searchNews( query, 5)
             val item = docs.items ?: return@launch
             for (i in item.indices) {//아이템 개수만큼 for문 실행
@@ -66,16 +68,17 @@ class HomeViewModel(
                 )
 
             }
-            val test = _list.value
-            Log.d("testNewsqueary", "$query + ${test!![0].title} + ${test!![1].title}")
 
         }
     }
 
+
     fun detailNews(query: String, startingNum: Int? = null) {
         viewModelScope.launch {
+
             val docs = searchNews(query, 5, startingNum, sort = "sim")
             val item = docs.items ?: return@launch
+            var currentList = repository.getNewsList()
             for (i in item.indices) {//아이템 개수만큼 for문 실행
                 val thumbnail = getThumbnail(item[i].link.toString())
                 var title = item[i].title!!.replace("<b>", "")
@@ -91,7 +94,7 @@ class HomeViewModel(
                 Log.d("date", "$date")
                 val author = getAuthor(item[i].link.toString())
                 Log.d("linkRecycler", "$link + $author")
-                _newsList.value = repository.addNewsItem(
+                currentList = repository.addNewsItem(
                     HomeModel(
                         title = title,
                         thumbnail = thumbnail,
@@ -99,13 +102,65 @@ class HomeViewModel(
                         link = link,
                         pubDate = date,
                         author = author,
-                        viewType = 0
+                        viewType = VIEW_TYPE_ITEM
                     )
                 )
 
             }
+            currentList = repository.addNewsItem(
+                HomeModel(
+                    viewType = VIEW_TYPE_LOADING
+                )
+            )
+            _newsList.value = currentList
 
-            Log.d("testqueary", "$query + ${_list.value}")
+
+
+        }
+    }
+    fun detailNewsInfinity(query: String, startingNum: Int? = null) {
+        viewModelScope.launch {
+            val homeFragment = HomeFragment.newInstance(query)
+            val docs = searchNews(query, 10, startingNum, sort = "sim")
+            val item = docs.items ?: return@launch
+            var currentList = repository.getNewsList()
+            currentList = repository.removeLastNewsItem()
+            for (i in item.indices) {//아이템 개수만큼 for문 실행
+                val thumbnail = getThumbnail(item[i].link.toString())
+                var title = item[i].title!!.replace("<b>", "")
+                title = title.replace("</b>", "")
+                title = title.replace("&quot;", "\"")
+                title = title.replace("&amp;", "&")
+                var description = item[i].description?.replace("<b>", "")
+                description = description?.replace("</b>", "")
+                description = description?.replace("&quot;", "\"")
+                val link = item[i].link
+                val pubDate = item[i].pubDate
+                var date = Date(pubDate)
+                Log.d("date", "$date")
+                val author = getAuthor(item[i].link.toString())
+                Log.d("linkRecycler", "$link + $author")
+                currentList = repository.addNewsItem(
+                    HomeModel(
+                        title = title,
+                        thumbnail = thumbnail,
+                        description = description,
+                        link = link,
+                        pubDate = date,
+                        author = author,
+                        viewType = VIEW_TYPE_ITEM
+                    )
+                )
+
+            }
+            currentList = repository.addNewsItem(
+                HomeModel(
+                    viewType = VIEW_TYPE_LOADING
+                )
+            )
+            _newsList.value = currentList
+            isLoading = true
+            Log.d("LoadingViewModel","$isLoading")
         }
     }
 

@@ -17,7 +17,7 @@
         app:tabIndicatorFullWidth="true"
         app:tabIndicatorGravity="bottom"
         app:tabMode="scrollable"
-        app:tabTextAppearance="@style/tab_text"
+        app:tabTextAppearance="@style/main_tab_text"
         app:tabTextColor="@color/tab_select">
 
         <com.google.android.material.tabs.TabItem

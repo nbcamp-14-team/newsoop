@@ -14,12 +14,14 @@ interface MainFragmentRepository {
         sort: String? = null
     ): SearchEntity
     fun getList():List<HomeModel>
+    fun getNewsList():List<HomeModel>
     //라이브데이터에 아이템 추가하는 기능
     fun addHeadLineItem(item: HomeModel?):List<HomeModel>
     fun addNewsItem(item:HomeModel?):List<HomeModel>
     //라이브데이터에서 아이템 삭제하는 기능
     fun removeHeadLineItem(item: HomeModel?):List<HomeModel>
     fun removeNewsItem(item: HomeModel?):List<HomeModel>
+    fun removeLastNewsItem():List<HomeModel>
     fun modifyHeadLineItem(item: HomeModel?):List<HomeModel>
     fun modifyNewsItem(item: HomeModel?):List<HomeModel>
     fun clearNewsItems():List<HomeModel>
@@ -44,6 +46,10 @@ class MainFragmentRepositoryImpl(
 
     override fun getList(): List<HomeModel> {
         return list
+    }
+
+    override fun getNewsList(): List<HomeModel> {
+        return newsList
     }
 
     override fun addHeadLineItem(item: HomeModel?):List<HomeModel> {
@@ -136,6 +142,12 @@ class MainFragmentRepositoryImpl(
         newsList.removeAt(findPosition)
         return ArrayList<HomeModel>(newsList)
     }
+
+    override fun removeLastNewsItem(): List<HomeModel> {
+        newsList.removeAt(newsList.lastIndex)
+        return ArrayList<HomeModel>(newsList)
+    }
+
 
     override fun clearNewsItems(): List<HomeModel> {
         newsList.clear()
