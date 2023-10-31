@@ -20,13 +20,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import com.nbcamp_14_project.R
 import com.nbcamp_14_project.R.layout.item_loading
 import com.nbcamp_14_project.databinding.FragmentSearchBinding
 import com.nbcamp_14_project.detail.DetailInfo
 import com.nbcamp_14_project.detail.DetailViewModel
 import com.nbcamp_14_project.favorite.FavoriteViewModel
-import com.nbcamp_14_project.home.HomeFragment
 import com.nbcamp_14_project.home.toDetailInfo
 import com.nbcamp_14_project.mainpage.MainActivity
 import com.nbcamp_14_project.ui.login.LoginActivity
@@ -62,11 +60,12 @@ class SearchFragment : Fragment() {
             },
             onSwitch = { item ->
                 val detailInfo = item.toDetailInfo()
-                Log.d("searchuserFragment","$user")
+                Log.d("searchuserFragment", "$user")
                 if (user != null) {
                     // 사용자가 로그인한 경우
                     if (detailInfo != null) {
                         val isFavorite = detailInfo.isLike
+                        Log.d("detailInfo", "${detailInfo.isLike}")
                         if (!isFavorite!!) {
                             favoriteViewModel.removeFavoriteItem(detailInfo)
                             removeFavoriteFromFireStore(detailInfo)  // Firestore에서도 제거
@@ -195,6 +194,7 @@ class SearchFragment : Fragment() {
             }
         }
     }
+
     private fun addFavoriteToFireStore(detailInfo: DetailInfo) {
 //        val db = FirebaseFirestore.getInstance()
 //        val favoriteRef = db.collection("favorites")
