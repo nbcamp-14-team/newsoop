@@ -6,5 +6,7 @@ package com.nbcamp_14_project.data.model
 data class User(
     var name: String? = null,
     var email: String? = null,
-    var category: String? = null
+    var category: String? = null,
+    var secondCategory: String? = null,
+    var thirdCategory: String? = null
 )

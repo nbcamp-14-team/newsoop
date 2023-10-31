@@ -14,6 +14,7 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
+import androidx.databinding.adapters.TextViewBindingAdapter.setTextWatcher
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.nbcamp_14_project.data.model.User
@@ -102,7 +103,24 @@ class SignUpActivity : AppCompatActivity() {
         transaction.addToBackStack(null)
         transaction.commit()
         loginViewModel.category.observe(this) { text ->
-            binding.tvChooseCategory.text = text
+            binding.tvFirstCategory.text = text
+        }
+
+        loginViewModel.secondCategory.observe(this) { text ->
+            if (text.isNotEmpty()){
+                binding.tvSecondCategory.text = ", $text"
+            }
+            else {
+                binding.tvSecondCategory.text = null
+            }
+        }
+
+        loginViewModel.thirdCategory.observe(this) { text ->
+            if (text.isNotEmpty()){
+                binding.tvThirdCategory.text = ", $text"
+            }else {
+                binding.tvThirdCategory.text = null
+            }
         }
 
     }
@@ -120,6 +138,8 @@ class SignUpActivity : AppCompatActivity() {
                     user.email = curUser?.email
                     user.name = name.toString()
                     user.category = loginViewModel.category.value
+                    user.secondCategory = loginViewModel.secondCategory.value
+                    user.thirdCategory = loginViewModel.thirdCategory.value
                     fbFireStore.collection("User").document(curUser!!.uid).set(user)
                     val intent = Intent(this, LoginActivity::class.java).apply {
                         putExtra("id", email.toString())

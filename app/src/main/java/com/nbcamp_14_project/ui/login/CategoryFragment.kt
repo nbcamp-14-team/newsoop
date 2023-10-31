@@ -20,6 +20,9 @@ class CategoryFragment : Fragment() {
     private lateinit var auth: FirebaseAuth
     private lateinit var fbFireStore: FirebaseFirestore
     private val loginViewModel: LoginViewModel by activityViewModels()
+    private var greenCount = 0
+    private val buttonStates = MutableList(8) { false }
+    private val greenButtonTextList = mutableListOf<String>()
     private val binding get() = _binding!!
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -36,28 +39,64 @@ class CategoryFragment : Fragment() {
 
     }
 
-    private fun setCategoryBtn(){
+    private fun setCategoryBtn() {
         binding.run {
-            val buttons = listOf(btnPolitics, btnEconomy, btnSocial,btnLife,btnCulture,btnIt,btnScience,btnWorld)
-            for (button in buttons) {
-                var switch = false
-                button.setOnClickListener {
-                    switch = !switch
-                    if (switch){
-                        button.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(requireContext(),R.color.green))
-                        val text = button.text.toString()
-                        loginViewModel.category.value = text
-                    }else{
-                        button.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(requireContext(),R.color.white))
+            val buttons = listOf(
+                btnPolitics,
+                btnEconomy,
+                btnSocial,
+                btnLife,
+                btnCulture,
+                btnIt,
+                btnScience,
+                btnWorld
+            )
+            for (i in buttons.indices) {
+                buttons[i].setOnClickListener {
+                    if (buttonStates[i]) {
+                        buttons[i].strokeColor = ColorStateList.valueOf(
+                            ContextCompat.getColor(
+                                requireContext(),
+                                R.color.lightGray
+                            )
+                        )
+                        val text = buttons[i].text.toString()
+                        greenButtonTextList.remove(text)
+                        buttonStates[i] = false
+                        greenCount--
+                    } else {
+                        if (greenCount < 3) {
+                            buttons[i].strokeColor = ColorStateList.valueOf(
+                                ContextCompat.getColor(
+                                    requireContext(),
+                                    R.color.green
+                                )
+                            )
+                            val text = buttons[i].text.toString()
+                            greenButtonTextList.add(text)
+                            buttonStates[i] = true
+                            greenCount++
+                        }
+
                     }
+                }
+                tvClose.setOnClickListener {
+                    parentFragmentManager.popBackStack()
 
                 }
-            }
-            tvClose.setOnClickListener {
-                parentFragmentManager.popBackStack()
-
+                btnComplete.setOnClickListener {
+                    putStringCategoryData()
+                    parentFragmentManager.popBackStack()
+                }
             }
         }
+
     }
 
+    private fun putStringCategoryData(){
+        loginViewModel.category.value = greenButtonTextList.getOrNull(0) ?: ""
+        loginViewModel.secondCategory.value = greenButtonTextList.getOrNull(1) ?: ""
+        loginViewModel.thirdCategory.value = greenButtonTextList.getOrNull(2) ?: ""
+
+    }
 }

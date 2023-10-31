@@ -64,7 +64,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/v_divider"
             app:strokeColor="@color/lightGray"
-            app:strokeWidth="1dp" />
+            app:strokeWidth="3dp" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_economy"
@@ -82,7 +82,7 @@
             app:layout_constraintHorizontal_bias="0.78"
             app:layout_constraintTop_toTopOf="@+id/btn_politics"
             app:strokeColor="@color/lightGray"
-            app:strokeWidth="1dp" />
+            app:strokeWidth="3dp" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_social"
@@ -100,7 +100,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/btn_politics"
             app:strokeColor="@color/lightGray"
-            app:strokeWidth="1dp" />
+            app:strokeWidth="3dp" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_life"
@@ -118,7 +118,7 @@
             app:layout_constraintHorizontal_bias="0.78"
             app:layout_constraintTop_toTopOf="@+id/btn_social"
             app:strokeColor="@color/lightGray"
-            app:strokeWidth="1dp" />
+            app:strokeWidth="3dp" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_culture"
@@ -136,7 +136,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/btn_social"
             app:strokeColor="@color/lightGray"
-            app:strokeWidth="1dp" />
+            app:strokeWidth="3dp" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_it"
@@ -154,7 +154,7 @@
             app:layout_constraintHorizontal_bias="0.78"
             app:layout_constraintTop_toTopOf="@+id/btn_culture"
             app:strokeColor="@color/lightGray"
-            app:strokeWidth="1dp" />
+            app:strokeWidth="3dp" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_science"
@@ -172,7 +172,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/btn_culture"
             app:strokeColor="@color/lightGray"
-            app:strokeWidth="1dp" />
+            app:strokeWidth="3dp" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_world"
@@ -190,7 +190,7 @@
             app:layout_constraintHorizontal_bias="0.78"
             app:layout_constraintTop_toTopOf="@+id/btn_science"
             app:strokeColor="@color/lightGray"
-            app:strokeWidth="1dp" />
+            app:strokeWidth="3dp" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_complete"

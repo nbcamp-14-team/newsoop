@@ -14,12 +14,12 @@
         android:id="@+id/iv_sign_up_back"
         android:layout_width="30dp"
         android:layout_height="20dp"
-        android:src="@drawable/ic_back"
         android:scaleType="centerCrop"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.02"
+        android:src="@drawable/ic_back"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.02" />
 
 
     <TextView
@@ -80,9 +80,9 @@
                     android:hint="이메일을 입력해주세요"
                     android:imeOptions="actionNext"
                     android:inputType="textEmailAddress"
+                    android:maxLines="1"
                     android:paddingHorizontal="10dp"
                     android:paddingVertical="8dp"
-                    android:maxLines="1"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/btn_check_exist"
                     app:layout_constraintStart_toStartOf="parent"
@@ -140,12 +140,11 @@
                 android:layout_marginBottom="2dp"
                 android:background="@drawable/et_round_white"
                 android:hint="비밀번호를 입력해주세요"
-                android:maxLines="1"
                 android:imeOptions="actionNext"
                 android:inputType="textPassword"
+                android:maxLines="1"
                 android:paddingHorizontal="10dp"
                 android:paddingVertical="8dp" />
-
 
 
             <TextView
@@ -153,8 +152,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="3dp"
-                android:textColor="@color/green"
-                android:text="6자 이상, 숫자 기호 문자를 각각 하나 이상씩 포함해주세요"/>
+                android:text="6자 이상, 숫자 기호 문자를 각각 하나 이상씩 포함해주세요"
+                android:textColor="@color/green" />
 
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -172,9 +171,9 @@
                     android:hint="비밀번호를 확인해주세요"
                     android:imeOptions="actionNext"
                     android:inputType="textPassword"
+                    android:maxLines="1"
                     android:paddingHorizontal="10dp"
                     android:paddingVertical="8dp"
-                    android:maxLines="1"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -196,7 +195,6 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-
             <TextView
                 android:id="@+id/tv_name"
                 android:layout_width="wrap_content"
@@ -211,14 +209,14 @@
                 android:id="@+id/et_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
                 android:layout_marginEnd="10dp"
                 android:background="@drawable/et_round_white"
-                android:layout_marginTop="6dp"
                 android:hint="이름을 입력해주세요"
                 android:imeOptions="actionNext"
-                android:paddingHorizontal="10dp"
                 android:inputType="text"
                 android:maxLines="1"
+                android:paddingHorizontal="10dp"
                 android:paddingVertical="8dp"
                 android:textColor="@color/black" />
 
@@ -232,15 +230,69 @@
                 android:textSize="16sp"
                 android:textStyle="bold" />
 
-            <TextView
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/tv_choose_category"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:text=" !! 추가 개발 예정 !! "
+                android:backgroundTint="@color/white"
+                android:letterSpacing="0.1"
+                android:text="> 선택하러가기"
+                android:textColor="@color/signUpBtn"
                 android:textSize="18sp"
-                android:textColor="#ff0000"
-      />
+                android:textStyle="bold"
+                app:strokeColor="@color/signUpBtn"
+                app:strokeWidth="1dp" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=":"
+                    android:textColor="@color/black"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:layout_marginTop="10dp"/>
+
+                <TextView
+                    android:id="@+id/tv_first_category"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginStart="10dp"
+                    android:text=" "
+                    android:textStyle="bold"
+                    android:textColor="@color/black"
+                    android:textSize="20sp" />
+
+
+                <TextView
+                    android:id="@+id/tv_second_category"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="10dp"
+                    android:text=" "
+                    android:textStyle="bold"
+                    android:textColor="@color/black"
+                    android:textSize="20sp" />
+
+                <TextView
+                    android:id="@+id/tv_third_category"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="10dp"
+                    android:text=" "
+                    android:textStyle="bold"
+                    android:textColor="@color/black"
+                    android:textSize="20sp" />
+
+            </LinearLayout>
 
 
         </androidx.appcompat.widget.LinearLayoutCompat>
@@ -254,9 +306,9 @@
         android:layout_marginHorizontal="15dp"
         android:layout_marginBottom="14dp"
         android:backgroundTint="@color/signUpBtn"
+        android:letterSpacing="0.1"
         android:paddingVertical="14dp"
         android:text="가입하기"
-        android:letterSpacing="0.1"
         android:textColor="@color/white"
         android:textSize="18sp"
         android:textStyle="bold"
