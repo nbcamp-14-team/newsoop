@@ -53,7 +53,7 @@ class CategoryFragment : Fragment() {
 
                 }
             }
-            btnComplete.setOnClickListener {
+            tvClose.setOnClickListener {
                 parentFragmentManager.popBackStack()
 
             }

@@ -49,7 +49,6 @@ class LoginActivity : AppCompatActivity() {
 
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        binding.ivGoogleLogin.setSize(SignInButton.SIZE_WIDE)
         auth = FirebaseAuth.getInstance()
         fbFireStore = FirebaseFirestore.getInstance()
 
@@ -86,7 +85,7 @@ class LoginActivity : AppCompatActivity() {
             }
         }
 
-        binding.btnSignup.setOnClickListener {
+        binding.tvSignup.setOnClickListener {
             val intent = Intent(this, SignUpActivity::class.java)
             activityResultLauncher.launch(intent)
         }
