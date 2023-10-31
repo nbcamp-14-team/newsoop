@@ -64,7 +64,7 @@ class MainActivity : AppCompatActivity() {
             }
             viewpager.offscreenPageLimit = viewPagerAdapter.itemCount//생명주기 관련 코드
             //TabLayout 연동
-            val tabTitle = listOf("홈", "검색", "즐겨찾기")
+            val tabTitle = listOf("홈", "검색", "즐겨찾기","신문사별","토론방")
             TabLayoutMediator(tabLayout, viewpager) { tab, position ->
                 tab.setText(tabTitle[position])
             }.attach()
