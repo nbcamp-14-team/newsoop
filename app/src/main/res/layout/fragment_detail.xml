@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="#FFFFFF"
     android:clickable="true"
-    android:backgroundTint="@color/background_green"
+    android:backgroundTint="@color/white"
     tools:context=".detail.DetailFragment">
 
 
@@ -138,16 +138,17 @@
         android:layout_marginTop="4dp"
         android:text="원문 보기"
         android:padding="0dp"
-        android:textColor="#717070"
+        android:textColor="@color/black"
         android:textSize="20dp"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/sv_description"
         app:cornerRadius="100dp"
-        android:backgroundTint="#BFE6C0"
-        app:strokeColor="#4A4747"
-        app:strokeWidth="1dp"/>
+        android:backgroundTint="@color/white"
+        app:strokeColor="#BFE6C0"
+        app:strokeWidth="3dp"/>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
