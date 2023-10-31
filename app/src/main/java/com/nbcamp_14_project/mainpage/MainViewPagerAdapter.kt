@@ -10,7 +10,7 @@ import com.nbcamp_14_project.search.SearchFragment
 
 class MainViewPagerAdapter(fragmentActivity: FragmentActivity) :
     FragmentStateAdapter(fragmentActivity) {
-    val list = listOf(HomeViewPagerFragment(), SearchFragment(), FavoriteFragment())
+    val list = listOf(HomeViewPagerFragment(), SearchFragment(), FavoriteFragment(),FavoriteFragment(),FavoriteFragment())
 
     override fun getItemCount(): Int {
         return list.size
