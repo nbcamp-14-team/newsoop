@@ -58,12 +58,22 @@ class DebateFragment : Fragment() {
                 val debateTitle = tvdebate.text.toString()
                 val name = tvname.text.toString()
 
-                // 데이터 모델을 만들거나 목록에 추가
-                val newDebateItem = DebateItem(debateTitle, name)
-                debateList.add(newDebateItem)
-
-                // RecyclerView 어댑터에게 데이터 변경을 알림
-                adapter.notifyDataSetChanged()
+                // Firestore에 데이터 추가
+                val firestore = FirebaseFirestore.getInstance()
+                var newDebateItem = DebateItem("", debateTitle, name) // ID는 비어있는 상태로 생성
+                firestore.collection("Debates")
+                    .add(newDebateItem)
+                    .addOnSuccessListener { documentReference ->
+                        // 추가 성공
+                        val newID = documentReference.id // Firestore에서 생성된 ID를 얻음
+                        newDebateItem = DebateItem(newID, debateTitle, name) // ID를 설정
+                        debateList.add(newDebateItem)
+                        adapter.notifyDataSetChanged()
+                    }
+                    .addOnFailureListener { e ->
+                        // 추가 실패
+                        // 실패 시에 사용자에게 메시지를 표시할 수 있습니다.
+                    }
             }
 
             builder.setPositiveButton("확인", confirmListener)
@@ -90,12 +100,21 @@ class DebateFragment : Fragment() {
                 transaction.commit()
             }
             override fun onDeleteClick(position: Int) {
-                debateList.removeAt(position)
-                adapter.notifyDataSetChanged()
+                val itemToDelete = debateList[position]
+                val firestore = FirebaseFirestore.getInstance()
+                firestore.collection("Debates").document(itemToDelete.id)
+                    .delete()
+                    .addOnSuccessListener {
+                        // Firestore에서 삭제 성공
+                        debateList.removeAt(position)
+                        adapter.notifyDataSetChanged()
+                    }
+                    .addOnFailureListener { e ->
+                        // 삭제 실패
+                        // 실패 시에 사용자에게 메시지를 표시할 수 있습니다.
+                    }
             }
         }
-
-
     }
 
     // Fragment가 파괴될 때 binding을 정리
@@ -103,6 +122,28 @@ class DebateFragment : Fragment() {
         super.onDestroyView()
         _binding = null
     }
+
+    override fun onResume() {
+        super.onResume()
+
+        // Firestore에서 데이터를 가져와서 debateList를 업데이트
+        val firestore = FirebaseFirestore.getInstance()
+        firestore.collection("Debates")
+            .get()
+            .addOnSuccessListener { documents ->
+                debateList.clear() // 기존 목록을 비우고 다시 데이터를 채웁니다.
+                for (document in documents) {
+                    val id = document.id
+                    val title = document.getString("title")
+                    val name = document.getString("name")
+                    if (title != null && name != null) {
+                        debateList.add(DebateItem(id, title, name))
+                    }
+                }
+                adapter.notifyDataSetChanged() // RecyclerView 갱신
+            }
+            .addOnFailureListener { e ->
+                // 실패 시에 사용자에게 메시지를 표시할 수 있습니다.
+            }
+    }
 }
-
-
