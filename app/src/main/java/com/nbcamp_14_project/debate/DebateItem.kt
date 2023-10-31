@@ -1,5 +1,3 @@
 package com.nbcamp_14_project.debate
 
-data class DebateItem(val id: String, val title: String, val name: String) {
-
-}
+data class DebateItem(var id: String, var title: String, var name: String, var userUID: String)
