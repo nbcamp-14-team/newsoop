@@ -6,12 +6,15 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout.VERTICAL
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
+import com.navercorp.nid.NaverIdLoginSDK.applicationContext
 import com.nbcamp_14_project.databinding.FragmentMainBinding
 import com.nbcamp_14_project.detail.DetailViewModel
 import com.nbcamp_14_project.mainpage.MainActivity
@@ -28,9 +31,8 @@ class HomeFragment(query:String) : Fragment() {
     var isLoading = false
 
     private var _binding: FragmentMainBinding? = null
-    private val detailViewModel: DetailViewModel by activityViewModels()
     private val binding get() = _binding!!
-
+    private val detailViewModel: DetailViewModel by activityViewModels()
     // HomeFragment Fragment
     private val headLineAdapter by lazy {
         HomeHeadLineAdapter(//ViewPager2에서 클릭이 일어났을 때, Detail에 데이터값을 보냄
@@ -81,7 +83,7 @@ class HomeFragment(query:String) : Fragment() {
     }
 
     fun initView() = with(binding) {
-        category.text = queryInbox //
+        category.text = queryInbox + " 관련 뉴스"//텍스트박스
         val slideImageHandler: Handler = Handler()
         val slideImageRunnable = Runnable {// 메인 ViewPager 자동 스와이프 관련 runnable 함수
 
@@ -111,6 +113,8 @@ class HomeFragment(query:String) : Fragment() {
         /**
          * 하단 리사이클러뷰 세팅
          */
+        val decoration = DividerItemDecoration(requireContext(),VERTICAL)
+        rvNews.addItemDecoration(decoration)
 
         rvNews.adapter = newsAdapter//어뎁터 연결
         rvNews.addOnScrollListener(object : RecyclerView.OnScrollListener() {
