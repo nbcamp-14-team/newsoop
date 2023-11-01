@@ -6,8 +6,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
 import com.nbcamp_14_project.Utils
 import com.nbcamp_14_project.api.RetrofitInstance
 import com.nbcamp_14_project.detail.DetailInfo
@@ -35,26 +33,6 @@ class SearchViewModel(
     }
 
     fun getRecentSearchList() {
-        val user = FirebaseAuth.getInstance().currentUser
-        val userUID = user?.uid
-        val db = FirebaseFirestore.getInstance()
-        val recentSearchRef =
-            userUID?.let { db.collection("User").document(it).collection("recentSearch") }
-
-        // TODO : firebase에 있는 최근 검색어 리스트 불러오기
-        recentSearchRef?.get()?.addOnSuccessListener { document ->
-            if (document != null) {
-                for (search in document) {
-                    val searchWord = search.getString("searchWord")
-                    if (searchWord != null) {
-                        repository.addRecentSearchList(searchWord)
-                        Log.d("recentSearch", "$searchWord")
-                    }
-                }
-            }
-        }?.addOnFailureListener { e ->
-            Log.d("recentSearch", e.message.toString())
-        }
         _recentSearchList.value = repository.getRecentSearchList()
     }
 

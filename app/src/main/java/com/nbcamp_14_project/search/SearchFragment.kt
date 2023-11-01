@@ -65,7 +65,6 @@ class SearchFragment : Fragment() {
                     // 사용자가 로그인한 경우
                     if (detailInfo != null) {
                         val isFavorite = detailInfo.isLike
-                        Log.d("detailInfo", "${detailInfo.isLike}")
                         if (!isFavorite!!) {
                             favoriteViewModel.removeFavoriteItem(detailInfo)
                             removeFavoriteFromFireStore(detailInfo)  // Firestore에서도 제거
@@ -110,14 +109,13 @@ class SearchFragment : Fragment() {
             }
             handled
         }
+
         searchBtn.setOnClickListener {
             query = binding.searchInput.text.toString()
             //최근 검색어에서 같은 단어가 있으면 지우고 새로 넣기
             viewModel.removeRecentSearchItem(query)
             viewModel.clearAllItems()
             viewModel.setRecentSearchItem(query)
-            // TODO : 최근 검색어 firebase에 저장하기
-            addRecentSearchFireStore(query)
             viewModel.getSearchNews(query, 5, 1)
 
             //키보드 내리는 기능
@@ -143,8 +141,6 @@ class SearchFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         initView()
         initViewModel()
-        // TODO : 최근 검색어 불러오기 (초기에 불러오려면?)
-        viewModel.getRecentSearchList()
         binding.searchRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
@@ -171,13 +167,6 @@ class SearchFragment : Fragment() {
                 binding.searchInput.setText(searchWord)
                 Log.d("search", "$position : $searchWord")
                 binding.searchBtn.performClick()
-            }
-        })
-
-        tagAdapter.itemCancelClickLister(object : SearchTagAdapter.OnItemCancelClickListener {
-            override fun onClick(v: View, position: Int, searchWord: String) {
-                // 아이템 삭제 버튼 클릭 이벤트
-                viewModel.removeRecentSearchItem(searchWord)
             }
         })
     }
@@ -256,19 +245,6 @@ class SearchFragment : Fragment() {
                 document.reference.delete()
             }
         }
-    }
-
-    //최근 검색어를 firebase에 저장하기
-    private fun addRecentSearchFireStore(search: String) {
-        val user = FirebaseAuth.getInstance().currentUser
-        val userUID = user?.uid ?: return
-        // 2. Firestore에서 해당 사용자의 favorite 컬렉션 참조
-        val db = FirebaseFirestore.getInstance()
-        val recentSearch = db.collection("User").document(userUID).collection("recentSearch")
-        val searchData = hashMapOf(
-            "searchWord" to search
-        )
-        recentSearch.add(searchData)
     }
 
 
