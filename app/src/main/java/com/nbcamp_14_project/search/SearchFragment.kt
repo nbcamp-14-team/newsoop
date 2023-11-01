@@ -112,8 +112,8 @@ class SearchFragment : Fragment() {
 
         searchBtn.setOnClickListener {
             query = binding.searchInput.text.toString()
-            //TODO : 최근 검색어에서 같은 단어가 있으면 지우고 새로 넣기
-            // viewModel.removeRecentSearchItem(query)
+            //최근 검색어에서 같은 단어가 있으면 지우고 새로 넣기
+            viewModel.removeRecentSearchItem(query)
             viewModel.clearAllItems()
             viewModel.setRecentSearchItem(query)
             viewModel.getSearchNews(query, 5, 1)
@@ -208,7 +208,7 @@ class SearchFragment : Fragment() {
         val db = FirebaseFirestore.getInstance()
         val recentSearchCollection =
             db.collection("User").document(userUID).collection("recentSearch")
-        recentSearchCollection.get()
+        recentSearchCollection.orderBy("inputTime").get()
             .addOnSuccessListener { querySnapshot ->
                 for (document in querySnapshot) {
                     val searchWord = document.getString("searchWord")
