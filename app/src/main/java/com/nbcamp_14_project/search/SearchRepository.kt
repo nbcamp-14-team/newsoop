@@ -1,5 +1,7 @@
 package com.nbcamp_14_project.search
 
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import com.nbcamp_14_project.api.NewsCollector
 import com.nbcamp_14_project.domain.SearchEntity
 import com.nbcamp_14_project.domain.toSearchEntity
@@ -64,8 +66,23 @@ class SearchRepositoryImpl(
     }
 
     override fun addRecentSearchList(searchWord: String): List<String> {
-        if (searchWord == null || searchWord == "") {
+        if (searchWord == "") {
             return recentSearchList
+        }
+
+        val user = FirebaseAuth.getInstance().currentUser
+        val userUID = user?.uid
+
+        // TODO :  userUID가 존재하면 firebase에 저장
+        if (userUID != null) {
+            val db = FirebaseFirestore.getInstance()
+            val recentSearchCollection =
+                db.collection("User").document(userUID).collection("recentSearch")
+            val favoriteData = hashMapOf(
+                "searchWord" to searchWord
+            )
+
+            recentSearchCollection.add(favoriteData)
         }
         recentSearchList.add(searchWord)
         return recentSearchList
