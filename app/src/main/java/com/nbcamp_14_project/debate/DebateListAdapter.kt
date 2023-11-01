@@ -1,3 +1,4 @@
+// DebateListAdapter.kt
 package com.nbcamp_14_project.debate
 
 import android.view.LayoutInflater
@@ -35,7 +36,6 @@ class DebateListAdapter(private val debateList: List<DebateItem>) : RecyclerView
         val debateItem = debateList[position]
         holder.title.text = debateItem.title
         holder.name.text = "이름: ${debateItem.name}"
-
 
         holder.deleteButton.setOnClickListener {
             val position = holder.adapterPosition

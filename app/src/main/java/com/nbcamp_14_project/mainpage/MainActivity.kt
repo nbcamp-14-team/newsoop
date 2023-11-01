@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.viewModels
+import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
@@ -64,10 +65,47 @@ class MainActivity : AppCompatActivity() {
             }
             viewpager.offscreenPageLimit = viewPagerAdapter.itemCount//생명주기 관련 코드
             //TabLayout 연동
-            val tabTitle = listOf("홈", "검색", "즐겨찾기","신문사별","토론방")
+            val tabTitle = listOf("홈", "검색", "북마크","신문사별","토론방")
+            val tabIcons = listOf<Int>(
+                R.drawable.ic_home,
+                R.drawable.ic_search,
+                R.drawable.ic_like,
+                R.drawable.ic_news,
+                R.drawable.ic_debate
+            )
+//            val selectedTabIcons = listOf<Int>(
+//                R.drawable.ic_selected_home,
+//                R.drawable.ic_selected_search,
+//                R.drawable.ic_selected_like,
+//                R.drawable.ic_selected_news,
+//                R.drawable.ic_selected_debate
+//            )
             TabLayoutMediator(tabLayout, viewpager) { tab, position ->
                 tab.setText(tabTitle[position])
+                tab.setIcon(
+                    tabIcons[position]
+                )
             }.attach()
+
+            //TabLayout 아이콘 설정
+//            tabLayout.addOnTabSelectedListener(object :TabLayout.OnTabSelectedListener{
+//                override fun onTabReselected(tab: TabLayout.Tab?) {
+//
+//                }
+//                override fun onTabSelected(tab: TabLayout.Tab?) {
+//                    when(tab?.position){
+//                        0 ->tab.setIcon(selectedTabIcons[tab.position])
+//                        1 ->tab.setIcon(selectedTabIcons[tab.position])
+//                        2 ->tab.setIcon(selectedTabIcons[tab.position])
+//                        3 ->tab.setIcon(selectedTabIcons[tab.position])
+//                        4 ->tab.setIcon(selectedTabIcons[tab.position])
+//                    }
+//                }
+//
+//                override fun onTabUnselected(tab: TabLayout.Tab?) {
+//
+//                }
+//            })
 
         }
 
