@@ -112,8 +112,8 @@ class SearchFragment : Fragment() {
 
         searchBtn.setOnClickListener {
             query = binding.searchInput.text.toString()
-            //최근 검색어에서 같은 단어가 있으면 지우고 새로 넣기
-            viewModel.removeRecentSearchItem(query)
+            //TODO : 최근 검색어에서 같은 단어가 있으면 지우고 새로 넣기
+            // viewModel.removeRecentSearchItem(query)
             viewModel.clearAllItems()
             viewModel.setRecentSearchItem(query)
             viewModel.getSearchNews(query, 5, 1)
@@ -168,6 +168,12 @@ class SearchFragment : Fragment() {
                 Log.d("search", "$position : $searchWord")
                 binding.searchBtn.performClick()
             }
+
+            override fun onCancelClick(v: View, position: Int, searchWord: String) {
+                viewModel.removeRecentSearchItem(searchWord)
+                Log.d("search", "$position : $searchWord")
+            }
+
         })
     }
 

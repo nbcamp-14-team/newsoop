@@ -1,5 +1,6 @@
 package com.nbcamp_14_project.search
 
+import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.nbcamp_14_project.api.NewsCollector
@@ -73,7 +74,7 @@ class SearchRepositoryImpl(
         val user = FirebaseAuth.getInstance().currentUser
         val userUID = user?.uid
 
-        // TODO :  userUID가 존재하면 firebase에 저장
+        //userUID가 존재하면 firebase에 저장
         if (userUID != null) {
             val db = FirebaseFirestore.getInstance()
             val recentSearchCollection =
@@ -81,8 +82,11 @@ class SearchRepositoryImpl(
             val favoriteData = hashMapOf(
                 "searchWord" to searchWord
             )
-
-            recentSearchCollection.add(favoriteData)
+            recentSearchCollection.add(favoriteData).addOnSuccessListener {
+                Log.d("searchFirebase", "is success : $userUID")
+            }.addOnFailureListener {
+                Log.d("searchFirebase", "is fail : $userUID")
+            }
         }
         recentSearchList.add(searchWord)
         return recentSearchList
@@ -90,6 +94,25 @@ class SearchRepositoryImpl(
 
     override fun removeRecentSearchItem(searchWord: String): List<String> {
         recentSearchList.remove(searchWord)
+
+        //userID가 존재하면 firebase에서 삭제
+        val user = FirebaseAuth.getInstance().currentUser
+        val userUID = user?.uid
+        if (userUID != null) {
+            val db = FirebaseFirestore.getInstance()
+            val ref = db.collection("User").document(userUID).collection("recentSearch")
+            val query = ref.whereEqualTo("searchWord", searchWord)
+
+            query.get().addOnSuccessListener { documents ->
+                for (document in documents) {
+                    document.reference.delete()
+                }
+            }.addOnSuccessListener {
+                Log.d("searchFirebase", "is success : $searchWord")
+            }.addOnFailureListener {
+                Log.d("searchFirebase", "is fail : $searchWord")
+            }
+        }
         return recentSearchList
     }
 }
