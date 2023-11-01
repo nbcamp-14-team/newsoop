@@ -141,6 +141,11 @@ class SearchFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         initView()
         initViewModel()
+        val user = FirebaseAuth.getInstance().currentUser
+        val userUID = user?.uid
+        if (userUID != null) {
+            getRecentSearchListFirebase(userUID)
+        }
         binding.searchRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
@@ -189,7 +194,6 @@ class SearchFragment : Fragment() {
                 adapter.submitList(it.toMutableList())
             }
             recentSearchList.observe(viewLifecycleOwner) {
-                // 최근 검색어가 없으면 없음 표시, 반대면 비표시
                 if (it.isNotEmpty()) {
                     binding.recentSearchNot.visibility = View.GONE
                 } else {
@@ -198,6 +202,25 @@ class SearchFragment : Fragment() {
                 tagAdapter.submitList(it.toMutableList())
             }
         }
+    }
+
+    private fun getRecentSearchListFirebase(userUID: String) {
+        val db = FirebaseFirestore.getInstance()
+        val recentSearchCollection =
+            db.collection("User").document(userUID).collection("recentSearch")
+        recentSearchCollection.get()
+            .addOnSuccessListener { querySnapshot ->
+                for (document in querySnapshot) {
+                    val searchWord = document.getString("searchWord")
+                    if (searchWord != null) {
+                        viewModel.setRecentSearchItem(searchWord)
+                    }
+                }
+                Log.d("recentSearchFirebase", "is success")
+            }
+            .addOnFailureListener { e ->
+                Log.d("recentSearchFirebase", "is fail")
+            }
     }
 
     private fun addFavoriteToFireStore(detailInfo: DetailInfo) {
