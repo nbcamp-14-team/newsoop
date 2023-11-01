@@ -10,10 +10,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <LinearLayout
+        android:id="@+id/linearLayout2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="2"
         android:layout_marginStart="10dp"
+        android:layout_weight="2"
         android:orientation="vertical"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -50,7 +51,28 @@
             app:layout_constraintStart_toEndOf="@+id/tv_name"
             app:layout_constraintTop_toBottomOf="@+id/tv_title" />
 
+
     </LinearLayout>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_delete"
+        android:layout_width="50dp"
+        android:layout_height="40dp"
+        android:backgroundTint="@color/white"
+        android:padding="0dp"
+        android:text="삭제"
+        android:textColor="@color/black"
+        android:textSize="10dp"
+        android:textStyle="bold"
+        app:cornerRadius="100dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.978"
+        app:layout_constraintStart_toEndOf="@+id/linearLayout2"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.833"
+        app:strokeColor="#BFE6C0"
+        app:strokeWidth="3dp" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
