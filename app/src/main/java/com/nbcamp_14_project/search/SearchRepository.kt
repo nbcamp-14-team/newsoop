@@ -9,6 +9,8 @@ import com.nbcamp_14_project.domain.toSearchEntity
 import com.nbcamp_14_project.home.HomeModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import java.util.concurrent.atomic.AtomicInteger
 
 
@@ -77,11 +79,14 @@ class SearchRepositoryImpl(
 
         //userUID가 존재하면 firebase에 저장
         if (userUID != null) {
+            val nowTime = LocalDateTime.now()
+            val inputTime = nowTime.format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss"))
             val db = FirebaseFirestore.getInstance()
             val recentSearchCollection =
                 db.collection("User").document(userUID).collection("recentSearch")
             val recentSearchData = hashMapOf(
-                "searchWord" to searchWord
+                "searchWord" to searchWord,
+                "inputTime" to inputTime,
             )
             recentSearchCollection.add(recentSearchData).addOnSuccessListener {
                 Log.d("searchFirebase", "is success : $userUID")
