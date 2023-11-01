@@ -26,9 +26,12 @@
     <TextView
         android:id="@+id/title"
         android:text="테스트용 문구"
-        android:textSize="20sp"
+        android:textSize="17sp"
         android:textStyle="bold"
         android:maxLines="2"
+        android:padding="5dp"
+        app:layout_goneMarginStart="10dp"
+        android:lineSpacingExtra="10dp"
         android:fontFamily="@font/nanum_sqaure_bold"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -51,11 +54,12 @@
     <TextView
         android:id="@+id/pub_date"
         android:text="테스트용 문구"
-        android:textSize="16sp"
+        android:textSize="12sp"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-
+        android:padding="5dp"
+        app:layout_goneMarginStart="10dp"
         app:layout_constraintStart_toEndOf="@id/cv_thumbnail"
         app:layout_constraintBottom_toBottomOf="parent"/>
 
