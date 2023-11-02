@@ -12,12 +12,17 @@ class LoginViewModel: ViewModel() {
     var category = MutableLiveData<String>()
     var secondCategory = MutableLiveData<String>()
     var thirdCategory = MutableLiveData<String>()
+    private val _isCategoryBooleanValue = MutableLiveData<Boolean>()
+    val isCategoryBooleanValue: LiveData<Boolean>
+        get() = _isCategoryBooleanValue
 
 
     val userLiveData: LiveData<FirebaseUser>
         get() = _userLiveData
 
-
+    fun updateBooleanValue(value: Boolean) {
+        _isCategoryBooleanValue.value = value
+    }
     fun getCurrentUser(idToken: String){
         loginRepository.getCurrentUser(idToken)
         

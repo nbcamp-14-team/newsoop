@@ -1,6 +1,9 @@
 package com.nbcamp_14_project.ui.login
 
 import android.content.res.ColorStateList
+import android.graphics.BlurMaskFilter
+import android.graphics.MaskFilter
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -12,6 +15,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.widget.addTextChangedListener
+import com.airbnb.lottie.model.content.Mask
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.nbcamp_14_project.R
@@ -24,6 +28,7 @@ class FixPwFragment : Fragment() {
     private var _binding: FragmentFixPwBinding? = null
     private lateinit var auth: FirebaseAuth
     private lateinit var fbFireStore: FirebaseFirestore
+    private var originalBackground: Drawable? = null
     private val binding get() = _binding!!
 
     override fun onCreateView(
