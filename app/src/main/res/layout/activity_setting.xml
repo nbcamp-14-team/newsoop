@@ -7,7 +7,7 @@
     tools:context=".setting.SettingActivity">
 
     <TextView
-        android:id="@+id/textView4"
+        android:id="@+id/setting_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
@@ -18,6 +18,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
+        android:id="@+id/setting_back_btn"
         android:layout_width="24dp"
         android:layout_height="24dp"
         android:layout_marginStart="5dp"
@@ -35,7 +36,7 @@
         android:background="@color/lightGray"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView4" />
+        app:layout_constraintTop_toBottomOf="@+id/setting_text" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -94,7 +95,7 @@
                 android:layout_gravity="center_vertical"
                 android:layout_marginStart="10dp"
                 android:layout_weight="8"
-                android:text="문의메일"
+                android:text="문의 메일"
                 android:textSize="20dp" />
 
             <ImageView
@@ -158,7 +159,7 @@
                 android:layout_gravity="center_vertical"
                 android:layout_marginStart="10dp"
                 android:layout_weight="8"
-                android:text="자동로그인"
+                android:text="자동 로그인"
                 android:textSize="20dp" />
 
             <ImageView

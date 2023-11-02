@@ -12,6 +12,15 @@ class SettingActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivitySettingBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        btnSettings()
 
+    }
+
+    private fun btnSettings() {
+        with(binding) {
+            settingBackBtn.setOnClickListener {
+                finish()
+            }
+        }
     }
 }

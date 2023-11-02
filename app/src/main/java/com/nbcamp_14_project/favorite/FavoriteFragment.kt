@@ -22,6 +22,7 @@ import com.nbcamp_14_project.databinding.FragmentFavoriteBinding
 import com.nbcamp_14_project.detail.DetailInfo
 import com.nbcamp_14_project.detail.DetailViewModel
 import com.nbcamp_14_project.mainpage.MainActivity
+import com.nbcamp_14_project.setting.SettingActivity
 import com.nbcamp_14_project.ui.login.LoginActivity
 import com.nbcamp_14_project.ui.login.LoginViewModel
 
@@ -44,7 +45,7 @@ class FavoriteFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?,
-    ): View? {
+    ): View {
         _binding = FragmentFavoriteBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -82,7 +83,8 @@ class FavoriteFragment : Fragment() {
             logoutButton.visibility = View.VISIBLE
             binding.textView2.visibility = View.GONE
 
-            val collectionRef = firestore.collection("User").document(FirebaseAuth.getInstance().currentUser?.uid ?: return)
+            val collectionRef = firestore.collection("User")
+                .document(FirebaseAuth.getInstance().currentUser?.uid ?: return)
             collectionRef.get().addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     val document = task.result
@@ -128,6 +130,12 @@ class FavoriteFragment : Fragment() {
         binding.tvLogin.setOnClickListener {
             openLoginActivity(view)
         }
+
+        //setting 페이지로 이동
+        binding.settingBtn.setOnClickListener {
+            val intent = Intent(requireContext(), SettingActivity::class.java)
+            startActivity(intent)
+        }
     }
 
     // Firebase에서 즐겨찾기 목록을 가져오는 함수
@@ -151,7 +159,15 @@ class FavoriteFragment : Fragment() {
 
                     if (title != null && description != null && originalLink != null && pubDate != null) {
                         val detailInfo =
-                            DetailInfo(title, description, thumbnail, author, originalLink, pubDate, isLike = true)
+                            DetailInfo(
+                                title,
+                                description,
+                                thumbnail,
+                                author,
+                                originalLink,
+                                pubDate,
+                                isLike = true
+                            )
                         favoriteList.add(detailInfo)
                     }
                 }
