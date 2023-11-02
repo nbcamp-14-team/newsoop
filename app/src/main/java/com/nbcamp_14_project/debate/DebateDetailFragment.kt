@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -46,18 +47,20 @@ class DebateDetailFragment : Fragment() {
 
 
         agreeImageView.setOnClickListener {
-            if (agreeClicked) {
-                // 이미 클릭되었을 때
-                agreeImageView.setImageResource(R.drawable.ic_agreex)
-                tvAgree.text = (tvAgree.text.toString().toInt() - 1).toString()
-                removeAgreeVote() // 투표 제거
-            } else {
-                // 클릭되지 않았을 때
-                agreeImageView.setImageResource(R.drawable.ic_agree)
-                tvAgree.text = (tvAgree.text.toString().toInt() + 1).toString()
-                addAgreeVote() // 투표 추가
+            if (oppositeClicked) {}else{
+                if (agreeClicked) {
+                    // 이미 클릭되었을 때
+                    agreeImageView.setImageResource(R.drawable.ic_agreex)
+                    tvAgree.text = (tvAgree.text.toString().toInt() - 1).toString()
+                    removeAgreeVote() // 투표 제거
+                } else {
+                    // 클릭되지 않았을 때
+                    agreeImageView.setImageResource(R.drawable.ic_agree)
+                    tvAgree.text = (tvAgree.text.toString().toInt() + 1).toString()
+                    addAgreeVote() // 투표 추가
+                }
+                agreeClicked = !agreeClicked // 상태를 토글
             }
-            agreeClicked = !agreeClicked // 상태를 토글
         }
 
         updateAgreeCount()
@@ -71,16 +74,19 @@ class DebateDetailFragment : Fragment() {
         checkOppositeVoteStatus()
 
         oppositeImageView.setOnClickListener {
-            if (oppositeClicked) {
-                oppositeImageView.setImageResource(R.drawable.ic_oppositex)
-                tvOpposite.text = (tvOpposite.text.toString().toInt() - 1).toString()
-                removeOppositeVote()
+            if (agreeClicked) {
             } else {
-                oppositeImageView.setImageResource(R.drawable.ic_opposite)
-                tvOpposite.text = (tvOpposite.text.toString().toInt() + 1).toString()
-                addOppositeVote()
+                if (oppositeClicked) {
+                    oppositeImageView.setImageResource(R.drawable.ic_oppositex)
+                    tvOpposite.text = (tvOpposite.text.toString().toInt() - 1).toString()
+                    removeOppositeVote()
+                } else {
+                    oppositeImageView.setImageResource(R.drawable.ic_opposite)
+                    tvOpposite.text = (tvOpposite.text.toString().toInt() + 1).toString()
+                    addOppositeVote()
+                }
+                oppositeClicked = !oppositeClicked
             }
-            oppositeClicked = !oppositeClicked
         }
 
 
