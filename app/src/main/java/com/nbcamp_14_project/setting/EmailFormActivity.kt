@@ -1,12 +1,18 @@
 package com.nbcamp_14_project.setting
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import com.nbcamp_14_project.R
+import androidx.appcompat.app.AppCompatActivity
+import com.nbcamp_14_project.databinding.ActivityEmailFormBinding
 
 class EmailFormActivity : AppCompatActivity() {
+
+    private lateinit var binding: ActivityEmailFormBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_email_form)
+        binding = ActivityEmailFormBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+
     }
 }

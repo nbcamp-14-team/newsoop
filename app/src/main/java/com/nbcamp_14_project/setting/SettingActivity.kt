@@ -1,5 +1,6 @@
 package com.nbcamp_14_project.setting
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.nbcamp_14_project.databinding.ActivitySettingBinding
@@ -20,6 +21,11 @@ class SettingActivity : AppCompatActivity() {
         with(binding) {
             settingBackBtn.setOnClickListener {
                 finish()
+            }
+
+            referenceMail.setOnClickListener {
+                val intent = Intent(this@SettingActivity, EmailFormActivity::class.java)
+                startActivity(intent)
             }
         }
     }
