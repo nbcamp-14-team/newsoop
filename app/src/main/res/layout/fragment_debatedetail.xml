@@ -5,6 +5,7 @@
     android:id="@+id/fragment_debatedetail"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:clickable="true"
     android:background="@color/white"
     android:clickable="true"
     tools:context=".debate.DebateDetailFragment">

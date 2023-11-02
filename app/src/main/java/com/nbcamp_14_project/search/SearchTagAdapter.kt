@@ -26,6 +26,7 @@ class SearchTagAdapter : ListAdapter<String, SearchTagAdapter.ViewHolder>(
         private val binding: FragmentSearchTagBinding,
     ) : RecyclerView.ViewHolder(binding.root) {
         val btn = binding.searchTagBtn
+        val cancel = binding.searchTagCancel
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -48,11 +49,15 @@ class SearchTagAdapter : ListAdapter<String, SearchTagAdapter.ViewHolder>(
         holder.btn.setOnClickListener {
             itemClickListener.onClick(it, position, text)
         }
+        holder.cancel.setOnClickListener {
+            itemClickListener.onCancelClick(it, position, text)
+        }
     }
 
     // (2) 리스너 인터페이스
     interface OnItemClickListener {
         fun onClick(v: View, position: Int, searchWord: String)
+        fun onCancelClick(v: View, position: Int, searchWord: String)
     }
 
     // (3) 외부에서 클릭 시 이벤트 설정
