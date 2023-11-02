@@ -10,16 +10,16 @@ import com.nbcamp_14_project.databinding.ItemDebatedetailBinding
 class DebateDetailListAdapter(private val debatedetailList: List<DebateDetailItem>) : RecyclerView.Adapter<DebateDetailListAdapter.ViewHolder>() {
 
     interface ItemClick {
-        fun onClick(view : View, position : Int)
+        fun onDeleteCommentClick(position: Int)
     }
 
     var itemClick : ItemClick? = null
 
     inner class ViewHolder(val binding: ItemDebatedetailBinding) : RecyclerView.ViewHolder(binding.root) {
-        val title =binding.tvTitle
+        val title = binding.tvTitle
         val name = binding.tvName
-        val category = binding.tvDate
-
+        val date = binding.tvDate
+        val deleteButton = binding.btnDelete
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -27,15 +27,21 @@ class DebateDetailListAdapter(private val debatedetailList: List<DebateDetailIte
         return ViewHolder(binding)
     }
 
-
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.itemView.setOnClickListener {  //클릭이벤트추가부분
-            itemClick?.onClick(it, position)
+        holder.itemView.setOnClickListener {
         }
-        val debateItem = debatedetailList[position]
-        holder.title.text = debateItem.title
-        holder.name.text = "이름: ${debateItem.name}"
-        holder.category.text = "카테고리: ${debateItem.date}"
+
+        val debateDetailItem = debatedetailList[position]
+        holder.title.text = debateDetailItem.text
+        holder.name.text = "사용자: ${debateDetailItem.user}"
+        holder.date.text = "날짜: ${debateDetailItem.date}"
+
+        holder.deleteButton.setOnClickListener {
+            val position = holder.adapterPosition
+            if (position != RecyclerView.NO_POSITION) {
+                itemClick?.onDeleteCommentClick(position)
+            }
+        }
     }
 
     override fun getItemId(position: Int): Long {
