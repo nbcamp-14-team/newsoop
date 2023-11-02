@@ -7,11 +7,15 @@ import com.nbcamp_14_project.debate.DebateFragment
 import com.nbcamp_14_project.favorite.FavoriteFragment
 import com.nbcamp_14_project.home.HomeFragment
 import com.nbcamp_14_project.home.HomeViewPagerFragment
+import com.nbcamp_14_project.newspaper.NewspaperFragment
 import com.nbcamp_14_project.search.SearchFragment
 
 class MainViewPagerAdapter(fragmentActivity: FragmentActivity) :
     FragmentStateAdapter(fragmentActivity) {
-    val list = listOf(HomeViewPagerFragment(), SearchFragment(), FavoriteFragment(),FavoriteFragment(),
+    val list = listOf(HomeViewPagerFragment(),
+        SearchFragment(),
+        FavoriteFragment(),
+        NewspaperFragment(),
         DebateFragment()
     )
 
