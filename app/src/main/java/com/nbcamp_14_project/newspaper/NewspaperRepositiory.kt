@@ -1,10 +1,6 @@
 package com.nbcamp_14_project.newspaper
 
 import com.nbcamp_14_project.R
-import com.nbcamp_14_project.api.NewsCollector
-import com.nbcamp_14_project.domain.SearchEntity
-import com.nbcamp_14_project.domain.toSearchEntity
-import com.nbcamp_14_project.home.HomeModel
 import java.util.concurrent.atomic.AtomicInteger
 
 
@@ -27,15 +23,22 @@ class NewspaperRepositoryImpl(
         NewspaperModel(
             idGenerate.getAndIncrement(),
             "연합뉴스",
-            R.drawable.ic_yna,
-            "https://www.yna.co.kr",
+            R.drawable.logo_yna,
+            "https://www.yna.co.kr/politics/index?site=navi_politics_depth01",
             "정치"
         ),
         NewspaperModel(
             idGenerate.getAndIncrement(),
             "이데일리",
-            R.drawable.ic_edaily,
-            "https://www.edaily.co.kr/",
+            R.drawable.logo_edaily,
+            "https://www.edaily.co.kr/articles/economy/policy",
+            "정치"
+        ),
+        NewspaperModel(
+            idGenerate.getAndIncrement(),
+            "중앙일보",
+            R.drawable.logo_thejoongang,
+            "https://www.joongang.co.kr/politics",
             "정치"
         )
     )
@@ -43,98 +46,107 @@ class NewspaperRepositoryImpl(
         NewspaperModel(
             idGenerate.getAndIncrement(),
             "연합뉴스",
-            R.drawable.ic_yna,
+            R.drawable.logo_yna,
             "https://www.yna.co.kr/economy/index?site=navi_economy_depth01",
             "경제"
         ),
         NewspaperModel(
             idGenerate.getAndIncrement(),
             "이데일리",
-            R.drawable.ic_edaily,
-            "https://www.edaily.co.kr/",
+            R.drawable.logo_edaily,
+            "https://www.edaily.co.kr/article/economy",
             "경제"
-        )
+        ),
+        NewspaperModel(
+            idGenerate.getAndIncrement(),
+            "중앙일보",
+            R.drawable.logo_thejoongang,
+            "https://www.joongang.co.kr/money",
+            "경제"
+        ),
     )
     private val societyList = mutableListOf<NewspaperModel>(
         NewspaperModel(
             idGenerate.getAndIncrement(),
             "연합뉴스",
-            R.drawable.ic_yna,
+            R.drawable.logo_yna,
             "https://www.yna.co.kr/society/index?site=navi_society_depth01",
             "사회"
         ),
         NewspaperModel(
             idGenerate.getAndIncrement(),
-            "이데일리",
-            R.drawable.ic_edaily,
-            "https://www.edaily.co.kr/",
+            "중앙일보",
+            R.drawable.logo_yna,
+            "https://www.joongang.co.kr/society",
             "사회"
-        )
+        ),
     )
     private val lifeList = mutableListOf<NewspaperModel>(
         NewspaperModel(
             idGenerate.getAndIncrement(),
             "연합뉴스",
-            R.drawable.ic_yna,
+            R.drawable.logo_yna,
             "https://www.yna.co.kr/lifestyle/index?site=navi_lifestyle_depth01",
             "생활"
         ),
         NewspaperModel(
             idGenerate.getAndIncrement(),
-            "이데일리",
-            R.drawable.ic_edaily,
-            "https://www.edaily.co.kr/",
+            "중앙일보",
+            R.drawable.logo_thejoongang,
+            "https://www.joongang.co.kr/lifestyle",
             "생활"
-        )
+        ),
+
     )
     private val cultureList = mutableListOf<NewspaperModel>(
         NewspaperModel(
             idGenerate.getAndIncrement(),
             "연합뉴스",
-            R.drawable.ic_yna,
+            R.drawable.logo_yna,
             "https://www.yna.co.kr/culture/index?site=navi_culture_depth01",
             "문화"
         ),
         NewspaperModel(
             idGenerate.getAndIncrement(),
-            "이데일리",
-            R.drawable.ic_edaily,
-            "https://www.edaily.co.kr/",
+            "중앙일보",
+            R.drawable.logo_thejoongang,
+            "https://www.joongang.co.kr/culture",
             "문화"
-        )
+        ),
 
     )
     private val itList = mutableListOf<NewspaperModel>(
         NewspaperModel(
             idGenerate.getAndIncrement(),
             "이데일리",
-            R.drawable.ic_edaily,
+            R.drawable.logo_edaily,
             "https://www.edaily.co.kr/",
             "IT"
-        )
-    )
-    private val scienceList = mutableListOf<NewspaperModel>(
+        ),
         NewspaperModel(
             idGenerate.getAndIncrement(),
-            "이데일리",
-            R.drawable.ic_edaily,
-            "https://www.edaily.co.kr/",
-            "과학"
-        )
+            "중앙일보",
+            R.drawable.logo_thejoongang,
+            "https://www.joongang.co.kr/money/science",
+            "IT"
+        ),
+    )
+    private val scienceList = mutableListOf<NewspaperModel>(
+
     )
     private val worldList = mutableListOf<NewspaperModel>(
         NewspaperModel(
             idGenerate.getAndIncrement(),
             "연합뉴스",
-            R.drawable.ic_yna,
+            R.drawable.logo_yna,
             "https://www.yna.co.kr/international/index?site=navi_international_depth01",
             "세계"
         ),
         NewspaperModel(
             idGenerate.getAndIncrement(),
-            "이데일리",
-            R.drawable.ic_edaily,
-            "https://www.edaily.co.kr/",
+            "중앙일보",
+            R.drawable.logo_thejoongang,
+            "https://www.joongang.co.kr/world",
             "세계"
         )
     )
