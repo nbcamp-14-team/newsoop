@@ -9,6 +9,7 @@ import android.webkit.WebSettings
 import android.webkit.WebViewClient
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import com.nbcamp_14_project.R
 import com.nbcamp_14_project.databinding.ActivityMainBinding
 import com.nbcamp_14_project.databinding.DialogNewspaperBinding
 
@@ -29,6 +30,7 @@ class NewspaperDialog : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        overridePendingTransition(R.anim.slide_up,R.anim.none)
         setContentView(binding.root)
         initView()
     }
@@ -40,6 +42,7 @@ class NewspaperDialog : AppCompatActivity() {
                 webView.goBack()
             } else {
                 finish()
+                overridePendingTransition(R.anim.none,R.anim.slide_down)
             }
         }
     }
@@ -64,6 +67,7 @@ class NewspaperDialog : AppCompatActivity() {
         webView.loadUrl(link?:"https://webit22.tistory.com/75")
         btnFinish.setOnClickListener {
             finish()
+            overridePendingTransition(R.anim.none,R.anim.slide_down)
         }
     }
 }
