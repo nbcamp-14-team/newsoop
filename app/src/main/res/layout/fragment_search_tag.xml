@@ -22,7 +22,6 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_marginHorizontal="5dp"
-            android:text="dog"
             android:textAllCaps="false"
             android:textColor="@color/green" />
 
@@ -32,7 +31,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:background="@android:color/transparent"
-            android:src="@drawable/ic_cancel"
+            android:src="@drawable/ic_close"
             app:tint="@color/green" />
     </LinearLayout>
 </LinearLayout>
