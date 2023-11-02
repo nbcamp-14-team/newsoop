@@ -115,6 +115,7 @@ class DebateFragment : Fragment() {
             }
         }
     }
+
     override fun onResume() {
         super.onResume()
         loadDebates()
@@ -143,13 +144,17 @@ class DebateFragment : Fragment() {
                 val userUID = currentUser.uid
 
 
-                val newDebateItem = DebateItem("", debateTitle, name, userUID)
-                firestore.collection("User").document(userUID)
-                    .collection("Debates")
-                    .add(newDebateItem)
+
+                val commentCollection =firestore.collection("User").document(userUID).collection("Debates")
+                val newDebateItem = DebateItem(title = debateTitle, name = name, userUID = userUID)
+                val newRef = commentCollection.document()
+                newDebateItem.id = newRef.id
+                newRef.set(newDebateItem)
                     .addOnSuccessListener { documentReference ->
-                        val newID = documentReference.id
-                        newDebateItem.id = newID
+
+//                        val newID = documentReference.id
+//                        newDebateItem.id = newID
+
                         debateList.add(newDebateItem)
 //                        viewModel.debateId = newID
                         adapter.notifyDataSetChanged()
