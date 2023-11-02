@@ -28,7 +28,7 @@ class NewspaperRepositoryImpl(
             idGenerate.getAndIncrement(),
             "연합뉴스",
             R.drawable.ic_yna,
-            "https://www.yna.co.kr/politics/index",
+            "https://www.yna.co.kr",
             "정치"
         ),
         NewspaperModel(
