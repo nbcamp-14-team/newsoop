@@ -76,6 +76,11 @@ class SearchRepositoryImpl(
             return recentSearchList
         }
 
+        //최근 검색어가 5개 넘어가면 처음 입력값 지우기
+        if (recentSearchList.size >= 5) {
+            removeRecentSearchItem(recentSearchList[0])
+            Log.d("recentSearchRemove10over", recentSearchList[0])
+        }
 
         //userUID가 존재하면 firebase에 저장
         if (userUID != null) {
