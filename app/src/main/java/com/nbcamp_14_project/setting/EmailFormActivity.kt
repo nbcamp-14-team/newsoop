@@ -15,11 +15,9 @@ class EmailFormActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         binding.sendEmailBtn.setOnClickListener {
-            val content =
-                binding.sendEmailText.text.toString()
+            val content = binding.sendEmailText.text.toString()
             sendEmail(content)
         }
-
     }
 
     private fun sendEmail(content: String) {
