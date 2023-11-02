@@ -8,6 +8,7 @@
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tab_layout"
         android:layout_width="match_parent"
+        app:tabRippleColor="@null"
         android:layout_height="50dp"
         android:background="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
@@ -17,6 +18,7 @@
         app:tabIndicatorFullWidth="true"
         app:tabIndicatorGravity="bottom"
         app:tabMode="scrollable"
+        android:elevation="5dp"
         app:tabTextAppearance="@style/main_tab_text"
         app:tabTextColor="@color/tab_select">
 

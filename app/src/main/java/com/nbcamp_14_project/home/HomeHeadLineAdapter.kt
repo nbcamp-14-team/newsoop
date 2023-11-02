@@ -49,6 +49,7 @@ class HomeHeadLineAdapter(
     ) : RecyclerView.ViewHolder(binding.root) {
         fun bind(item: HomeModel) = with(binding) {
             title.text = item.title
+            description.text = item.description
             ivThumbnail.load(item.thumbnail)
             container.setOnClickListener{
                 onClick(
