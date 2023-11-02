@@ -104,6 +104,4 @@ dependencies {
 
     //오픈소스 라이선스
     implementation("com.google.android.gms:play-services-oss-licenses:17.0.0")
-
-
 }
