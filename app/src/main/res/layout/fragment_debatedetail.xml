@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
+    android:clickable="true"
     tools:context=".debate.DebateDetailFragment">
 
     <TextView
@@ -21,7 +22,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/tv_agree"
+        android:id="@+id/tv_thisagree"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="찬성"
@@ -45,11 +46,11 @@
         android:layout_marginTop="20dp"
         android:layout_marginEnd="30dp"
         app:layout_constraintHorizontal_bias="0.501"
-        app:layout_constraintStart_toStartOf="@+id/tv_agree"
+        app:layout_constraintStart_toStartOf="@+id/tv_thisagree"
         app:layout_constraintTop_toBottomOf="@+id/tv_title" />
 
     <TextView
-        android:id="@+id/tv_opposite"
+        android:id="@+id/tv_thisopposite"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="반대"
@@ -65,27 +66,27 @@
         android:id="@+id/ic_agree"
         android:layout_width="60dp"
         android:layout_height="60dp"
-        android:src="@drawable/ic_agree"
+        android:src="@drawable/ic_agreex"
         android:layout_marginTop="10dp"
         android:layout_marginStart="22dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_agree" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_thisagree" />
 
     <ImageView
         android:id="@+id/ic_opposite"
         android:layout_width="60dp"
         android:layout_height="60dp"
-        android:src="@drawable/ic_opposite"
+        android:src="@drawable/ic_oppositex"
         android:layout_marginEnd="22dp"
         android:layout_marginTop="10dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_opposite" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_thisopposite" />
 
     <TextView
-        android:id="@+id/textView10"
+        android:id="@+id/tv_agree"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="11표"
+        android:text="0"
         android:textSize="20dp"
         android:layout_marginTop="10dp"
         android:layout_marginStart="22dp"
@@ -93,10 +94,10 @@
         app:layout_constraintTop_toBottomOf="@+id/ic_agree" />
 
     <TextView
-        android:id="@+id/textView11"
+        android:id="@+id/tv_opposite"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="30표"
+        android:text="0"
         android:textSize="20dp"
         android:layout_marginTop="10dp"
         android:layout_marginEnd="30dp"
@@ -113,7 +114,7 @@
         android:layout_marginStart="20dp"
         android:layout_marginTop="10dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView10" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_agree" />
 
     <LinearLayout
         android:id="@+id/tv_text"

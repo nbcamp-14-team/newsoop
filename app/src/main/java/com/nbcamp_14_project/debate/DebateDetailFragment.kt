@@ -20,9 +20,11 @@ class DebateDetailFragment : Fragment() {
     private lateinit var adapter: DebateDetailListAdapter
     private val firestore = FirebaseFirestore.getInstance()
     private val auth = FirebaseAuth.getInstance()
-//    private val debateList = ArrayList<DebateItem>()
+    //    private val debateList = ArrayList<DebateItem>()
     private val debatedetailList = ArrayList<DebateDetailItem>()
     private val viewModel: DebateViewModel by activityViewModels()
+    private var agreeClicked = false
+    private var oppositeClicked = false
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -35,6 +37,52 @@ class DebateDetailFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val agreeImageView = binding.icAgree
+        val tvAgree = binding.tvAgree
+
+
+        checkAgreeVoteStatus()
+
+
+        agreeImageView.setOnClickListener {
+            if (agreeClicked) {
+                // 이미 클릭되었을 때
+                agreeImageView.setImageResource(R.drawable.ic_agreex)
+                tvAgree.text = (tvAgree.text.toString().toInt() - 1).toString()
+                removeAgreeVote() // 투표 제거
+            } else {
+                // 클릭되지 않았을 때
+                agreeImageView.setImageResource(R.drawable.ic_agree)
+                tvAgree.text = (tvAgree.text.toString().toInt() + 1).toString()
+                addAgreeVote() // 투표 추가
+            }
+            agreeClicked = !agreeClicked // 상태를 토글
+        }
+
+        updateAgreeCount()
+
+        updateOppositeCount()
+
+
+        val oppositeImageView = binding.icOpposite
+        val tvOpposite = binding.tvOpposite
+
+        checkOppositeVoteStatus()
+
+        oppositeImageView.setOnClickListener {
+            if (oppositeClicked) {
+                oppositeImageView.setImageResource(R.drawable.ic_oppositex)
+                tvOpposite.text = (tvOpposite.text.toString().toInt() - 1).toString()
+                removeOppositeVote()
+            } else {
+                oppositeImageView.setImageResource(R.drawable.ic_opposite)
+                tvOpposite.text = (tvOpposite.text.toString().toInt() + 1).toString()
+                addOppositeVote()
+            }
+            oppositeClicked = !oppositeClicked
+        }
+
 
         binding.imgBack.setOnClickListener {
             parentFragmentManager.popBackStack()
@@ -139,9 +187,10 @@ class DebateDetailFragment : Fragment() {
 
                 user?.let { currentUser ->
                     val userUID = currentUser.uid
+                    val userUID2 = viewModel.userUID
 
                     if (debateId != null) {
-                        val commentCollection = firestore.collection("User").document(userUID)
+                        val commentCollection = firestore.collection("User").document(userUID2.toString())
                             .collection("Debates").document(debateId).collection("Comments")
 
                         val newComment = DebateDetailItem(
@@ -217,6 +266,211 @@ class DebateDetailFragment : Fragment() {
         }
     }
 
+    private fun addAgreeVote() {
+        val user = auth.currentUser
+        val debateId = viewModel.debateId
+        val userUID2 = viewModel.userUID
+
+        if (user != null && debateId != null) {
+            val userUID = user.uid
+
+            // Firestore에서 올바른 경로로 Agree 투표 문서를 설정합니다
+            val voteRef = firestore.collection("User")
+                .document(userUID2.toString())
+                .collection("Debates")
+                .document(debateId)
+                .collection("AgreeVotes")
+                .document(userUID) // 사용자의 UID를 문서 ID로 사용합니다
+
+            // 투표 문서를 추가합니다
+            voteRef.set(mapOf("userUID" to userUID))
+                .addOnSuccessListener {
+                    // 성공적으로 추가된 경우
+                    // 여기에 추가 작업을 수행할 수 있습니다.
+                }
+                .addOnFailureListener { e ->
+                    // 실패한 경우 처리
+                }
+        }
+    }
+
+    private fun removeAgreeVote() {
+        val user = auth.currentUser
+        val debateId = viewModel.debateId
+        val userUID2 = viewModel.userUID
+
+        if (user != null && debateId != null) {
+            val userUID = user.uid
+
+            // Firestore에서 Agree 투표 문서를 삭제합니다
+            val voteRef = firestore.collection("User")
+                .document(userUID2.toString())
+                .collection("Debates")
+                .document(debateId)
+                .collection("AgreeVotes")
+                .document(userUID)
+
+            voteRef.delete()
+        }
+    }
+
+    private fun updateAgreeCount() {
+        val debateId = viewModel.debateId
+        val tvAgree = binding.tvAgree
+        val userUID = viewModel.userUID
+
+
+        if (debateId != null) {
+            val agreeVotesRef = firestore.collection("User")
+                .document(userUID.toString())
+                .collection("Debates")
+                .document(debateId)
+                .collection("AgreeVotes")
+
+            agreeVotesRef.get()
+                .addOnSuccessListener { querySnapshot ->
+                    val agreeCount = querySnapshot.size()
+                    tvAgree.text = agreeCount.toString()
+                }
+                .addOnFailureListener { e ->
+                    // 실패 시에 대응하는 로직을 추가할 수 있습니다.
+                    Log.e("hyunsik", "Failed to update Agree count: $e")
+                }
+        }
+    }
+
+    // 사용자의 userUID가 AgreeVotes에 있는지 확인하는 함수
+    private fun checkAgreeVoteStatus() {
+        val user = auth.currentUser
+        val debateId = viewModel.debateId
+        val userUID2 = viewModel.userUID
+
+        if (user != null && debateId != null) {
+            val userUID = user.uid
+
+            // 사용자의 투표 문서에 대한 참조
+            val voteRef = firestore.collection("User")
+                .document(userUID2.toString())
+                .collection("Debates")
+                .document(debateId)
+                .collection("AgreeVotes")
+                .document(userUID)
+
+            voteRef.get()
+                .addOnSuccessListener { documentSnapshot ->
+                    if (documentSnapshot.exists()) {
+                        // 사용자가 이미 투표했음, agreeClicked를 true로 설정
+                        agreeClicked = true
+                        binding.icAgree.setImageResource(R.drawable.ic_agree)
+                    } else {
+                        // 사용자가 아직 투표하지 않음, agreeClicked를 false로 설정
+                        agreeClicked = false
+                        binding.icAgree.setImageResource(R.drawable.ic_agreex)
+                    }
+                }
+                .addOnFailureListener { e ->
+                    // 실패 처리
+                }
+        }
+    }
+
+    private fun addOppositeVote() {
+        val user = auth.currentUser
+        val debateId = viewModel.debateId
+        val userUID2 = viewModel.userUID
+
+        if (user != null && debateId != null) {
+            val userUID = user.uid
+
+            val voteRef = firestore.collection("User")
+                .document(userUID2.toString())
+                .collection("Debates")
+                .document(debateId)
+                .collection("OppositeVotes")
+                .document(userUID)
+
+            voteRef.set(mapOf("userUID" to userUID))
+                .addOnSuccessListener {
+                    // 투표 추가 성공
+                }
+                .addOnFailureListener { e ->
+                    // 투표 추가 실패 처리
+                }
+        }
+    }
+
+    private fun removeOppositeVote() {
+        val user = auth.currentUser
+        val debateId = viewModel.debateId
+        val userUID2 = viewModel.userUID
+
+        if (user != null && debateId != null) {
+            val userUID = user.uid
+
+            val voteRef = firestore.collection("User")
+                .document(userUID2.toString())
+                .collection("Debates")
+                .document(debateId)
+                .collection("OppositeVotes")
+                .document(userUID)
+
+            voteRef.delete()
+        }
+    }
+
+    private fun updateOppositeCount() {
+        val debateId = viewModel.debateId
+        val tvOpposite = binding.tvOpposite
+        val userUID = viewModel.userUID
+
+        if (debateId != null) {
+            val oppositeVotesRef = firestore.collection("User")
+                .document(userUID.toString())
+                .collection("Debates")
+                .document(debateId)
+                .collection("OppositeVotes")
+
+            oppositeVotesRef.get()
+                .addOnSuccessListener { querySnapshot ->
+                    val oppositeCount = querySnapshot.size()
+                    tvOpposite.text = oppositeCount.toString()
+                }
+                .addOnFailureListener { e ->
+                    Log.e("hyunsik", "Failed to update Opposite count: $e")
+                }
+        }
+    }
+
+    private fun checkOppositeVoteStatus() {
+        val user = auth.currentUser
+        val debateId = viewModel.debateId
+        val userUID2 = viewModel.userUID
+
+        if (user != null && debateId != null) {
+            val userUID = user.uid
+
+            val voteRef = firestore.collection("User")
+                .document(userUID2.toString())
+                .collection("Debates")
+                .document(debateId)
+                .collection("OppositeVotes")
+                .document(userUID)
+
+            voteRef.get()
+                .addOnSuccessListener { documentSnapshot ->
+                    if (documentSnapshot.exists()) {
+                        oppositeClicked = true
+                        binding.icOpposite.setImageResource(R.drawable.ic_opposite)
+                    } else {
+                        oppositeClicked = false
+                        binding.icOpposite.setImageResource(R.drawable.ic_oppositex)
+                    }
+                }
+                .addOnFailureListener { e ->
+                    // 실패 처리
+                }
+        }
+    }
 
     override fun onDestroyView() {
         super.onDestroyView()
