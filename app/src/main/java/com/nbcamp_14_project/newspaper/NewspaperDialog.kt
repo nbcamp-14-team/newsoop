@@ -52,12 +52,15 @@ class NewspaperDialog : AppCompatActivity() {
             settings.useWideViewPort = true
             settings.cacheMode = WebSettings.LOAD_NO_CACHE//브라우저 캐쉬 허용
             settings.databaseEnabled = true
+            settings.loadsImagesAutomatically = true
+            settings.domStorageEnabled = true // 로컬저장소를 허락
             if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
                 settings.mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW//https에서 http 컨텐츠가 호출 안되는 현상 수정코드
             }
-
+            webChromeClient = WebChromeClient()
+            webViewClient = WebViewClient()
         }
-        webView.webViewClient = WebViewClient()
+
         webView.loadUrl(link?:"https://webit22.tistory.com/75")
         btnFinish.setOnClickListener {
             finish()
