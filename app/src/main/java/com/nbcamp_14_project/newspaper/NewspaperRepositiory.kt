@@ -12,11 +12,11 @@ interface NewspaperRepository{
     fun getPoliticsList():List<NewspaperModel>
     fun getEconomyList():List<NewspaperModel>
     fun getSocietyList():List<NewspaperModel>
-    fun getLifeListList():List<NewspaperModel>
+    fun getLifeList():List<NewspaperModel>
     fun getCultureList():List<NewspaperModel>
     fun getItList():List<NewspaperModel>
     fun getScienceList():List<NewspaperModel>
-    fun getWordList():List<NewspaperModel>
+    fun getWorldList():List<NewspaperModel>
 //    fun addNewspaper(item: NewspaperModel?):List<NewspaperModel>
 
 }
@@ -28,7 +28,7 @@ class NewspaperRepositoryImpl(
             idGenerate.getAndIncrement(),
             "연합뉴스",
             R.drawable.ic_yna,
-            "https://www.yna.co.kr/",
+            "https://www.yna.co.kr/politics/index",
             "정치"
         ),
         NewspaperModel(
@@ -40,15 +40,104 @@ class NewspaperRepositoryImpl(
         )
     )
     private val economyList = mutableListOf<NewspaperModel>(
+        NewspaperModel(
+            idGenerate.getAndIncrement(),
+            "연합뉴스",
+            R.drawable.ic_yna,
+            "https://www.yna.co.kr/economy/index?site=navi_economy_depth01",
+            "경제"
+        ),
+        NewspaperModel(
+            idGenerate.getAndIncrement(),
+            "이데일리",
+            R.drawable.ic_edaily,
+            "https://www.edaily.co.kr/",
+            "경제"
+        )
+    )
+    private val societyList = mutableListOf<NewspaperModel>(
+        NewspaperModel(
+            idGenerate.getAndIncrement(),
+            "연합뉴스",
+            R.drawable.ic_yna,
+            "https://www.yna.co.kr/society/index?site=navi_society_depth01",
+            "사회"
+        ),
+        NewspaperModel(
+            idGenerate.getAndIncrement(),
+            "이데일리",
+            R.drawable.ic_edaily,
+            "https://www.edaily.co.kr/",
+            "사회"
+        )
+    )
+    private val lifeList = mutableListOf<NewspaperModel>(
+        NewspaperModel(
+            idGenerate.getAndIncrement(),
+            "연합뉴스",
+            R.drawable.ic_yna,
+            "https://www.yna.co.kr/lifestyle/index?site=navi_lifestyle_depth01",
+            "생활"
+        ),
+        NewspaperModel(
+            idGenerate.getAndIncrement(),
+            "이데일리",
+            R.drawable.ic_edaily,
+            "https://www.edaily.co.kr/",
+            "생활"
+        )
+    )
+    private val cultureList = mutableListOf<NewspaperModel>(
+        NewspaperModel(
+            idGenerate.getAndIncrement(),
+            "연합뉴스",
+            R.drawable.ic_yna,
+            "https://www.yna.co.kr/culture/index?site=navi_culture_depth01",
+            "문화"
+        ),
+        NewspaperModel(
+            idGenerate.getAndIncrement(),
+            "이데일리",
+            R.drawable.ic_edaily,
+            "https://www.edaily.co.kr/",
+            "문화"
+        )
 
     )
-    private val societyList = mutableListOf<NewspaperModel>()
-
-    private val lifeList = mutableListOf<NewspaperModel>()
-    private val cultureList = mutableListOf<NewspaperModel>()
-    private val itList = mutableListOf<NewspaperModel>()
-    private val scienceList = mutableListOf<NewspaperModel>()
-    private val wordList = mutableListOf<NewspaperModel>()
+    private val itList = mutableListOf<NewspaperModel>(
+        NewspaperModel(
+            idGenerate.getAndIncrement(),
+            "이데일리",
+            R.drawable.ic_edaily,
+            "https://www.edaily.co.kr/",
+            "IT"
+        )
+    )
+    private val scienceList = mutableListOf<NewspaperModel>(
+        NewspaperModel(
+            idGenerate.getAndIncrement(),
+            "이데일리",
+            R.drawable.ic_edaily,
+            "https://www.edaily.co.kr/",
+            "과학"
+        )
+    )
+    private val worldList = mutableListOf<NewspaperModel>(
+        NewspaperModel(
+            idGenerate.getAndIncrement(),
+            "연합뉴스",
+            R.drawable.ic_yna,
+            "https://www.yna.co.kr/international/index?site=navi_international_depth01",
+            "세계"
+        ),
+        NewspaperModel(
+            idGenerate.getAndIncrement(),
+            "이데일리",
+            R.drawable.ic_edaily,
+            "https://www.edaily.co.kr/",
+            "세계"
+        )
+    )
 
     init{
 
@@ -73,8 +162,8 @@ class NewspaperRepositoryImpl(
         return scienceList
     }
 
-    override fun getWordList(): List<NewspaperModel> {
-        return wordList
+    override fun getWorldList(): List<NewspaperModel> {
+        return worldList
     }
 
     override fun getEconomyList(): List<NewspaperModel> {
@@ -85,7 +174,7 @@ class NewspaperRepositoryImpl(
         return societyList
     }
 
-    override fun getLifeListList(): List<NewspaperModel> {
+    override fun getLifeList(): List<NewspaperModel> {
         return lifeList
     }
 

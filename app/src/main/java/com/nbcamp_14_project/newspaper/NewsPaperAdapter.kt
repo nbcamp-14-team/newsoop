@@ -1,5 +1,6 @@
 package com.nbcamp_14_project.newspaper
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -44,8 +45,9 @@ class NewsPaperAdapter(
         fun bind(item:NewspaperModel) =with(binding){
             imgThumbnail.load(item.thumbnail!!)
             imgThumbnail.setOnClickListener{
+                Log.d("link","${item.link}")
                 onClick(
-                    item.link?:  " "
+                    item.link!!
                 )
             }
         }

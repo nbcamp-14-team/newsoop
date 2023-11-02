@@ -36,7 +36,7 @@ class HomeViewModel(
 
     fun headLineNews(query: String) {
         viewModelScope.launch {
-            val docs = searchNews( query, 5)
+            val docs = searchNews(query, 5,sort = "sim")
             val item = docs.items ?: return@launch
             for (i in item.indices) {//아이템 개수만큼 for문 실행
                 val thumbnail = getThumbnail(item[i].link.toString())
@@ -75,8 +75,7 @@ class HomeViewModel(
 
     fun detailNews(query: String, startingNum: Int? = null) {
         viewModelScope.launch {
-
-            val docs = searchNews(query, 5, startingNum, sort = "sim")
+            val docs = searchNews(query, 5, startingNum?.plus(5), sort = "sim")
             val item = docs.items ?: return@launch
             var currentList = repository.getNewsList()
             for (i in item.indices) {//아이템 개수만큼 for문 실행
