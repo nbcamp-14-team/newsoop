@@ -6,5 +6,4 @@ data class NewspaperModel(
     val thumbnail: Int? = null,
     val link: String? = null,
     val tag: String? = null
-
 )

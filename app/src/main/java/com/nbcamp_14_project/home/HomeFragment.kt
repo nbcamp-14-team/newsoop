@@ -78,7 +78,7 @@ class HomeFragment(query:String) : Fragment() {
         initView()//화면 설정 함수
         initViewModel()//뷰모델 설정 함수
         viewPagerViewModel.headLineNews(queryInbox)//메인 ViewPager에 헤드라인 뉴스 출력
-        viewPagerViewModel.detailNews(queryInbox)//하단 리사이클러뷰에 뉴스 출력
+        viewPagerViewModel.detailNews(queryInbox,0)//하단 리사이클러뷰에 뉴스 출력
 
     }
 

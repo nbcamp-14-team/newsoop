@@ -32,6 +32,7 @@ import com.nbcamp_14_project.databinding.FragmentFavoriteBinding
 import com.nbcamp_14_project.databinding.FragmentSearchBinding
 import com.nbcamp_14_project.favorite.FavoriteListAdapter
 import com.nbcamp_14_project.favorite.FavoriteViewModel
+import com.nbcamp_14_project.newspaper.NewspaperDialog
 import com.nbcamp_14_project.search.SearchListAdapter
 import com.nbcamp_14_project.search.SearchViewModel
 import com.nbcamp_14_project.search.SearchViewModelFactory
@@ -142,8 +143,7 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
         btnText.setOnClickListener {
             val url = viewModel.detailInfo.value?.originalLink
             if (url != null) {
-                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-                startActivity(intent)
+                startActivity(NewspaperDialog.newInstance(requireContext(), url))
             } else {
                 Toast.makeText(requireContext(), "링크가 없습니다.", Toast.LENGTH_SHORT).show()
             }

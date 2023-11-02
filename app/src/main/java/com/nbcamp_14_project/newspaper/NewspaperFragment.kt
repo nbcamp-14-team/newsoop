@@ -12,71 +12,23 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.nbcamp_14_project.databinding.FragmentNewspaperBinding
 import com.nbcamp_14_project.ui.login.LoginActivity
 
-class NewspaperFragment:Fragment() {
+class NewspaperFragment : Fragment() {
 
     private var _binding: FragmentNewspaperBinding? = null
     private val binding get() = _binding!!
-    private val newspaperViewModel:NewspaperViewModel by lazy{
+    private val newspaperViewModel: NewspaperViewModel by lazy {
         ViewModelProvider(
-            this,NewspaperModelFactory()
+            this, NewspaperModelFactory()
         )[NewspaperViewModel::class.java]
     }
-    private val politicsAdapter by lazy{
+    private val currentListAdapter by lazy {
         NewsPaperAdapter(
-            onClick = {link ->
-                startActivity(NewspaperDialog.newInstance(requireContext(),link))
+            onClick = { link ->
+                startActivity(NewspaperDialog.newInstance(requireContext(), link))
             }
         )
     }
-    private val economyAdapter by lazy{
-        NewsPaperAdapter(
-            onClick = {link ->
-                startActivity(NewspaperDialog.newInstance(requireContext(),link))
-            }
-        )
-    }
-    private val societyAdapter by lazy{
-        NewsPaperAdapter(
-            onClick = {link ->
-                startActivity(NewspaperDialog.newInstance(requireContext(),link))
-            }
-        )
-    }
-    private val lifeAdapter by lazy{
-        NewsPaperAdapter(
-            onClick = {link ->
-                startActivity(NewspaperDialog.newInstance(requireContext(),link))
-            }
-        )
-    }
-    private val cultureAdapter by lazy{
-        NewsPaperAdapter(
-            onClick = {link ->
-                startActivity(NewspaperDialog.newInstance(requireContext(),link))
-            }
-        )
-    }
-    private val itAdapter by lazy{
-        NewsPaperAdapter(
-            onClick = {link ->
-                startActivity(NewspaperDialog.newInstance(requireContext(),link))
-            }
-        )
-    }
-    private val scienceAdapter by lazy{
-        NewsPaperAdapter(
-            onClick = {link ->
-                startActivity(NewspaperDialog.newInstance(requireContext(),link))
-            }
-        )
-    }
-    private val worldAdapter by lazy{
-        NewsPaperAdapter(
-            onClick = {link ->
-                startActivity(NewspaperDialog.newInstance(requireContext(),link))
-            }
-        )
-    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
@@ -91,60 +43,43 @@ class NewspaperFragment:Fragment() {
         initViewModel()
 
     }
-    fun initView() = with(binding){
-        rvNewspaper.adapter = politicsAdapter
-        rvNewspaper.layoutManager=GridLayoutManager(requireContext(),2)
+
+    fun initView() = with(binding) {
+        newspaperViewModel.getCurrentList("정치")
+        rvNewspaper.adapter = currentListAdapter
+        rvNewspaper.layoutManager = GridLayoutManager(requireContext(), 2)
         btnPolitics.setOnClickListener {
-            rvNewspaper.adapter = politicsAdapter
+            newspaperViewModel.getCurrentList("정치")
         }
         btnEconomy.setOnClickListener {
-            rvNewspaper.adapter = economyAdapter
+            newspaperViewModel.getCurrentList("경제")
         }
         btnSociety.setOnClickListener {
-            rvNewspaper.adapter = societyAdapter
+            newspaperViewModel.getCurrentList("사회")
         }
         btnLife.setOnClickListener {
-            rvNewspaper.adapter = lifeAdapter
+            newspaperViewModel.getCurrentList("생활")
         }
         btnCulture.setOnClickListener {
-            rvNewspaper.adapter = cultureAdapter
+            newspaperViewModel.getCurrentList("문화")
         }
         btnIt.setOnClickListener {
-            rvNewspaper.adapter = itAdapter
+            newspaperViewModel.getCurrentList("IT")
         }
         btnScience.setOnClickListener {
-            rvNewspaper.adapter = scienceAdapter
+            newspaperViewModel.getCurrentList("과학")
         }
         btnWorld.setOnClickListener {
-            rvNewspaper.adapter = worldAdapter
+            newspaperViewModel.getCurrentList("세계")
         }
     }
-    fun initViewModel(){
-        with(newspaperViewModel){
-            politicsList.observe(viewLifecycleOwner){
-                politicsAdapter.submitList(it)
+
+    fun initViewModel() {
+        with(newspaperViewModel) {
+            currentList.observe(viewLifecycleOwner) {
+                currentListAdapter.submitList(it)
             }
-            economyList.observe(viewLifecycleOwner){
-                economyAdapter.submitList(it)
-            }
-            societyList.observe(viewLifecycleOwner){
-                societyAdapter.submitList(it)
-            }
-            lifeList.observe(viewLifecycleOwner){
-                lifeAdapter.submitList(it)
-            }
-            cultureList.observe(viewLifecycleOwner){
-                cultureAdapter.submitList(it)
-            }
-            itList.observe(viewLifecycleOwner){
-                itAdapter.submitList(it)
-            }
-            scienceList.observe(viewLifecycleOwner){
-                scienceAdapter.submitList(it)
-            }
-            worldList.observe(viewLifecycleOwner){
-                worldAdapter.submitList(it)
-            }
+
         }
     }
 
