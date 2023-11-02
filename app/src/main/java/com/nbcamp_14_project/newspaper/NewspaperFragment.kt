@@ -31,49 +31,49 @@ class NewspaperFragment:Fragment() {
     private val economyAdapter by lazy{
         NewsPaperAdapter(
             onClick = {link ->
-                NewspaperDialog.newInstance(requireContext(),link)
+                startActivity(NewspaperDialog.newInstance(requireContext(),link))
             }
         )
     }
     private val societyAdapter by lazy{
         NewsPaperAdapter(
             onClick = {link ->
-                NewspaperDialog.newInstance(requireContext(),link)
+                startActivity(NewspaperDialog.newInstance(requireContext(),link))
             }
         )
     }
     private val lifeAdapter by lazy{
         NewsPaperAdapter(
             onClick = {link ->
-                NewspaperDialog.newInstance(requireContext(),link)
+                startActivity(NewspaperDialog.newInstance(requireContext(),link))
             }
         )
     }
     private val cultureAdapter by lazy{
         NewsPaperAdapter(
             onClick = {link ->
-                NewspaperDialog.newInstance(requireContext(),link)
+                startActivity(NewspaperDialog.newInstance(requireContext(),link))
             }
         )
     }
     private val itAdapter by lazy{
         NewsPaperAdapter(
             onClick = {link ->
-                NewspaperDialog.newInstance(requireContext(),link)
+                startActivity(NewspaperDialog.newInstance(requireContext(),link))
             }
         )
     }
     private val scienceAdapter by lazy{
         NewsPaperAdapter(
             onClick = {link ->
-                NewspaperDialog.newInstance(requireContext(),link)
+                startActivity(NewspaperDialog.newInstance(requireContext(),link))
             }
         )
     }
     private val worldAdapter by lazy{
         NewsPaperAdapter(
             onClick = {link ->
-                NewspaperDialog.newInstance(requireContext(),link)
+                startActivity(NewspaperDialog.newInstance(requireContext(),link))
             }
         )
     }
