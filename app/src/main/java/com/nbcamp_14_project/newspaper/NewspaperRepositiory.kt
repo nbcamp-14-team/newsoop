@@ -76,7 +76,7 @@ class NewspaperRepositoryImpl(
         NewspaperModel(
             idGenerate.getAndIncrement(),
             "중앙일보",
-            R.drawable.logo_yna,
+            R.drawable.logo_thejoongang,
             "https://www.joongang.co.kr/society",
             "사회"
         ),
