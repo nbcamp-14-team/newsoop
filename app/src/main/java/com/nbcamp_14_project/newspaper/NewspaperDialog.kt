@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.webkit.WebChromeClient
 import android.webkit.WebSettings
 import android.webkit.WebViewClient
 import androidx.appcompat.app.AppCompatActivity
@@ -45,8 +46,9 @@ class NewspaperDialog : AppCompatActivity() {
     private fun initView() = with(binding){
 
         webView.apply{
-
+            settings.userAgentString += "Newsoop"
             settings.javaScriptEnabled = true
+            settings.javaScriptCanOpenWindowsAutomatically = true //window.open() 동작 설정
             settings.useWideViewPort = true
             settings.cacheMode = WebSettings.LOAD_NO_CACHE//브라우저 캐쉬 허용
             settings.databaseEnabled = true
