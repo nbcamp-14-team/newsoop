@@ -18,6 +18,10 @@ class EmailFormActivity : AppCompatActivity() {
             val content = binding.sendEmailText.text.toString()
             sendEmail(content)
         }
+
+        binding.referenceMailBackBtn.setOnClickListener {
+            finish()
+        }
     }
 
     private fun sendEmail(content: String) {
