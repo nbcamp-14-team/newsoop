@@ -117,8 +117,10 @@ class HomeViewModel(
 
         }
     }
-    fun detailNewsInfinity(query: String, startingNum: Int? = null) {
+    fun detailNewsInfinity(query: String/** 검색어 */, startingNum: Int? = null/** 토큰 */) {
         viewModelScope.launch {
+
+
             val homeFragment = HomeFragment.newInstance(query)
             val docs = searchNews(query, 10, startingNum, sort = "sim")
             val item = docs.items ?: return@launch
@@ -161,8 +163,8 @@ class HomeViewModel(
             isLoading = true
             Log.d("LoadingViewModel","$isLoading")
         }
-    }
 
+    }
     suspend fun getThumbnail(url: String): String? {//썸네일 가져오기
         Log.d("ERRR", "$url")
         var thumbnail: String?
@@ -345,9 +347,6 @@ class HomeViewModel(
                         }
                     }
                 }
-
-
-
                 Log.d("author", "$author")
             }
             if (author == null) return author

@@ -67,7 +67,21 @@ class NewspaperRepositoryImpl(
             idGenerate.getAndIncrement(),
             "YTN",
             R.drawable.logo_ytn,
-            "https://www.ytn.co.kr/news/list.php?mcd=0101",
+            "https://m.ytn.co.kr/newslist/news_list.php?s_mcd=0101",
+            "정치"
+        ),
+        NewspaperModel(
+            idGenerate.getAndIncrement(),
+            "뉴스원",
+            R.drawable.logo_news1,
+            "https://www.news1.kr/categories/?1",
+            "정치"
+        ),
+        NewspaperModel(
+            idGenerate.getAndIncrement(),
+            "조선일보",
+            R.drawable.logo_chosunews,
+            "https://www.chosun.com/politics/",
             "정치"
         ),
     )
@@ -118,7 +132,35 @@ class NewspaperRepositoryImpl(
             idGenerate.getAndIncrement(),
             "YTN",
             R.drawable.logo_ytn,
-            "https://www.ytn.co.kr/news/list.php?mcd=0102",
+            "https://m.ytn.co.kr/newslist/news_list.php?s_mcd=0102",
+            "경제"
+        ),
+        NewspaperModel(
+            idGenerate.getAndIncrement(),
+            "아시아경제",
+            R.drawable.logo_asiae,
+            "https://www.asiae.co.kr/list/economy",
+            "경제"
+        ),
+        NewspaperModel(
+            idGenerate.getAndIncrement(),
+            "뉴스원",
+            R.drawable.logo_news1,
+            "https://www.news1.kr/categories/?13",
+            "경제"
+        ),
+        NewspaperModel(
+            idGenerate.getAndIncrement(),
+            "조선일보",
+            R.drawable.logo_chosunews,
+            "https://www.chosun.com/investment/",
+            "경제"
+        ),
+        NewspaperModel(
+            idGenerate.getAndIncrement(),
+            "한국경제",
+            R.drawable.logo_koreae,
+            "https://www.hankyung.com/",
             "경제"
         ),
     )
@@ -162,7 +204,21 @@ class NewspaperRepositoryImpl(
             idGenerate.getAndIncrement(),
             "YTN",
             R.drawable.logo_ytn,
-            "https://www.ytn.co.kr/news/list.php?mcd=0103",
+            "https://m.ytn.co.kr/newslist/news_list.php?mcd=0103",
+            "사회"
+        ),
+        NewspaperModel(
+            idGenerate.getAndIncrement(),
+            "뉴스원",
+            R.drawable.logo_news1,
+            "https://www.news1.kr/categories/?7",
+            "사회"
+        ),
+        NewspaperModel(
+            idGenerate.getAndIncrement(),
+            "조선일보",
+            R.drawable.logo_chosunews,
+            "https://www.chosun.com/national/",
             "사회"
         ),
     )
@@ -193,6 +249,13 @@ class NewspaperRepositoryImpl(
             "주간조선",
             R.drawable.logo_chosun,
             "https://weekly.chosun.com/news/articleList.html?sc_section_code=S1N5&view_type=sm",
+            "생활"
+        ),
+        NewspaperModel(
+            idGenerate.getAndIncrement(),
+            "조선일보",
+            R.drawable.logo_chosunews,
+            "https://www.chosun.com/medical/",
             "생활"
         ),
 
@@ -230,7 +293,14 @@ class NewspaperRepositoryImpl(
             idGenerate.getAndIncrement(),
             "YTN",
             R.drawable.logo_ytn,
-            "https://www.ytn.co.kr/news/list.php?mcd=0106",
+            "https://m.ytn.co.kr/newslist/news_list.php?mcd=0106",
+            "문화"
+        ),
+        NewspaperModel(
+            idGenerate.getAndIncrement(),
+            "조선일보",
+            R.drawable.logo_chosunews,
+            "https://www.chosun.com/culture-style/",
             "문화"
         ),
 
@@ -264,6 +334,7 @@ class NewspaperRepositoryImpl(
             "https://news.daum.net/digital#1",
             "IT"
         ),
+
     )
     private val scienceList = mutableListOf<NewspaperModel>(
         NewspaperModel(
@@ -284,7 +355,7 @@ class NewspaperRepositoryImpl(
             idGenerate.getAndIncrement(),
             "YTN",
             R.drawable.logo_ytn,
-            "https://www.ytn.co.kr/news/list.php?mcd=0105",
+            "https://m.ytn.co.kr/newslist/news_list.php?mcd=0105",
             "과학"
         ),
     )
@@ -328,7 +399,21 @@ class NewspaperRepositoryImpl(
             idGenerate.getAndIncrement(),
             "YTN",
             R.drawable.logo_ytn,
-            "https://www.ytn.co.kr/news/list.php?mcd=0104",
+            "https://m.ytn.co.kr/newslist/news_list.php?s_mcd=0104",
+            "세계"
+        ),
+        NewspaperModel(
+            idGenerate.getAndIncrement(),
+            "뉴스원",
+            R.drawable.logo_news1,
+            "https://www.news1.kr/categories/?31",
+            "세계"
+        ),
+        NewspaperModel(
+            idGenerate.getAndIncrement(),
+            "조선일보",
+            R.drawable.logo_chosunews,
+            "https://www.chosun.com/international/",
             "세계"
         ),
     )

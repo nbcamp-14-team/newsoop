@@ -20,7 +20,7 @@ import com.nbcamp_14_project.detail.DetailViewModel
 import com.nbcamp_14_project.mainpage.MainActivity
 import kotlinx.coroutines.delay
 
-class HomeFragment(query:String) : Fragment() {
+class HomeFragment(query: String) : Fragment() {
 
 
     companion object {
@@ -33,6 +33,7 @@ class HomeFragment(query:String) : Fragment() {
     private var _binding: FragmentMainBinding? = null
     private val binding get() = _binding!!
     private val detailViewModel: DetailViewModel by activityViewModels()
+
     // HomeFragment Fragment
     private val headLineAdapter by lazy {
         HomeHeadLineAdapter(//ViewPager2에서 클릭이 일어났을 때, Detail에 데이터값을 보냄
@@ -78,7 +79,7 @@ class HomeFragment(query:String) : Fragment() {
         initView()//화면 설정 함수
         initViewModel()//뷰모델 설정 함수
         viewPagerViewModel.headLineNews(queryInbox)//메인 ViewPager에 헤드라인 뉴스 출력
-        viewPagerViewModel.detailNews(queryInbox,0)//하단 리사이클러뷰에 뉴스 출력
+        viewPagerViewModel.detailNews(queryInbox, 0)//하단 리사이클러뷰에 뉴스 출력
 
     }
 
@@ -96,7 +97,6 @@ class HomeFragment(query:String) : Fragment() {
         /**
          * ViewPager 2 세팅
          */
-
         rvMainNews.adapter = headLineAdapter//어뎁터 연결
         rvMainNews.orientation = ViewPager2.ORIENTATION_HORIZONTAL//가로로 설정
         rvMainNews.apply {
@@ -113,7 +113,7 @@ class HomeFragment(query:String) : Fragment() {
         /**
          * 하단 리사이클러뷰 세팅
          */
-        val decoration = DividerItemDecoration(requireContext(),VERTICAL)
+        val decoration = DividerItemDecoration(requireContext(), VERTICAL)
         rvNews.addItemDecoration(decoration)
 
         rvNews.adapter = newsAdapter//어뎁터 연결
@@ -124,7 +124,7 @@ class HomeFragment(query:String) : Fragment() {
                 val lastVisiblePosition =
                     (rvNews.layoutManager as LinearLayoutManager)!!.findLastCompletelyVisibleItemPosition()//마지막으로 보인 Item에 포지션변수
                 val itemCount = newsAdapter.itemCount - 1//Adapter아이템 개수
-                Log.d("LoadingView","${viewPagerViewModel.isLoading}")
+                Log.d("LoadingView", "${viewPagerViewModel.isLoading}")
                 if (viewPagerViewModel.isLoading) {
                     isLoading = false
                 }
@@ -136,24 +136,8 @@ class HomeFragment(query:String) : Fragment() {
                         infinityAddNews(queryInbox)
                     }
                 }
-
-
             }
-
-            override fun onScrollStateChanged(
-                recyclerView: RecyclerView,
-                newState: Int
-            ) {//스크롤 상태가 변화할 때,
-                super.onScrollStateChanged(recyclerView, newState)
-
-//
-//                if(!rvNews.canScrollHorizontally(1) && lastVisiblePosition == itemCount){
-//                    Log.d("query1","$queryInbox")
-//
-//                }
-            }
-        }
-        )
+        })
 
     }
 

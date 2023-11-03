@@ -2,11 +2,17 @@ package com.nbcamp_14_project.newspaper
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
 import android.os.Build
 import android.os.Bundle
+import android.view.View
+import android.view.Window
+import android.view.WindowManager
 import android.webkit.WebChromeClient
 import android.webkit.WebSettings
+import android.webkit.WebView
 import android.webkit.WebViewClient
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.nbcamp_14_project.R
@@ -34,23 +40,37 @@ class NewspaperDialog : AppCompatActivity() {
         setContentView(binding.root)
         initView()
     }
-
+    private var backPressedTime= 0L
     override fun onBackPressed() {
         super.onBackPressed()
         with(binding) {
             if (webView.canGoBack()) {
                 webView.goBack()
             } else {
-                finish()
-                overridePendingTransition(R.anim.none, R.anim.slide_down)
+                if(System.currentTimeMillis() - backPressedTime < 2000){
+                    finish()
+                    return
+                    overridePendingTransition(R.anim.none, R.anim.slide_down)
+                }
+                Toast.makeText(this@NewspaperDialog,"뒤로가기를 두번 눌러서 종료시켜주세요",Toast.LENGTH_SHORT).show()
+                backPressedTime = System.currentTimeMillis()
             }
         }
     }
+    inner class MyWebChromeClient:WebChromeClient(){//프로그래스바 적용하기위한 커스텀
+        override fun onProgressChanged(view: WebView?, newProgress: Int) {
+            super.onProgressChanged(view, newProgress)
+            binding.progressBar.progress = newProgress
+        }
+    }
+
 
     private fun initView() = with(binding) {
 
         webView.apply {
-            settings.userAgentString += "Newsoop"
+//            settings.userAgentString += "Newsoop"
+            settings.setRenderPriority(WebSettings.RenderPriority.HIGH)//랜더 우선순위
+            settings.layoutAlgorithm = WebSettings.LayoutAlgorithm.SINGLE_COLUMN//레이아웃 알고리즘 관련
             settings.javaScriptEnabled = true
             settings.javaScriptCanOpenWindowsAutomatically = true //window.open() 동작 설정
             settings.useWideViewPort = true
@@ -62,10 +82,21 @@ class NewspaperDialog : AppCompatActivity() {
                 settings.mixedContentMode =
                     WebSettings.MIXED_CONTENT_ALWAYS_ALLOW//https에서 http 컨텐츠가 호출 안되는 현상 수정코드
             }
-            webChromeClient = WebChromeClient()
+            webChromeClient = MyWebChromeClient()
             webViewClient = WebViewClient()
         }
-
+        /**
+         * 하드웨어 가속
+         */
+        if(Build.VERSION.SDK_INT>=19){
+            webView.setLayerType(View.LAYER_TYPE_HARDWARE,null)
+        }else{
+            webView.setLayerType(WebView.LAYER_TYPE_HARDWARE,null)
+        }
+        window.setFlags(
+            WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED,
+            WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED
+        )
         webView.loadUrl(link ?: "https://webit22.tistory.com/75")
         btnFinish.setOnClickListener {
             finish()

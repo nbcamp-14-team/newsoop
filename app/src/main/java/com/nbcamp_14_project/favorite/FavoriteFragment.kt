@@ -11,6 +11,7 @@ import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
@@ -21,6 +22,8 @@ import com.nbcamp_14_project.R
 import com.nbcamp_14_project.databinding.FragmentFavoriteBinding
 import com.nbcamp_14_project.detail.DetailInfo
 import com.nbcamp_14_project.detail.DetailViewModel
+import com.nbcamp_14_project.home.HomeViewPagerViewModel
+import com.nbcamp_14_project.home.HomeViewPagerViewModelFactory
 import com.nbcamp_14_project.mainpage.MainActivity
 import com.nbcamp_14_project.ui.login.LoginActivity
 import com.nbcamp_14_project.ui.login.LoginViewModel
@@ -36,6 +39,7 @@ class FavoriteFragment : Fragment() {
     private val viewModel: FavoriteViewModel by activityViewModels()
     private val detailViewModel: DetailViewModel by activityViewModels()
     private val loginViewModel: LoginViewModel by activityViewModels()
+    private val homeViewPagerViewModel: HomeViewPagerViewModel by activityViewModels()
     private val firestore = FirebaseFirestore.getInstance()
     private var isLogin = false
     private var auth = FirebaseAuth.getInstance()
@@ -72,6 +76,7 @@ class FavoriteFragment : Fragment() {
                 textview2.visibility = View.VISIBLE
 
                 viewModel.setFavoriteList(emptyList())
+                homeViewPagerViewModel.removeListAtFirst()
             }
         }
 
@@ -88,7 +93,9 @@ class FavoriteFragment : Fragment() {
                     val document = task.result
                     if (document.exists()) {
                         val nameField = document.getString("name")
+                        val categoryField = document.getString("category")
                         binding.tvNick.text = "이름 : $nameField"
+                        binding.tvCategory.text = "선호 카테고리 : $categoryField"
                     } else {
                         Log.d("data", "no data")
                     }
@@ -135,7 +142,7 @@ class FavoriteFragment : Fragment() {
         val user = FirebaseAuth.getInstance().currentUser
         val userUID = user?.uid ?: return
         val db = FirebaseFirestore.getInstance()
-        val favoriteCollection = db.collection("User").document(userUID).collection("favorites")
+        val favoriteCollection = db.collection("User").document(userUID).collection("category")
 
         favoriteCollection.orderBy("created", Query.Direction.DESCENDING).get()
             .addOnSuccessListener { querySnapshot ->

@@ -12,6 +12,4 @@
         android:color="@color/white"/>
     <solid
         android:color="#EEFFEF"/>
-
-
 </shape>
