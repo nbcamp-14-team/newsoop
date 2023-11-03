@@ -5,11 +5,8 @@ import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
 
 class HomeViewPagerAdapter(fragmentActivity: FragmentActivity):FragmentStateAdapter(fragmentActivity) {
-
-
     var list = mutableListOf<HomeFragmentTabs>()
-
-
+    private val listIds = list.map{it.hashCode().toLong()}
     override fun getItemCount(): Int {
         return list.size
     }
@@ -21,10 +18,24 @@ class HomeViewPagerAdapter(fragmentActivity: FragmentActivity):FragmentStateAdap
         return list[position].fragment
     }
 
+    /**
+     *  notifyDataSetChanged() 사용했는데 갱신 안되서 추가한 코드
+     */
+
+    override fun getItemId(position: Int): Long {
+        return list[position].hashCode().toLong()
+    }
+
+    override fun containsItem(itemId: Long): Boolean {
+        return listIds.contains(itemId)
+    }
+
+    /**
+     * 데이터 넣는 코드
+     */
+
     fun setData(data: List<HomeFragmentTabs>){
         list = data.toMutableList()
         notifyDataSetChanged()
     }
-
-
 }

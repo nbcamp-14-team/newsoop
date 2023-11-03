@@ -176,11 +176,10 @@ class FavoriteFragment : Fragment() {
                 }
                 updateCategory()
             })
+            if (binding.viewEmpty.visibility == View.INVISIBLE){
+                updateCategory()
+            }
         }
-        if (binding.viewEmpty.visibility == View.INVISIBLE){
-            updateCategory()
-        }
-
     }
 
     //카테고리 보여주기
