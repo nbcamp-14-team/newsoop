@@ -34,9 +34,9 @@ class HomeViewModel(
     private val VIEW_TYPE_ITEM = 0
     private val VIEW_TYPE_LOADING = 1
 
-    fun headLineNews(query: String) {
+    fun headLineNews(query: String,display: Int? = 5) {
         viewModelScope.launch {
-            val docs = searchNews(query, 5,sort = "sim")
+            val docs = searchNews(query, display,sort = "sim")
             val item = docs.items ?: return@launch
             for (i in item.indices) {//아이템 개수만큼 for문 실행
                 val thumbnail = getThumbnail(item[i].link.toString())
@@ -71,11 +71,50 @@ class HomeViewModel(
 
         }
     }
-
-
-    fun detailNews(query: String, startingNum: Int? = null) {
+    fun detailRecommendNews(query: String, startingNum: Int? = null,display:Int? = 5) {
         viewModelScope.launch {
-            val docs = searchNews(query, 5, startingNum?.plus(5), sort = "sim")
+            Log.d("help","$query")
+            val docs = searchNews(query, display, startingNum?.plus(5), sort = "sim")
+            val item = docs.items ?: return@launch
+            var currentList = repository.getNewsList()
+            for (i in item.indices) {//아이템 개수만큼 for문 실행
+                val thumbnail = getThumbnail(item[i].link.toString())
+                var title = item[i].title!!.replace("<b>", "")
+                title = title.replace("</b>", "")
+                title = title.replace("&quot;", "\"")
+                title = title.replace("&amp;", "&")
+                var description = item[i].description?.replace("<b>", "")
+                description = description?.replace("</b>", "")
+                description = description?.replace("&quot;", "\"")
+                val link = item[i].link
+                val pubDate = item[i].pubDate
+                var date = Date(pubDate)
+                Log.d("date", "$date")
+                val author = getAuthor(item[i].link.toString())
+                Log.d("linkRecycler", "$link + $author")
+                currentList = repository.addNewsItem(
+                    HomeModel(
+                        title = title,
+                        thumbnail = thumbnail,
+                        description = description,
+                        link = link,
+                        pubDate = date,
+                        author = author,
+                        viewType = VIEW_TYPE_ITEM
+                    )
+                )
+
+            }
+            _newsList.value = currentList
+
+
+
+        }
+    }
+
+    fun detailNews(query: String, startingNum: Int? = null,display:Int? = 5) {
+        viewModelScope.launch {
+            val docs = searchNews(query, display, startingNum?.plus(5), sort = "sim")
             val item = docs.items ?: return@launch
             var currentList = repository.getNewsList()
             for (i in item.indices) {//아이템 개수만큼 for문 실행
@@ -117,8 +156,10 @@ class HomeViewModel(
 
         }
     }
-    fun detailNewsInfinity(query: String, startingNum: Int? = null) {
+    fun detailNewsInfinity(query: String/** 검색어 */, startingNum: Int? = null/** 토큰 */) {
         viewModelScope.launch {
+
+
             val homeFragment = HomeFragment.newInstance(query)
             val docs = searchNews(query, 10, startingNum, sort = "sim")
             val item = docs.items ?: return@launch
@@ -161,8 +202,8 @@ class HomeViewModel(
             isLoading = true
             Log.d("LoadingViewModel","$isLoading")
         }
-    }
 
+    }
     suspend fun getThumbnail(url: String): String? {//썸네일 가져오기
         Log.d("ERRR", "$url")
         var thumbnail: String?
@@ -345,9 +386,6 @@ class HomeViewModel(
                         }
                     }
                 }
-
-
-
                 Log.d("author", "$author")
             }
             if (author == null) return author

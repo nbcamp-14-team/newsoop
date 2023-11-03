@@ -12,11 +12,12 @@ import com.nbcamp_14_project.search.SearchFragment
 
 class MainViewPagerAdapter(fragmentActivity: FragmentActivity) :
     FragmentStateAdapter(fragmentActivity) {
-    val list = listOf(HomeViewPagerFragment(),
+    val list = listOf(
+        HomeViewPagerFragment(),
         SearchFragment(),
-        FavoriteFragment(),
+        DebateFragment(),
         NewspaperFragment(),
-        DebateFragment()
+        FavoriteFragment(),
     )
 
     override fun getItemCount(): Int {

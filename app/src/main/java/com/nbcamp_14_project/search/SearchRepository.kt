@@ -35,9 +35,6 @@ class SearchRepositoryImpl(
 ) : SearchRepository {
     private val searchList = mutableListOf<HomeModel>()
     private val recentSearchList = mutableListOf<String>()
-    val user = FirebaseAuth.getInstance().currentUser
-    val userUID = user?.uid
-
 
     //시간이 오래 걸림 ->
     override suspend fun getNews(query: String, display: Int?, start: Int?): SearchEntity =
@@ -82,6 +79,9 @@ class SearchRepositoryImpl(
             Log.d("recentSearchRemove10over", recentSearchList[0])
         }
 
+        val user = FirebaseAuth.getInstance().currentUser
+        val userUID = user?.uid
+
         //userUID가 존재하면 firebase에 저장
         if (userUID != null) {
             val nowTime = LocalDateTime.now()
@@ -104,10 +104,11 @@ class SearchRepositoryImpl(
     }
 
     override fun removeRecentSearchItem(searchWord: String): List<String> {
-        recentSearchList.remove(searchWord)
+        val user = FirebaseAuth.getInstance().currentUser
+        val userUID = user?.uid
 
         //userID가 존재하면 firebase에서 삭제
-        if (userUID != null) {
+        if (userUID != null && recentSearchList.size > 0) {
             val db = FirebaseFirestore.getInstance()
             val ref = db.collection("User").document(userUID).collection("recentSearch")
             val query = ref.whereEqualTo("searchWord", searchWord)
@@ -122,6 +123,8 @@ class SearchRepositoryImpl(
                 Log.d("searchFirebase", "is fail : $searchWord")
             }
         }
+        
+        recentSearchList.remove(searchWord)
         return recentSearchList
     }
 }
