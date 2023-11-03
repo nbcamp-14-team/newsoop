@@ -54,6 +54,7 @@ class SearchFragment : Fragment() {
         SearchListAdapter(
             onClick = { item ->
                 val detailInfo = item.toDetailInfo()
+                Log.d("hyunsik", "detailInfo=$detailInfo")
                 detailViewModel.setDetailInfo(detailInfo)
                 val mainActivity = (activity as MainActivity)
                 mainActivity.runDetailFragment()
