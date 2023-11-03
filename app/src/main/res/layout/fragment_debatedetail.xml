@@ -105,7 +105,7 @@
         app:layout_constraintTop_toBottomOf="@+id/ic_opposite" />
 
     <TextView
-        android:id="@+id/textView12"
+        android:id="@+id/tv_opinion"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="의견"
@@ -116,16 +116,39 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_agree" />
 
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/debatedetail_list"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginTop="10dp"
-        app:layout_constraintTop_toBottomOf="@id/textView12"
-        app:layout_constraintStart_toStartOf="parent"
+    <Spinner
+        android:id="@+id/home_spinner"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/spinner_selector"
+        android:layout_marginEnd="20dp"
+        android:elevation="3dp"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_opinion"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintTop_toTopOf="@+id/tv_opinion" />
+
+
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipe_refresh_layout"
+        android:layout_width="match_parent"
+        android:layout_height="350dp"
+        android:layout_marginTop="10dp"
+        app:layout_constraintTop_toBottomOf="@+id/tv_opinion">
+
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/debatedetail_list"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="10dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_opinion" />
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+
 
     <ImageView
         android:id="@+id/img_back"
@@ -157,11 +180,4 @@
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-
-
-
-
-
 

@@ -12,6 +12,8 @@ class FavoriteViewModel : ViewModel() {
     private val _favoriteList: MutableLiveData<List<DetailInfo>> = MutableLiveData()
     val favoriteList: LiveData<List<DetailInfo>> get() = _favoriteList
 
+
+
     var isLogin: Boolean = false
     // 사용자 로그인 상태를 저장하는 변수
 
@@ -22,6 +24,8 @@ class FavoriteViewModel : ViewModel() {
         currentList.add(0, item) // 새로운 아이템을 목록의 맨 앞에 추가
         _favoriteList.value = currentList // 변경된 목록을 LiveData에 설정
     }
+
+
 
     // 즐겨찾기 아이템 삭제
     fun removeFavoriteItem(item: DetailInfo) {
