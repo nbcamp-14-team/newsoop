@@ -8,18 +8,24 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import android.widget.EditText
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.button.MaterialButton
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 import com.nbcamp_14_project.R
 import com.nbcamp_14_project.databinding.FragmentDebatedetailBinding
 import com.nbcamp_14_project.ui.login.LoginActivity
+import java.text.SimpleDateFormat
+import java.util.Date
 
 class DebateDetailFragment : Fragment() {
     private var _binding: FragmentDebatedetailBinding? = null
@@ -27,6 +33,7 @@ class DebateDetailFragment : Fragment() {
     private lateinit var adapter: DebateDetailListAdapter
     private val firestore = FirebaseFirestore.getInstance()
     private val auth = FirebaseAuth.getInstance()
+
     //    private val debateList = ArrayList<DebateItem>()
     private val debatedetailList = ArrayList<DebateDetailItem>()
     private val viewModel: DebateViewModel by activityViewModels()
@@ -47,9 +54,73 @@ class DebateDetailFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        // SwipeRefreshLayout 초기화
+        val swipeRefreshLayout = view.findViewById<SwipeRefreshLayout>(R.id.swipe_refresh_layout)
+
+        // Swipe to Refresh 리스너 설정
+        swipeRefreshLayout.setOnRefreshListener {
+            // Swipe to Refresh 동작 시, 데이터 다시 불러오는 작업 수행
+            loadComments(viewModel.debateId ?: "")
+        }
+
+
+        val spinner = binding.homeSpinner
+        val spinnerAdapter = ArrayAdapter.createFromResource(
+            requireContext(),
+            R.array.sort_options, // 이것은 res/values/strings.xml에 정의된 배열 리소스여야 합니다.
+            android.R.layout.simple_spinner_item
+        )
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        spinner.adapter = spinnerAdapter
+
+
+
+        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
+                // 선택된 옵션에 따른 정렬 작업 수행
+                when (position) {
+                    0 -> {
+                        // "오래된순"이 선택된 경우
+                        debatedetailList.sortBy { it.date }
+                        adapter.notifyDataSetChanged()
+
+                    }
+
+                    1 -> {
+
+                        // "최신순"이 선택된 경우
+                        debatedetailList.sortByDescending { it.date }
+                        adapter.notifyDataSetChanged()
+
+                    }
+                }
+
+
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+                // 아무 항목도 선택되지 않았을 때의 동작 (optional)
+            }
+
+        }
+
+
+        // 이후 코드는 댓글 목록을 불러오고 RecyclerView에 표시하는 부분으로 가정하겠습니다.
+        // debatedetailList에 댓글을 추가하고 RecyclerView 업데이트
+
+
         binding.btnComment.setOnClickListener {
             val user = FirebaseAuth.getInstance().currentUser
             if (user != null) {
+                agreeClicked = false
+                isAgreeButtonClicked = false
+                oppositeClicked = false
+                isOppositeButtonClicked = false
                 showAddCommentDialog()
                 Log.d("#hyunsik", "plus")
 
@@ -59,7 +130,6 @@ class DebateDetailFragment : Fragment() {
                 navigateToLoginActivity()
             }
         }
-
 
 
         val agreeImageView = binding.icAgree
@@ -72,7 +142,8 @@ class DebateDetailFragment : Fragment() {
 
 
         agreeImageView.setOnClickListener {
-            if (oppositeClicked) {}else{
+            if (oppositeClicked) {
+            } else {
                 if (agreeClicked) {
                     // 이미 클릭되었을 때
                     agreeImageView.setImageResource(R.drawable.ic_agreex)
@@ -158,29 +229,34 @@ class DebateDetailFragment : Fragment() {
                             .delete()
                             .addOnSuccessListener {
                                 Log.d("hyunsik", "deletedebatedetailList=$debatedetailList")
-                                Toast.makeText(requireContext(), "삭제 성공!!.", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(requireContext(), "삭제 성공!!.", Toast.LENGTH_SHORT)
+                                    .show()
                                 debatedetailList.removeAt(position)
                                 Log.d("hyunsik", "removedebatedetailList=$debatedetailList")
 
                                 adapter.notifyItemRemoved(position)
                             }
                             .addOnFailureListener { e ->
-                                Toast.makeText(requireContext(), "삭제 실패!!.", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(requireContext(), "삭제 실패!!.", Toast.LENGTH_SHORT)
+                                    .show()
 
                             }
                     } else {
                         Log.d("hyunsik", "userUID=$userUID")
                         Log.d("hyunsik", "commentUserUID=$commentUserUID")
 
-                        Toast.makeText(requireContext(), "본인이 작성한 댓글만 삭제 가능합니다.", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            requireContext(),
+                            "본인이 작성한 댓글만 삭제 가능합니다.",
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
                 } else {
 
-                    Toast.makeText(requireContext(), "삭제 할 수 없습니다. 로그인이 필요합니다.", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), "삭제 할 수 없습니다. 로그인이 필요합니다.", Toast.LENGTH_SHORT)
+                        .show()
                 }
             }
-
-
 
 
         }
@@ -207,6 +283,7 @@ class DebateDetailFragment : Fragment() {
                 .collection("Debates")
                 .document(debateId)
                 .collection("Comments")
+                .orderBy("date", Query.Direction.ASCENDING)
                 .get()
                 .addOnSuccessListener { documents ->
                     debatedetailList.clear()
@@ -217,7 +294,8 @@ class DebateDetailFragment : Fragment() {
                         val commentId = document.id
                         val userUID2 = document.getString("userUID")
 
-                        val commentType = document.getLong("commentType")?.toInt() ?: Comment.TYPE_AGREE
+                        val commentType =
+                            document.getLong("commentType")?.toInt() ?: Comment.TYPE_AGREE
 
                         if (text != null && user != null && date != null) {
                             debatedetailList.add(
@@ -239,6 +317,10 @@ class DebateDetailFragment : Fragment() {
                     Log.d("hyunsik", "error")
                 }
         }
+
+        val swipeRefreshLayout = view?.findViewById<SwipeRefreshLayout>(R.id.swipe_refresh_layout)
+        swipeRefreshLayout?.isRefreshing = false
+
     }
 
 
@@ -486,8 +568,6 @@ class DebateDetailFragment : Fragment() {
             }
         }
 
-
-
         btnOpposite.setOnClickListener {
             if (agreeClicked) {
                 // 다른 버튼이 클릭된 경우 아무것도 하지 않음
@@ -515,38 +595,55 @@ class DebateDetailFragment : Fragment() {
             }
         }
 
-
-
-
         builder.setPositiveButton("확인") { _, _ ->
             val commentText = editTextComment.text.toString().trim()
-            if (commentText.isNotEmpty()) {
+            if (commentText.isEmpty()) {
+                Toast.makeText(context, "댓글 내용을 입력해 주세요", Toast.LENGTH_SHORT).show()
+            } else if (!isAgreeButtonClicked && !isOppositeButtonClicked) {
+                Toast.makeText(context, "찬성 혹은 반대를 선택해 주세요", Toast.LENGTH_SHORT).show()
+            } else {
                 val user = auth.currentUser
                 user?.let { currentUser ->
                     val userUID = currentUser.uid
                     val userUID2 = viewModel.userUID
                     val debateId = viewModel.debateId
-                    val commentType = if (isAgreeButtonClicked) Comment.TYPE_AGREE else Comment.TYPE_OPPOSE
+                    val currentDate = Date()
+                    val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+                    val formattedDate = dateFormat.format(currentDate)
+                    val commentType =
+                        if (isAgreeButtonClicked) Comment.TYPE_AGREE else Comment.TYPE_OPPOSE
+
                     if (debateId != null) {
                         val commentCollection = firestore.collection("User")
                             .document(userUID2.toString())
                             .collection("Debates")
                             .document(debateId)
                             .collection("Comments")
-                        val newComment = DebateDetailItem(
-                            commentType,
-                            text = commentText,
-                            user = "정현식",
-                            date = "날짜",
-                            userUID = userUID
-                        )
-                        val newRef = commentCollection.document()
-                        newComment.id = newRef.id
-                        newRef.set(newComment)
-                            .addOnSuccessListener {
-                                debatedetailList.add(newComment)
-                                Log.d("hyunsik", "newComment=$newComment")
-                                adapter.notifyItemInserted(debatedetailList.size - 1)
+
+                        // 사용자의 이름을 가져오는 부분 추가
+                        val userDocRef = firestore.collection("User").document(userUID)
+                        userDocRef.get()
+                            .addOnSuccessListener { userDoc ->
+                                if (userDoc.exists()) {
+                                    val userName = userDoc.getString("name")
+                                    val newComment = DebateDetailItem(
+                                        commentType,
+                                        text = commentText,
+                                        user = userName.toString(), // 사용자의 이름으로 설정
+                                        date = formattedDate,
+                                        userUID = userUID
+                                    )
+                                    val newRef = commentCollection.document()
+                                    newComment.id = newRef.id
+                                    newRef.set(newComment)
+                                        .addOnSuccessListener {
+                                            debatedetailList.add(newComment)
+                                            adapter.notifyItemInserted(debatedetailList.size - 1)
+                                        }
+                                        .addOnFailureListener { e ->
+                                            // 실패 처리
+                                        }
+                                }
                             }
                             .addOnFailureListener { e ->
                                 // 실패 처리
