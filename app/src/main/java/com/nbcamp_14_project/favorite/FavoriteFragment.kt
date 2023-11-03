@@ -118,8 +118,9 @@ class FavoriteFragment : Fragment() {
             mainActivity.runDetailFragment()
         }
 
-        // RecyclerView 설정
-        binding.favoriteList.layoutManager = LinearLayoutManager(context)
+        // TODO : RecyclerView 설정 - 가로 방향
+        binding.favoriteList.layoutManager =
+            LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         binding.favoriteList.adapter = adapter
 
         // 즐겨찾기 목록 갱신
