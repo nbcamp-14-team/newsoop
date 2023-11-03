@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.play.integrity.internal.f
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
@@ -27,12 +28,35 @@ class LoginRepository() {
         auth.signInWithCredential(credential).addOnCompleteListener {
             if (it.isSuccessful) {
                 _userLiveData.postValue(auth.currentUser)
+                val collectionRef = fbFireStore.collection("User")
+                    .document(FirebaseAuth.getInstance().currentUser?.uid!!)
+                collectionRef.get().addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        val document = task.result
+                        if (document.exists()) {
+                            val category = document.getString("category") ?:""
+                            val secondcategory = document.getString("secondCategory") ?:""
+                            val thirdcategory = document.getString("thirdCategory") ?:""
+                            val user = User()
+                            user.email = auth.currentUser?.email
+                            user.name = auth.currentUser?.displayName
+                            user.category = category
+                            user.secondCategory = secondcategory
+                            user.thirdCategory = thirdcategory
+                            fbFireStore.collection("User")?.document(auth!!.currentUser!!.uid)?.set(user)
+                        } else {
+                            Log.d("data", "no data")
+                        }
+                    } else {
+                        Log.d("data", "no data")
+                    }
+                }
+
                 Log.d("login","data")
-                val user = User()
-                user.email = auth.currentUser?.email
-                user.name = auth.currentUser?.displayName
-                user.category = null
-                fbFireStore.collection("User")?.document(auth!!.currentUser!!.uid)?.set(user)
+
+
+
+
             } else {
                 Log.e("login","no data")
             }

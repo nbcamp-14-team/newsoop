@@ -96,11 +96,17 @@ class FavoriteFragment : Fragment() {
                     val document = task.result
                     if (document.exists()) {
                         val nameField = document.getString("name")
-                        val category = document.getString("category")
-                        val secondcategory = document.getString("secondCategory")
-                        val thirdcategory = document.getString("thirdCategory")
+                        val category = document.getString("category") ?:""
+                        val secondcategory = document.getString("secondCategory") ?:""
+                        val thirdcategory = document.getString("thirdCategory") ?:""
                         binding.tvNick.text = "이름 : $nameField"
-                        binding.tvCategory.text = "카테고리 : $category, $secondcategory, $thirdcategory"
+                        binding.tvFirstCategory.text = "선호 카데고리: $category"
+                        binding.tvSecondCategory.text = ", $secondcategory"
+                        binding.tvThirdCategory.text = ", $thirdcategory"
+
+
+
+
                     } else {
                         Log.d("data", "no data")
                     }
@@ -119,6 +125,26 @@ class FavoriteFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        loginViewModel.category.observe(requireActivity()) { text ->
+            binding.tvFirstCategory.text = "선호 카테고리: $text"
+        }
+
+        loginViewModel.secondCategory.observe(requireActivity()) { text ->
+            if (text.isNotEmpty()){
+                binding.tvSecondCategory.text = ", $text"
+            }
+            else {
+                binding.tvSecondCategory.text = null
+            }
+        }
+
+        loginViewModel.thirdCategory.observe(requireActivity()) { text ->
+            if (text.isNotEmpty()){
+                binding.tvThirdCategory.text = ", $text"
+            }else {
+                binding.tvThirdCategory.text = null
+            }
+        }
 
         // RecyclerView 어댑터 초기화
         adapter = FavoriteListAdapter { item ->
@@ -162,9 +188,7 @@ class FavoriteFragment : Fragment() {
                 updateCategory()
             })
         }
-        if (binding.viewEmpty.visibility == View.INVISIBLE){
-            updateCategory()
-        }
+
 
     }
 
@@ -228,7 +252,7 @@ class FavoriteFragment : Fragment() {
     fun updateCategory() {
         val curUser = auth.currentUser
         val user = User()
-        val fbUser = firestore.collection("User").document(curUser?.uid!!)
+        val fbUser = firestore.collection("User").document(curUser?.uid?:return)
         val updateData = hashMapOf(
             "category" to loginViewModel.category.value,
             "secondCategory" to loginViewModel.secondCategory.value,
