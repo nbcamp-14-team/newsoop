@@ -40,30 +40,51 @@ class NewspaperDialog : AppCompatActivity() {
         setContentView(binding.root)
         initView()
     }
-    private var backPressedTime= 0L
+
+    private var backPressedTime = 0L
     override fun onBackPressed() {
         super.onBackPressed()
         with(binding) {
             if (webView.canGoBack()) {
                 webView.goBack()
             } else {
-                if(System.currentTimeMillis() - backPressedTime < 2000){
+                if (System.currentTimeMillis() - backPressedTime < 2000) {
                     finish()
                     return
                     overridePendingTransition(R.anim.none, R.anim.slide_down)
                 }
-                Toast.makeText(this@NewspaperDialog,"뒤로가기를 두번 눌러서 종료시켜주세요",Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@NewspaperDialog, "뒤로가기를 두번 눌러서 종료시켜주세요", Toast.LENGTH_SHORT)
+                    .show()
                 backPressedTime = System.currentTimeMillis()
             }
         }
     }
-    inner class MyWebChromeClient:WebChromeClient(){//프로그래스바 적용하기위한 커스텀
+
+    inner class MyWebChromeClient : WebChromeClient() {
+        //프로그래스바 적용하기위한 커스텀
         override fun onProgressChanged(view: WebView?, newProgress: Int) {
             super.onProgressChanged(view, newProgress)
             binding.progressBar.progress = newProgress
         }
     }
 
+    inner class MyWebViewClient : WebViewClient() {
+        // 페이지가 로딩이 시작하는 시점 콜백
+        override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
+            super.onPageStarted(view, url, favicon)
+        }
+
+        // 페이지가 로딩이 끝나는 시점 콜백
+        override fun onPageFinished(view: WebView?, url: String?) {
+            super.onPageFinished(view, url)
+            binding.progressBar.visibility = View.GONE
+        }
+
+        // 페이지가 보여지는 시점 콜백
+        override fun onPageCommitVisible(view: WebView?, url: String?) {
+            super.onPageCommitVisible(view, url)
+        }
+    }
 
     private fun initView() = with(binding) {
 
@@ -83,15 +104,15 @@ class NewspaperDialog : AppCompatActivity() {
                     WebSettings.MIXED_CONTENT_ALWAYS_ALLOW//https에서 http 컨텐츠가 호출 안되는 현상 수정코드
             }
             webChromeClient = MyWebChromeClient()
-            webViewClient = WebViewClient()
+            webViewClient = MyWebViewClient()
         }
         /**
          * 하드웨어 가속
          */
-        if(Build.VERSION.SDK_INT>=19){
-            webView.setLayerType(View.LAYER_TYPE_HARDWARE,null)
-        }else{
-            webView.setLayerType(WebView.LAYER_TYPE_HARDWARE,null)
+        if (Build.VERSION.SDK_INT >= 19) {
+            webView.setLayerType(View.LAYER_TYPE_HARDWARE, null)
+        } else {
+            webView.setLayerType(WebView.LAYER_TYPE_HARDWARE, null)
         }
         window.setFlags(
             WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED,
@@ -103,4 +124,5 @@ class NewspaperDialog : AppCompatActivity() {
             overridePendingTransition(R.anim.none, R.anim.slide_down)
         }
     }
+
 }
