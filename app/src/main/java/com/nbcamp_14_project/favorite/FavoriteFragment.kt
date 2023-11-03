@@ -9,8 +9,6 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.content.ContentProviderCompat.requireContext
-import androidx.core.content.ContextCompat.startActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
@@ -52,7 +50,7 @@ class FavoriteFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?,
-    ): View? {
+    ): View {
         _binding = FragmentFavoriteBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -97,7 +95,11 @@ class FavoriteFragment : Fragment() {
                     val document = task.result
                     if (document.exists()) {
                         val nameField = document.getString("name")
+                        val category = document.getString("category")
+                        val secondcategory = document.getString("secondCategory")
+                        val thirdcategory = document.getString("thirdCategory")
                         binding.tvNick.text = "이름 : $nameField"
+                        binding.tvCategory.text = "카테고리 : $category, $secondcategory, $thirdcategory"
                     } else {
                         Log.d("data", "no data")
                     }
@@ -125,8 +127,9 @@ class FavoriteFragment : Fragment() {
             mainActivity.runDetailFragment()
         }
 
-        // RecyclerView 설정
-        binding.favoriteList.layoutManager = LinearLayoutManager(context)
+        // TODO : RecyclerView 설정 - 가로 방향
+        binding.favoriteList.layoutManager =
+            LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         binding.favoriteList.adapter = adapter
 
         // 즐겨찾기 목록 갱신
@@ -136,6 +139,12 @@ class FavoriteFragment : Fragment() {
 
         binding.tvLogin.setOnClickListener {
             openLoginActivity(view)
+        }
+
+        //setting 페이지로 이동
+        binding.settingBtn.setOnClickListener {
+            val intent = Intent(requireContext(), SettingActivity::class.java)
+            startActivity(intent)
         }
 
 
