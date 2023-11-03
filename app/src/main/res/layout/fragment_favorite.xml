@@ -114,17 +114,42 @@
             app:layout_constraintStart_toEndOf="@id/img_profile"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
+        <LinearLayout
             android:id="@+id/tv_category"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="15dp"
             android:layout_marginTop="10dp"
-            android:text="선호 카테고리 : "
-            android:textColor="#5E5959"
-            android:textSize="20sp"
             app:layout_constraintStart_toEndOf="@id/img_profile"
-            app:layout_constraintTop_toBottomOf="@id/tv_nick" />
+            app:layout_constraintTop_toBottomOf="@id/tv_nick">
+
+            <TextView
+                android:id="@+id/tv_first_category"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="선호 카테고리 : "
+                android:textColor="#5E5959"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/tv_second_category"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textColor="#5E5959"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/tv_third_category"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textColor="#5E5959"
+                android:textSize="16sp" />
+
+
+        </LinearLayout>
+
 
         <ImageView
             android:id="@+id/iv_fix_category"
@@ -179,6 +204,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/profile_box" />
 
+
     <View
         android:id="@+id/view_empty"
         android:layout_width="match_parent"
@@ -198,27 +224,5 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <TextView
-        android:id="@+id/fallow_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:text="팔로우한 기자님의 기사"
-        android:textColor="#4A4949"
-        android:textSize="20dp"
-        android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/favorite_list" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/favorite_fallow_list"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:scrollbarFadeDuration="0"
-        android:scrollbars="horizontal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/fallow_text" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
