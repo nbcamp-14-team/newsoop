@@ -32,6 +32,7 @@ import com.nbcamp_14_project.databinding.FragmentFavoriteBinding
 import com.nbcamp_14_project.databinding.FragmentSearchBinding
 import com.nbcamp_14_project.favorite.FavoriteListAdapter
 import com.nbcamp_14_project.favorite.FavoriteViewModel
+import com.nbcamp_14_project.home.HomeViewModel
 import com.nbcamp_14_project.newspaper.NewspaperDialog
 import com.nbcamp_14_project.search.SearchListAdapter
 import com.nbcamp_14_project.search.SearchViewModel
@@ -55,6 +56,7 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
     private lateinit var textToSpeech: TextToSpeech
     private val favoriteViewModel: FavoriteViewModel by activityViewModels()
     private val loginViewModel: LoginViewModel by activityViewModels()
+    private val homeViewModel: HomeViewModel by activityViewModels()
     private val searchViewModel: SearchViewModel by lazy {
         ViewModelProvider(
             requireActivity(), SearchViewModelFactory()
@@ -87,11 +89,13 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
                     if (isFavorite) {
                         favoriteViewModel.removeFavoriteItem(detailInfo)
                         searchViewModel.modifyFavoriteItemToPosition(detailInfo)
+                        homeViewModel.modifyNewsItemIsLikeToLink(detailInfo.toHomeModel())
                         binding.imgLike.setImageResource(R.drawable.ic_like)
                         removeFavoriteFromFireStore(detailInfo)  // Firestore에서도 제거
                     } else {
                         favoriteViewModel.addFavoriteItem(detailInfo)
                         searchViewModel.modifyFavoriteItemToPosition(detailInfo)
+                        homeViewModel.modifyNewsItemIsLikeToLink(detailInfo.toHomeModel())
                         binding.imgLike.setImageResource(R.drawable.ic_check)
                         addFavoriteToFireStore(detailInfo)  // Firestore에도 추가
                     }
