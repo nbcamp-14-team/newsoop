@@ -132,36 +132,55 @@ class DebateFragment : Fragment() {
         builder.setView(v1)
 
         val tvdebate: EditText = v1.findViewById(R.id.tv_debate)
-        val tvname: EditText = v1.findViewById(R.id.tv_name)
 
         val confirmListener = DialogInterface.OnClickListener { _, _ ->
             val debateTitle = tvdebate.text.toString()
-            val name = tvname.text.toString()
 
-            val firestore = FirebaseFirestore.getInstance()
-            val user = FirebaseAuth.getInstance().currentUser
-            user?.let { currentUser ->
-                val userUID = currentUser.uid
+            if (debateTitle.isEmpty()) {
+                // 토론 주제가 입력되지 않은 경우 오류 메시지 표시
+                Toast.makeText(requireContext(), "토론할 주제를 입력해주세요.", Toast.LENGTH_SHORT).show()
+            } else {
+                val firestore = FirebaseFirestore.getInstance()
+                val user = FirebaseAuth.getInstance().currentUser
+                user?.let { currentUser ->
+                    val userUID = currentUser.uid
 
+                    // 로그인한 사용자의 이름을 가져오는 부분
+                    firestore.collection("User").document(userUID)
+                        .get()
+                        .addOnSuccessListener { documentSnapshot ->
+                            if (documentSnapshot.exists()) {
+                                val name = documentSnapshot.getString("name")
 
+                                if (name != null) {
+                                    // 사용자 이름을 가져왔을 경우에만 토론 아이템을 추가합니다.
+                                    val commentCollection =
+                                        firestore.collection("User").document(userUID)
+                                            .collection("Debates")
+                                    val newDebateItem =
+                                        DebateItem(title = debateTitle, name = name, userUID = userUID)
+                                    val newRef = commentCollection.document()
+                                    newDebateItem.id = newRef.id
+                                    newRef.set(newDebateItem)
+                                        .addOnSuccessListener { documentReference ->
+                                            debateList.add(newDebateItem)
+                                            adapter.notifyDataSetChanged()
+                                        }
+                                        .addOnFailureListener { e ->
 
-                val commentCollection =firestore.collection("User").document(userUID).collection("Debates")
-                val newDebateItem = DebateItem(title = debateTitle, name = name, userUID = userUID)
-                val newRef = commentCollection.document()
-                newDebateItem.id = newRef.id
-                newRef.set(newDebateItem)
-                    .addOnSuccessListener { documentReference ->
+                                        }
+                                } else {
+                                    // 사용자 이름이 없을 경우에 대처할 내용을 추가할 수 있습니다.
+                                    // 예를 들어, 에러 메시지 표시 등
+                                }
+                            } else {
+                                // 사용자 문서가 없을 경우에 대처할 내용을 추가할 수 있습니다.
+                            }
+                        }
+                        .addOnFailureListener { e ->
 
-//                        val newID = documentReference.id
-//                        newDebateItem.id = newID
-
-                        debateList.add(newDebateItem)
-//                        viewModel.debateId = newID
-                        adapter.notifyDataSetChanged()
-                    }
-                    .addOnFailureListener { e ->
-
-                    }
+                        }
+                }
             }
         }
 
@@ -170,6 +189,8 @@ class DebateFragment : Fragment() {
 
         builder.show()
     }
+
+
 
 
     private fun navigateToLoginActivity() {
