@@ -93,9 +93,11 @@ class FavoriteFragment : Fragment() {
                     val document = task.result
                     if (document.exists()) {
                         val nameField = document.getString("name")
-                        val categoryField = document.getString("category")
+                        val category = document.getString("category")
+                        val secondcategory = document.getString("secondCategory")
+                        val thirdcategory = document.getString("thirdCategory")
                         binding.tvNick.text = "이름 : $nameField"
-                        binding.tvCategory.text = "선호 카테고리 : $categoryField"
+                        binding.tvCategory.text = "카테고리 : $category, $secondcategory, $thirdcategory"
                     } else {
                         Log.d("data", "no data")
                     }
@@ -142,7 +144,7 @@ class FavoriteFragment : Fragment() {
         val user = FirebaseAuth.getInstance().currentUser
         val userUID = user?.uid ?: return
         val db = FirebaseFirestore.getInstance()
-        val favoriteCollection = db.collection("User").document(userUID).collection("category")
+        val favoriteCollection = db.collection("User").document(userUID).collection("favorites")
 
         favoriteCollection.orderBy("created", Query.Direction.DESCENDING).get()
             .addOnSuccessListener { querySnapshot ->
