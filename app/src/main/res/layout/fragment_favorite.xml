@@ -114,54 +114,28 @@
             app:layout_constraintStart_toEndOf="@id/img_profile"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <LinearLayout
+        <TextView
             android:id="@+id/tv_category"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="15dp"
             android:layout_marginTop="10dp"
+            android:text="선호 카테고리 : "
+            android:textColor="#5E5959"
+            android:textSize="20sp"
             app:layout_constraintStart_toEndOf="@id/img_profile"
-            app:layout_constraintTop_toBottomOf="@id/tv_nick">
-
-            <TextView
-                android:id="@+id/tv_first_category"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="선호 카테고리 : "
-                android:textColor="#5E5959"
-                android:textSize="16sp"/>
-
-            <TextView
-                android:id="@+id/tv_second_category"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text=""
-                android:textColor="#5E5959"
-                android:textSize="16sp"/>
-
-            <TextView
-                android:id="@+id/tv_third_category"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text=""
-                android:textColor="#5E5959"
-                android:textSize="16sp"/>
-
-
-        </LinearLayout>
-        
-
+            app:layout_constraintTop_toBottomOf="@id/tv_nick" />
 
         <ImageView
             android:id="@+id/iv_fix_category"
             android:layout_width="26dp"
             android:layout_height="26dp"
-android:scaleType="centerCrop"
+            android:scaleType="centerCrop"
             android:src="@drawable/ic_change"
-            app:layout_constraintStart_toEndOf="@+id/tv_category"
-            app:layout_constraintEnd_toEndOf="@id/profile_box"
             app:layout_constraintBottom_toBottomOf="@id/tv_category"
-            app:layout_constraintHorizontal_bias="0.8"/>
+            app:layout_constraintEnd_toEndOf="@id/profile_box"
+            app:layout_constraintHorizontal_bias="0.8"
+            app:layout_constraintStart_toEndOf="@+id/tv_category" />
 
         <TextView
             android:id="@+id/btn_fav_news"
@@ -205,17 +179,16 @@ android:scaleType="centerCrop"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/profile_box" />
 
-
     <View
         android:id="@+id/view_empty"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:visibility="invisible"
         android:background="@color/categoryBackBlur"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@id/frag_category"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/frag_category"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/frag_category"

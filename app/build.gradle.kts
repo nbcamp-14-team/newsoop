@@ -107,4 +107,6 @@ dependencies {
 
     //오픈소스 라이선스
     implementation("com.google.android.gms:play-services-oss-licenses:17.0.0")
+    //Glide
+    implementation("com.github.bumptech.glide:glide:4.16.0")
 }
