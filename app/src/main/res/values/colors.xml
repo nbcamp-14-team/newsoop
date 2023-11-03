@@ -13,5 +13,6 @@
     <color name="blue">#0228FB</color>
     <color name="red">#FF0000</color>
 
+    <color name="categoryBackBlur">#D0383B3D</color>
 
 </resources>
