@@ -10,5 +10,8 @@
     <color name="signUpBtn">#569B4A</color>
     <color name="lightGray">#adb5bd</color>
     <color name="strokeGray">#a9a9a9</color>
+    <color name="blue">#0228FB</color>
+    <color name="red">#FF0000</color>
+
 
 </resources>
