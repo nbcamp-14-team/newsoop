@@ -5,7 +5,7 @@
     android:layout_height="100dp"
     android:padding="10dp"
     android:layout_margin="10dp"
-    android:background="@drawable/iv_debate"
+    android:background="@drawable/iv_debate3"
     android:id="@+id/container"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
