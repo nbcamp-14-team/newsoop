@@ -6,8 +6,11 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
+import coil.transform.BlurTransformation
+import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.nbcamp_14_project.R
@@ -24,10 +27,12 @@ class CategoryFragment : Fragment() {
     private val buttonStates = MutableList(8) { false }
     private val greenButtonTextList = mutableListOf<String>()
     private val binding get() = _binding!!
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View? {
+        loginViewModel.updateBooleanValue(true)
         // Inflate the layout for this fragment
         _binding = FragmentCategoryBinding.inflate(inflater, container, false)
         return binding.root
@@ -98,5 +103,10 @@ class CategoryFragment : Fragment() {
         loginViewModel.secondCategory.value = greenButtonTextList.getOrNull(1) ?: ""
         loginViewModel.thirdCategory.value = greenButtonTextList.getOrNull(2) ?: ""
 
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        loginViewModel.updateBooleanValue(false)
     }
 }

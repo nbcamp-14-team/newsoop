@@ -62,7 +62,7 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_login"
-        android:layout_width="280dp"
+        android:layout_width="350dp"
         android:layout_height="56dp"
         android:layout_marginTop="28dp"
         android:backgroundTint="@color/signUpBtn"
@@ -76,7 +76,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.495"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_signup" />
+        app:layout_constraintTop_toBottomOf="@+id/et_password" />
 
     <LinearLayout
         android:id="@+id/linearLayout"
@@ -87,7 +87,7 @@
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btn_login">
+        app:layout_constraintTop_toBottomOf="@+id/tv_fix_pw">
 
         <View
             android:layout_width="150dp"
@@ -124,7 +124,7 @@
         app:layout_constraintEnd_toStartOf="@+id/tv_signup"
         app:layout_constraintHorizontal_bias="0.105"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/et_password" />
+        app:layout_constraintTop_toBottomOf="@+id/btn_login" />
 
     <TextView
         android:id="@+id/tv_signup"
@@ -146,7 +146,7 @@
         android:id="@+id/iv_google_login"
         android:layout_width="280dp"
         android:layout_height="54dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="18dp"
         android:src="@drawable/ic_google"
         android:scaleType="fitXY"
         app:layout_constraintEnd_toEndOf="parent"

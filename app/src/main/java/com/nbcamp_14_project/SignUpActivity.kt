@@ -7,14 +7,13 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.view.View
-import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
-import androidx.databinding.adapters.TextViewBindingAdapter.setTextWatcher
+import androidx.lifecycle.Observer
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.nbcamp_14_project.data.model.User
@@ -48,6 +47,15 @@ class SignUpActivity : AppCompatActivity() {
         binding.tvChooseCategory.setOnClickListener {
             showCategory()
         }
+
+        loginViewModel.isCategoryBooleanValue.observe(this, Observer { isTrue ->
+            // 불린 값이 변경될 때 수행할 동작을 여기에 추가
+            if (isTrue) {
+                binding.viewEmpty.visibility = View.VISIBLE
+            } else {
+                binding.viewEmpty.visibility = View.INVISIBLE
+            }
+        })
     }
 
     private fun passSignUp() {
@@ -94,7 +102,6 @@ class SignUpActivity : AppCompatActivity() {
                 }
             }
     }
-
     private fun showCategory() {
         val detailFragment = CategoryFragment()
         val transaction = supportFragmentManager.beginTransaction()

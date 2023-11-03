@@ -62,13 +62,14 @@
             app:layout_constraintTop_toBottomOf="@+id/textView" />
 
         <EditText
-            android:id="@+id/editText"
+            android:id="@+id/et_email"
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:layout_marginStart="30dp"
             android:layout_marginTop="24dp"
             android:layout_marginEnd="30dp"
             android:hint="가입하신 이메일 주소를 입력해주세요"
+            android:inputType="textEmailAddress"
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
@@ -76,20 +77,21 @@
             app:layout_constraintTop_toBottomOf="@+id/textView3" />
 
         <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_fix_complete"
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:layout_marginStart="30dp"
             android:layout_marginEnd="30dp"
             android:layout_marginTop="24dp"
             app:cornerRadius="10dp"
-            android:backgroundTint="@color/signUpBtn"
+            android:backgroundTint="@color/lightGray"
             android:letterSpacing="0.1"
             android:paddingVertical="10dp"
             android:textColor="@color/white"
             android:text="확인"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/editText" />
+            app:layout_constraintTop_toBottomOf="@+id/et_email" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

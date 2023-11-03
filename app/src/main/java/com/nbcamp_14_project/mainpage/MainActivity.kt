@@ -65,13 +65,13 @@ class MainActivity : AppCompatActivity() {
             }
             viewpager.offscreenPageLimit = viewPagerAdapter.itemCount//생명주기 관련 코드
             //TabLayout 연동
-            val tabTitle = listOf("홈", "검색", "북마크","신문사별","토론방")
+            val tabTitle = listOf("홈", "검색","토론방" ,"신문사별","즐겨찾기")
             val tabIcons = listOf<Int>(
                 R.drawable.ic_home,
                 R.drawable.ic_search,
-                R.drawable.ic_like,
+                R.drawable.ic_debate,
                 R.drawable.ic_news,
-                R.drawable.ic_debate
+                R.drawable.ic_like,
             )
 //            val selectedTabIcons = listOf<Int>(
 //                R.drawable.ic_selected_home,

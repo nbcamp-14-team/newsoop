@@ -1,5 +1,6 @@
 package com.nbcamp_14_project.favorite
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -8,9 +9,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
@@ -18,13 +22,20 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.ktx.Firebase
 import com.nbcamp_14_project.R
+import com.nbcamp_14_project.data.model.User
 import com.nbcamp_14_project.databinding.FragmentFavoriteBinding
 import com.nbcamp_14_project.detail.DetailInfo
 import com.nbcamp_14_project.detail.DetailViewModel
+import com.nbcamp_14_project.home.HomeViewPagerViewModel
+import com.nbcamp_14_project.home.HomeViewPagerViewModelFactory
 import com.nbcamp_14_project.mainpage.MainActivity
 import com.nbcamp_14_project.setting.SettingActivity
+import com.nbcamp_14_project.ui.login.CategoryFragment
 import com.nbcamp_14_project.ui.login.LoginActivity
 import com.nbcamp_14_project.ui.login.LoginViewModel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 class FavoriteFragment : Fragment() {
     companion object {
@@ -37,6 +48,7 @@ class FavoriteFragment : Fragment() {
     private val viewModel: FavoriteViewModel by activityViewModels()
     private val detailViewModel: DetailViewModel by activityViewModels()
     private val loginViewModel: LoginViewModel by activityViewModels()
+    private val homeViewPagerViewModel: HomeViewPagerViewModel by activityViewModels()
     private val firestore = FirebaseFirestore.getInstance()
     private var isLogin = false
     private var auth = FirebaseAuth.getInstance()
@@ -48,6 +60,14 @@ class FavoriteFragment : Fragment() {
     ): View {
         _binding = FragmentFavoriteBinding.inflate(inflater, container, false)
         return binding.root
+    }
+    private val checkLoginLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){ result ->
+        if(result.resultCode == Activity.RESULT_OK){
+            val checkLogin = result.data?.getStringExtra(LoginActivity.CHECK_LOGIN)
+            if(checkLogin == "Login"){
+                homeViewPagerViewModel.addListAtFirst("추천","추천")
+            }
+        }
     }
 
     override fun onResume() {
@@ -73,6 +93,7 @@ class FavoriteFragment : Fragment() {
                 textview2.visibility = View.VISIBLE
 
                 viewModel.setFavoriteList(emptyList())
+                homeViewPagerViewModel.removeListAtFirst()
             }
         }
 
@@ -146,6 +167,34 @@ class FavoriteFragment : Fragment() {
             val intent = Intent(requireContext(), SettingActivity::class.java)
             startActivity(intent)
         }
+
+
+        binding.ivFixCategory.setOnClickListener {
+            showCategory()
+            //주변 그림자
+            loginViewModel.isCategoryBooleanValue.observe(requireActivity(), Observer { isTrue ->
+                // 불린 값이 변경될 때 수행할 동작을 여기에 추가
+                if (isTrue) {
+                    binding.viewEmpty.visibility = View.VISIBLE
+                } else {
+                    binding.viewEmpty.visibility = View.INVISIBLE
+                }
+                updateCategory()
+            })
+            if (binding.viewEmpty.visibility == View.INVISIBLE){
+                updateCategory()
+            }
+        }
+    }
+
+    //카테고리 보여주기
+    private fun showCategory() {
+        val detailFragment = CategoryFragment()
+        val transaction = requireActivity().supportFragmentManager.beginTransaction()
+        transaction.replace(R.id.frag_category, detailFragment)
+        transaction.setReorderingAllowed(true)
+        transaction.addToBackStack(null)
+        transaction.commit()
     }
 
     // Firebase에서 즐겨찾기 목록을 가져오는 함수
@@ -192,6 +241,26 @@ class FavoriteFragment : Fragment() {
     // 로그인 화면으로 이동하는 함수
     fun openLoginActivity(view: View) {
         val intent = Intent(requireContext(), LoginActivity::class.java)
-        startActivity(intent)
+        checkLoginLauncher.launch(intent)
     }
+
+    fun updateCategory() {
+        val curUser = auth.currentUser
+        val user = User()
+        val fbUser = firestore.collection("User").document(curUser?.uid!!)
+        val updateData = hashMapOf(
+            "category" to loginViewModel.category.value,
+            "secondCategory" to loginViewModel.secondCategory.value,
+            "thirdCategory" to loginViewModel.thirdCategory.value
+        )
+        Log.d("userContent", "${loginViewModel.category.value}")
+        fbUser.update(updateData as Map<String, Any>).addOnSuccessListener {
+            Log.d("updatingData", "success")
+        }.addOnFailureListener { e ->
+            // 업데이트 실패 시
+        }
+
+
+    }
+
 }

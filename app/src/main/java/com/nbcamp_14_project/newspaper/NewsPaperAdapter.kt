@@ -38,19 +38,19 @@ class NewsPaperAdapter(
         val item = getItem(position)
         holder.bind(item)
     }
+
     class ViewHolder(
         private val binding: ItemRvNewspaperBinding,
         private val onClick: (String) -> Unit
     ) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(item:NewspaperModel) =with(binding){
+        fun bind(item: NewspaperModel) = with(binding) {
             imgThumbnail.load(item.thumbnail!!)
-            imgThumbnail.setOnClickListener{
-                Log.d("link","${item.link}")
+            imgThumbnail.setOnClickListener {
+                Log.d("link", "${item.link}")
                 onClick(
                     item.link!!
                 )
             }
         }
     }
-
 }

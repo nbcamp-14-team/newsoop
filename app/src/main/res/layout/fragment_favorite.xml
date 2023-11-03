@@ -126,6 +126,16 @@
             app:layout_constraintStart_toEndOf="@id/img_profile"
             app:layout_constraintTop_toBottomOf="@id/tv_nick" />
 
+        <ImageView
+            android:id="@+id/iv_fix_category"
+            android:layout_width="26dp"
+            android:layout_height="26dp"
+android:scaleType="centerCrop"
+            android:src="@drawable/ic_change"
+            app:layout_constraintStart_toEndOf="@+id/tv_category"
+            app:layout_constraintEnd_toEndOf="@id/profile_box"
+            app:layout_constraintBottom_toBottomOf="@id/tv_category"
+            app:layout_constraintHorizontal_bias="0.8"/>
 
         <TextView
             android:id="@+id/btn_fav_news"
@@ -168,6 +178,27 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/profile_box" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <View
+        android:id="@+id/view_empty"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:visibility="invisible"
+        android:background="@color/categoryBackBlur"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/frag_category"/>
+
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/frag_category"
+        android:layout_width="match_parent"
+        android:layout_height="480dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
         android:id="@+id/fallow_text"

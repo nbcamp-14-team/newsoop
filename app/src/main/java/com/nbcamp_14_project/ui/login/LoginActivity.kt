@@ -1,5 +1,6 @@
 package com.nbcamp_14_project.ui.login
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -8,6 +9,7 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.appcompat.app.AppCompatActivity
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import androidx.fragment.app.activityViewModels
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -23,6 +25,7 @@ import com.nbcamp_14_project.databinding.ActivityLoginBinding
 import com.nbcamp_14_project.R
 import com.nbcamp_14_project.SignUpActivity
 import com.nbcamp_14_project.data.model.User
+import com.nbcamp_14_project.home.HomeViewPagerViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -33,12 +36,16 @@ import kotlin.coroutines.CoroutineContext
 
 
 class LoginActivity : AppCompatActivity() {
+    companion object{
+        const val CHECK_LOGIN = "Login"
+    }
     private lateinit var getResult: ActivityResultLauncher<Intent>
     private val loginViewModel: LoginViewModel by viewModels()
     private lateinit var binding: ActivityLoginBinding
     private lateinit var googleSignInClient: GoogleSignInClient
     private lateinit var auth: FirebaseAuth
     private lateinit var fbFireStore: FirebaseFirestore
+    private val homeViewPagerViewModel: HomeViewPagerViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -64,9 +71,16 @@ class LoginActivity : AppCompatActivity() {
                     Toast.makeText(this, "로그인 성공", Toast.LENGTH_SHORT)
                         .show()
 //                        CategoryDialog(this).show()
+                    val intent = Intent().apply{
+                        putExtra(
+                            CHECK_LOGIN,
+                            "Login"
+                        )
+                    }//로그인 검사 기능 추가구현
 
                     GlobalScope.launch(Dispatchers.IO) {
                         delay(1000) // 1000 milliseconds = 1 second
+                        setResult(Activity.RESULT_OK,intent)//로그인 검사 기능 추가구현
                         finish()
                     }
 
@@ -143,6 +157,13 @@ class LoginActivity : AppCompatActivity() {
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
                     Toast.makeText(this, "환영합니다", Toast.LENGTH_SHORT).show()
+                    val intent = Intent().apply{
+                        putExtra(
+                            CHECK_LOGIN,
+                            "Login"
+                        )
+                    }
+                    setResult(Activity.RESULT_OK,intent)//로그인 검사 기능 추가구현
                     finish()
                 } else {
                     if (!pattern) {
