@@ -27,6 +27,7 @@ import com.nbcamp_14_project.detail.DetailViewModel
 import com.nbcamp_14_project.home.HomeViewPagerViewModel
 import com.nbcamp_14_project.home.HomeViewPagerViewModelFactory
 import com.nbcamp_14_project.mainpage.MainActivity
+import com.nbcamp_14_project.setting.SettingActivity
 import com.nbcamp_14_project.ui.login.LoginActivity
 import com.nbcamp_14_project.ui.login.LoginViewModel
 
@@ -50,7 +51,7 @@ class FavoriteFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?,
-    ): View? {
+    ): View {
         _binding = FragmentFavoriteBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -97,7 +98,8 @@ class FavoriteFragment : Fragment() {
             logoutButton.visibility = View.VISIBLE
             binding.textView2.visibility = View.GONE
 
-            val collectionRef = firestore.collection("User").document(FirebaseAuth.getInstance().currentUser?.uid ?: return)
+            val collectionRef = firestore.collection("User")
+                .document(FirebaseAuth.getInstance().currentUser?.uid ?: return)
             collectionRef.get().addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     val document = task.result
@@ -135,8 +137,9 @@ class FavoriteFragment : Fragment() {
             mainActivity.runDetailFragment()
         }
 
-        // RecyclerView 설정
-        binding.favoriteList.layoutManager = LinearLayoutManager(context)
+        // TODO : RecyclerView 설정 - 가로 방향
+        binding.favoriteList.layoutManager =
+            LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         binding.favoriteList.adapter = adapter
 
         // 즐겨찾기 목록 갱신
@@ -146,6 +149,12 @@ class FavoriteFragment : Fragment() {
 
         binding.tvLogin.setOnClickListener {
             openLoginActivity(view)
+        }
+
+        //setting 페이지로 이동
+        binding.settingBtn.setOnClickListener {
+            val intent = Intent(requireContext(), SettingActivity::class.java)
+            startActivity(intent)
         }
     }
 
@@ -170,7 +179,15 @@ class FavoriteFragment : Fragment() {
 
                     if (title != null && description != null && originalLink != null && pubDate != null) {
                         val detailInfo =
-                            DetailInfo(title, description, thumbnail, author, originalLink, pubDate, isLike = true)
+                            DetailInfo(
+                                title,
+                                description,
+                                thumbnail,
+                                author,
+                                originalLink,
+                                pubDate,
+                                isLike = true
+                            )
                         favoriteList.add(detailInfo)
                     }
                 }
