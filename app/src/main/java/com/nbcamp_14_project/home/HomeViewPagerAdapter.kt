@@ -20,6 +20,7 @@ class HomeViewPagerAdapter(fragmentActivity: FragmentActivity):FragmentStateAdap
     override fun createFragment(position: Int): Fragment {
         return list[position].fragment
     }
+
     fun setData(data: List<HomeFragmentTabs>){
         list = data.toMutableList()
         notifyDataSetChanged()
