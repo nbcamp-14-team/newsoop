@@ -1,5 +1,6 @@
 package com.nbcamp_14_project.ui.login
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -35,6 +36,9 @@ import kotlin.coroutines.CoroutineContext
 
 
 class LoginActivity : AppCompatActivity() {
+    companion object{
+        const val CHECK_LOGIN = "Login"
+    }
     private lateinit var getResult: ActivityResultLauncher<Intent>
     private val loginViewModel: LoginViewModel by viewModels()
     private lateinit var binding: ActivityLoginBinding
@@ -67,9 +71,16 @@ class LoginActivity : AppCompatActivity() {
                     Toast.makeText(this, "로그인 성공", Toast.LENGTH_SHORT)
                         .show()
 //                        CategoryDialog(this).show()
+                    val intent = Intent().apply{
+                        putExtra(
+                            CHECK_LOGIN,
+                            "Login"
+                        )
+                    }//로그인 검사 기능 추가구현
 
                     GlobalScope.launch(Dispatchers.IO) {
                         delay(1000) // 1000 milliseconds = 1 second
+                        setResult(Activity.RESULT_OK,intent)//로그인 검사 기능 추가구현
                         finish()
                     }
 
@@ -146,6 +157,13 @@ class LoginActivity : AppCompatActivity() {
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
                     Toast.makeText(this, "환영합니다", Toast.LENGTH_SHORT).show()
+                    val intent = Intent().apply{
+                        putExtra(
+                            CHECK_LOGIN,
+                            "Login"
+                        )
+                    }
+                    setResult(Activity.RESULT_OK,intent)//로그인 검사 기능 추가구현
                     finish()
                 } else {
                     if (!pattern) {
