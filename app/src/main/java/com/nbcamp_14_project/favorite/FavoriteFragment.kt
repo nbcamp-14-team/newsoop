@@ -1,5 +1,6 @@
 package com.nbcamp_14_project.favorite
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -8,9 +9,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.auth.FirebaseAuth
@@ -23,6 +26,8 @@ import com.nbcamp_14_project.data.model.User
 import com.nbcamp_14_project.databinding.FragmentFavoriteBinding
 import com.nbcamp_14_project.detail.DetailInfo
 import com.nbcamp_14_project.detail.DetailViewModel
+import com.nbcamp_14_project.home.HomeViewPagerViewModel
+import com.nbcamp_14_project.home.HomeViewPagerViewModelFactory
 import com.nbcamp_14_project.mainpage.MainActivity
 import com.nbcamp_14_project.setting.SettingActivity
 import com.nbcamp_14_project.ui.login.CategoryFragment
@@ -43,6 +48,7 @@ class FavoriteFragment : Fragment() {
     private val viewModel: FavoriteViewModel by activityViewModels()
     private val detailViewModel: DetailViewModel by activityViewModels()
     private val loginViewModel: LoginViewModel by activityViewModels()
+    private val homeViewPagerViewModel: HomeViewPagerViewModel by activityViewModels()
     private val firestore = FirebaseFirestore.getInstance()
     private var isLogin = false
     private var auth = FirebaseAuth.getInstance()
@@ -54,6 +60,14 @@ class FavoriteFragment : Fragment() {
     ): View {
         _binding = FragmentFavoriteBinding.inflate(inflater, container, false)
         return binding.root
+    }
+    private val checkLoginLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){ result ->
+        if(result.resultCode == Activity.RESULT_OK){
+            val checkLogin = result.data?.getStringExtra(LoginActivity.CHECK_LOGIN)
+            if(checkLogin == "Login"){
+                homeViewPagerViewModel.addListAtFirst("추천","추천")
+            }
+        }
     }
 
     override fun onResume() {
@@ -79,6 +93,7 @@ class FavoriteFragment : Fragment() {
                 textview2.visibility = View.VISIBLE
 
                 viewModel.setFavoriteList(emptyList())
+                homeViewPagerViewModel.removeListAtFirst()
             }
         }
 
@@ -161,11 +176,10 @@ class FavoriteFragment : Fragment() {
                 }
                 updateCategory()
             })
+            if (binding.viewEmpty.visibility == View.INVISIBLE){
+                updateCategory()
+            }
         }
-        if (binding.viewEmpty.visibility == View.INVISIBLE){
-            updateCategory()
-        }
-
     }
 
     //카테고리 보여주기
@@ -222,7 +236,7 @@ class FavoriteFragment : Fragment() {
     // 로그인 화면으로 이동하는 함수
     fun openLoginActivity(view: View) {
         val intent = Intent(requireContext(), LoginActivity::class.java)
-        startActivity(intent)
+        checkLoginLauncher.launch(intent)
     }
 
     fun updateCategory() {

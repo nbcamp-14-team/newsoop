@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="160dp"
+    android:layout_height="140dp"
     android:padding="10dp"
     android:layout_margin="10dp"
     android:background="@drawable/iv_home"
@@ -9,8 +9,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <androidx.cardview.widget.CardView
         android:id="@+id/cv_thumbnail"
-        android:layout_width="140dp"
-        android:layout_height="140dp"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
         app:cardCornerRadius="20dp"
         android:elevation="0dp"
         app:layout_constraintStart_toStartOf="parent"
@@ -18,8 +18,8 @@
 
         <ImageView
             android:id="@+id/iv_thumbnail"
-            android:layout_width="140dp"
-            android:layout_height="140dp"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
             android:scaleType="centerCrop" />
     </androidx.cardview.widget.CardView>
 
