@@ -13,6 +13,7 @@ class LoginViewModel: ViewModel() {
     var secondCategory = MutableLiveData<String>()
     var thirdCategory = MutableLiveData<String>()
     private val _isCategoryBooleanValue = MutableLiveData<Boolean>()
+
     val isCategoryBooleanValue: LiveData<Boolean>
         get() = _isCategoryBooleanValue
 
@@ -27,6 +28,8 @@ class LoginViewModel: ViewModel() {
         loginRepository.getCurrentUser(idToken)
         
     }
+
+
 
     fun signOut(){
         loginRepository.signOut()
