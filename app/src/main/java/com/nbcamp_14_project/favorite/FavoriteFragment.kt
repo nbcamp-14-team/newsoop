@@ -103,6 +103,8 @@ class FavoriteFragment : Fragment() {
             profileBox.visibility = View.VISIBLE
             logoutButton.visibility = View.VISIBLE
             binding.textView2.visibility = View.GONE
+            binding.fallowText.visibility = View.VISIBLE
+            binding.favoriteFallowList.visibility = View.VISIBLE
 
             val collectionRef = firestore.collection("User")
                 .document(FirebaseAuth.getInstance().currentUser?.uid ?: return)
@@ -115,7 +117,8 @@ class FavoriteFragment : Fragment() {
                         val secondcategory = document.getString("secondCategory")
                         val thirdcategory = document.getString("thirdCategory")
                         binding.tvNick.text = "이름 : $nameField"
-                        binding.tvCategory.text = "카테고리 : $category, $secondcategory, $thirdcategory"
+                        binding.tvCategory.text =
+                            "카테고리 : $category, $secondcategory, $thirdcategory"
                     } else {
                         Log.d("data", "no data")
                     }
@@ -129,6 +132,8 @@ class FavoriteFragment : Fragment() {
             profileBox.visibility = View.INVISIBLE
             logoutButton.visibility = View.INVISIBLE
             binding.textView2.visibility = View.VISIBLE
+            binding.fallowText.visibility = View.INVISIBLE
+            binding.favoriteFallowList.visibility = View.INVISIBLE
         }
     }
 
