@@ -24,8 +24,12 @@ import kotlinx.coroutines.delay
 
 class HomeFragment(query: String) : Fragment() {
     companion object {
+        private var firstCategory: String? = null
+        private var secondCategory: String? = null
+        private var thirdCategory: String? = null
         fun newInstance(query: String) = HomeFragment(query)
     }
+
 
     private var queryInbox = query //검색어 변수
     var isLoading = false
@@ -60,7 +64,7 @@ class HomeFragment(query: String) : Fragment() {
     }
     private val viewPagerViewModel: HomeViewModel by lazy {
         ViewModelProvider(
-            this, HomeModelFactory()
+            requireActivity(), HomeModelFactory()
         )[HomeViewModel::class.java]
     }
     private var startingNum: Int = 6// 인피니티스크롤 시작지점 지정 변수
@@ -78,62 +82,7 @@ class HomeFragment(query: String) : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         initView()//화면 설정 함수
         initViewModel()//뷰모델 설정 함수
-
-        if (queryInbox == "추천") { //추천 프래그먼트일 시 ,
-            var firstCategory: String? = null
-            var secondCategory: String? = null
-            var thirdCategory: String? = null
-            /**
-             * 파이어베이스에서 카테고리 가져오기
-             */
-            val collectionRef = fireStore.collection("User")
-                .document(FirebaseAuth.getInstance().currentUser?.uid ?: return)
-            collectionRef.get().addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    val document = task.result
-                    if (document.exists()) {
-                        Log.d("testCategory","${document.getString("category")}")
-                        firstCategory = document.getString("category")
-                        secondCategory = document.getString("secondCategory")
-                        thirdCategory = document.getString("thirdCategory")
-                        Log.d("firstCategory","$firstCategory")
-                        Log.d("secondCategory","$secondCategory")
-                        Log.d("thirdCategory","$thirdCategory")
-
-
-                        if(secondCategory == null){
-                            viewPagerViewModel.headLineNews(firstCategory?:"생활", 5)
-                            viewPagerViewModel.detailNews(firstCategory?:"생활",1,5)
-                        }else if(thirdCategory == ""){
-                            Log.d("isWork?","")
-                            viewPagerViewModel.headLineNews(firstCategory?:"생활", 3)
-                            viewPagerViewModel.detailRecommendNews(firstCategory?:"생활",1,3)
-                            viewPagerViewModel.headLineNews(secondCategory?:"생활",2)
-                            viewPagerViewModel.detailNews(secondCategory?:"생활",2)
-                        }else{
-                            viewPagerViewModel.headLineNews(firstCategory?:"생활",2)
-                            viewPagerViewModel.detailRecommendNews(firstCategory?:"생활",1,2)
-                            viewPagerViewModel.headLineNews(secondCategory?:"생활",2)
-                            viewPagerViewModel.detailRecommendNews(secondCategory?:"생활",1,2)
-                            viewPagerViewModel.headLineNews(thirdCategory?:"생활",1)
-                            viewPagerViewModel.detailNews(secondCategory?:"생활",2)
-                        }
-
-                    } else {
-                        Log.d("data", "no data")
-                    }
-                }
-                /**
-                 * 카테고리 널세이프 적용
-                 */
-            }
-
-        } else {
-            Log.d("query", "$queryInbox")
-
-            viewPagerViewModel.headLineNews(queryInbox)//메인 ViewPager에 헤드라인 뉴스 출력
-            viewPagerViewModel.detailNews(queryInbox, 1)//하단 리사이클러뷰에 뉴스 출력
-        }
+        recommendTab(queryInbox)
 
 
     }
@@ -211,10 +160,71 @@ class HomeFragment(query: String) : Fragment() {
     private fun infinityAddNews(query: String?) {
         if(queryInbox == "추천"){
 
+            viewPagerViewModel.detailNewsInfinityToRecommend(firstCategory, secondCategory,
+                thirdCategory,startingNum)
+            viewPagerViewModel.isLoading = false
+            startingNum += 4
         }else{
             viewPagerViewModel.detailNewsInfinity(query!!, startingNum)
-            startingNum += 6
+
             viewPagerViewModel.isLoading = false
+            startingNum += 4
+        }
+
+    }
+    private fun recommendTab(query: String?){
+
+        if (query == "추천") { //추천 프래그먼트일 시 ,
+
+            /**
+             * 파이어베이스에서 카테고리 가져오기
+             */
+            val collectionRef = fireStore.collection("User")
+                .document(FirebaseAuth.getInstance().currentUser?.uid ?: return)
+            collectionRef.get().addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    val document = task.result
+                    if (document.exists()) {
+                        Log.d("testCategory","${document.getString("category")}")
+                        firstCategory = document.getString("category")
+                        secondCategory = document.getString("secondCategory")
+                        thirdCategory = document.getString("thirdCategory")
+
+                        if(secondCategory.isNullOrBlank()){
+                            secondCategory = null
+                            viewPagerViewModel.headLineNews(firstCategory?:"생활", 5)
+                            viewPagerViewModel.detailNews(firstCategory?:"생활",1,5)
+                        }else if(thirdCategory.isNullOrBlank()){
+                            thirdCategory = null
+                            Log.d("isWork?","")
+                            viewPagerViewModel.headLineNews(firstCategory?:"생활", 3)
+                            viewPagerViewModel.detailRecommendNews(firstCategory?:"생활",1,3)
+                            viewPagerViewModel.headLineNews(secondCategory?:"생활",2)
+                            viewPagerViewModel.detailNews(secondCategory?:"생활",2)
+                        }else{
+                            viewPagerViewModel.headLineNews(firstCategory?:"생활",2)
+                            viewPagerViewModel.detailRecommendNews(firstCategory?:"생활",1,2)
+                            viewPagerViewModel.headLineNews(secondCategory?:"생활",2)
+                            viewPagerViewModel.detailRecommendNews(secondCategory?:"생활",1,2)
+                            viewPagerViewModel.headLineNews(thirdCategory?:"생활",1)
+                            viewPagerViewModel.detailNews(secondCategory?:"생활",2)
+                        }
+
+                    } else {
+                        Log.d("data", "no data")
+                    }
+                }else{
+                    firstCategory = null
+                    viewPagerViewModel.headLineNews("생활")//메인 ViewPager에 헤드라인 뉴스 출력
+                    viewPagerViewModel.detailNews("생활", 1)//하단 리사이클러뷰에 뉴스 출력
+
+                }
+
+            }
+
+        }else{
+            viewPagerViewModel.headLineNews(query!!)
+            viewPagerViewModel.detailNews(query!!)
         }
 
     }

@@ -9,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import com.nbcamp_14_project.domain.GetSearchNewsUseCase
 import com.nbcamp_14_project.Utils
 import com.nbcamp_14_project.api.RetrofitInstance
+import com.nbcamp_14_project.detail.DetailInfo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -159,8 +160,6 @@ class HomeViewModel(
     fun detailNewsInfinity(query: String/** 검색어 */, startingNum: Int? = null/** 토큰 */) {
         viewModelScope.launch {
 
-
-            val homeFragment = HomeFragment.newInstance(query)
             val docs = searchNews(query, 10, startingNum, sort = "sim")
             val item = docs.items ?: return@launch
             var currentList = repository.getNewsList()
@@ -199,6 +198,113 @@ class HomeViewModel(
                 )
             )
             _newsList.value = currentList
+            isLoading = true
+            Log.d("LoadingViewModel","$isLoading")
+        }
+
+    }
+    fun detailNewsInfinityToRecommend(firstCategory: String?,secondCategory:String?,thirdCategory:String?, startingNum: Int? = null/** 토큰 */) {
+        viewModelScope.launch {
+            val docs = searchNews(firstCategory?:"생활", 3, startingNum, sort = "sim")
+            val item = docs.items ?: return@launch
+            var currentList = repository.getNewsList()
+            currentList = repository.removeLastNewsItem()
+            for (i in item.indices) {//아이템 개수만큼 for문 실행
+                val thumbnail = getThumbnail(item[i].link.toString())
+                var title = item[i].title!!.replace("<b>", "")
+                title = title.replace("</b>", "")
+                title = title.replace("&quot;", "\"")
+                title = title.replace("&amp;", "&")
+                var description = item[i].description?.replace("<b>", "")
+                description = description?.replace("</b>", "")
+                description = description?.replace("&quot;", "\"")
+                val link = item[i].link
+                val pubDate = item[i].pubDate
+                var date = Date(pubDate)
+                Log.d("date", "$date")
+                val author = getAuthor(item[i].link.toString())
+                Log.d("linkRecycler", "$link + $author")
+                currentList = repository.addNewsItem(
+                    HomeModel(
+                        title = title,
+                        thumbnail = thumbnail,
+                        description = description,
+                        link = link,
+                        pubDate = date,
+                        author = author,
+                        viewType = VIEW_TYPE_ITEM
+                    )
+                )
+
+            }
+            val secondDocs = searchNews(secondCategory?:"생활", 3, startingNum, sort = "sim")
+            val secondItem = secondDocs.items ?: return@launch
+            for (i in secondItem.indices) {//아이템 개수만큼 for문 실행
+                val thumbnail = getThumbnail(secondItem[i].link.toString())
+                var title = secondItem[i].title!!.replace("<b>", "")
+                title = title.replace("</b>", "")
+                title = title.replace("&quot;", "\"")
+                title = title.replace("&amp;", "&")
+                var description = secondItem[i].description?.replace("<b>", "")
+                description = description?.replace("</b>", "")
+                description = description?.replace("&quot;", "\"")
+                val link = secondItem[i].link
+                val pubDate = secondItem[i].pubDate
+                var date = Date(pubDate)
+                Log.d("date", "$date")
+                val author = getAuthor(secondItem[i].link.toString())
+                Log.d("linkRecycler", "$link + $author")
+                currentList = repository.addNewsItem(
+                    HomeModel(
+                        title = title,
+                        thumbnail = thumbnail,
+                        description = description,
+                        link = link,
+                        pubDate = date,
+                        author = author,
+                        viewType = VIEW_TYPE_ITEM
+                    )
+                )
+
+            }
+            val thirdDocs = searchNews(thirdCategory?:"생활", 3, startingNum, sort = "sim")
+            val thirdItem = thirdDocs.items ?: return@launch
+            for (i in thirdItem.indices) {//아이템 개수만큼 for문 실행
+                val thumbnail = getThumbnail(thirdItem[i].link.toString())
+                var title = thirdItem[i].title!!.replace("<b>", "")
+                title = title.replace("</b>", "")
+                title = title.replace("&quot;", "\"")
+                title = title.replace("&amp;", "&")
+                var description = thirdItem[i].description?.replace("<b>", "")
+                description = description?.replace("</b>", "")
+                description = description?.replace("&quot;", "\"")
+                val link = thirdItem[i].link
+                val pubDate = thirdItem[i].pubDate
+                var date = Date(pubDate)
+                Log.d("date", "$date")
+                val author = getAuthor(thirdItem[i].link.toString())
+                Log.d("linkRecycler", "$link + $author")
+                currentList = repository.addNewsItem(
+                    HomeModel(
+                        title = title,
+                        thumbnail = thumbnail,
+                        description = description,
+                        link = link,
+                        pubDate = date,
+                        author = author,
+                        viewType = VIEW_TYPE_ITEM
+                    )
+                )
+
+            }
+            currentList = repository.addNewsItem(
+                HomeModel(
+                    viewType = VIEW_TYPE_LOADING
+                )
+            )
+            _newsList.value = currentList
+
+
             isLoading = true
             Log.d("LoadingViewModel","$isLoading")
         }
@@ -405,6 +511,7 @@ class HomeViewModel(
         _newsList.value = repository.clearNewsItems()
     }
 
+
     fun addHeadLineItem(item: HomeModel?) {//라이브데이터에 아이템 추가하는 기능
         _list.value = repository.addHeadLineItem(item)
 
@@ -429,6 +536,9 @@ class HomeViewModel(
 
     fun modifyItem(item: HomeModel?) {
         _newsList.value = repository.modifyNewsItem(item)
+    }
+    fun modifyNewsItemIsLikeToLink(item: HomeModel?){
+        _list.value = repository.modifyNewsItemIsLikeToLink(item)
     }
 }
 
