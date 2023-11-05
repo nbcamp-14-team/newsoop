@@ -13,24 +13,29 @@
         android:id="@+id/tv_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Q. 인간의 본성은 악하다."
-        android:layout_marginTop="50dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        android:text="@string/q"
+        android:textSize="30dp"
+        android:textColor="@color/black"
         android:textStyle="bold"
-        android:textSize="25dp"
+        android:layout_marginTop="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/iv_logo" />
 
     <TextView
         android:id="@+id/tv_thisagree"
-        android:layout_width="wrap_content"
+        android:layout_width="60dp"
         android:layout_height="wrap_content"
-        android:text="찬성"
-        android:textSize="25dp"
-        android:layout_marginStart="30dp"
+        android:text=" 찬성"
+        android:textSize="20dp"
+        android:layout_marginStart="20dp"
         android:textStyle="bold"
         android:textColor="#011ABC"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="16dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_title" />
 
@@ -38,47 +43,44 @@
         android:id="@+id/tv_vs"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="80dp"
         android:text="VS"
-        android:textSize="25dp"
-        android:textStyle="bold"
         android:textColor="@color/black"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="30dp"
+        android:textSize="30dp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="@+id/swipe_refresh_layout"
         app:layout_constraintHorizontal_bias="0.501"
-        app:layout_constraintStart_toStartOf="@+id/tv_thisagree"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_title" />
 
     <TextView
         android:id="@+id/tv_thisopposite"
-        android:layout_width="wrap_content"
+        android:layout_width="60dp"
         android:layout_height="wrap_content"
-        android:text="반대"
-        android:textSize="25dp"
+        android:text="   반대"
+        android:textSize="20dp"
         android:textStyle="bold"
         android:textColor="#E91E63"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="30dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="20dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_title" />
 
     <ImageView
         android:id="@+id/ic_agree"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:src="@drawable/ic_agreex"
-        android:layout_marginTop="10dp"
-        android:layout_marginStart="22dp"
+        android:layout_marginStart="20dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_thisagree" />
 
     <ImageView
         android:id="@+id/ic_opposite"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:src="@drawable/ic_oppositex"
-        android:layout_marginEnd="22dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginEnd="20dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_thisopposite" />
 
@@ -87,29 +89,31 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="0"
-        android:textSize="20dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginStart="22dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ic_agree" />
+        android:textSize="40dp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/ic_agree"
+        app:layout_constraintEnd_toStartOf="@+id/tv_vs"
+        app:layout_constraintStart_toEndOf="@+id/ic_agree"
+        app:layout_constraintTop_toTopOf="@+id/ic_agree" />
 
     <TextView
         android:id="@+id/tv_opposite"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="0"
-        android:textSize="20dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="30dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ic_opposite" />
+        android:textSize="40dp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/ic_opposite"
+        app:layout_constraintEnd_toStartOf="@+id/ic_opposite"
+        app:layout_constraintStart_toEndOf="@+id/tv_vs"
+        app:layout_constraintTop_toBottomOf="@+id/tv_thisopposite" />
 
 
 
     <TextView
         android:id="@+id/tv_opinion"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="30dp"
         android:text="의견"
         android:textStyle="bold"
         android:textSize="25dp"
@@ -121,7 +125,7 @@
     <Spinner
         android:id="@+id/home_spinner"
         android:layout_width="100dp"
-        android:layout_height="wrap_content"
+        android:layout_height="30dp"
         android:background="@drawable/spinner_selector"
         android:layout_marginEnd="20dp"
         android:elevation="3dp"
@@ -133,7 +137,7 @@
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipe_refresh_layout"
         android:layout_width="match_parent"
-        android:layout_height="350dp"
+        android:layout_height="380dp"
         android:layout_marginTop="10dp"
         app:layout_constraintTop_toBottomOf="@+id/tv_opinion">
 
@@ -141,9 +145,9 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/debatedetail_list"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:layout_height="100dp"
             android:layout_marginTop="10dp"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:background="#EFEFEF"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_opinion" />
@@ -157,28 +161,39 @@
         android:layout_width="20dp"
         android:layout_height="20dp"
         android:src="@drawable/ic_back"
-        android:layout_marginStart="16dp"
-        app:layout_constraintBottom_toBottomOf="@+id/tv_title"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="20dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/tv_title" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/btn_comment"
         android:layout_width="150dp"
         android:layout_height="50dp"
-        android:backgroundTint="@color/white"
-        android:padding="0dp"
-        android:layout_marginBottom="20dp"
         android:layout_marginRight="20dp"
+        style="@style/Widget.Material3.Button.TextButton"
+        android:padding="0dp"
         android:text="댓글 추가하기"
         android:textColor="@color/black"
+        android:gravity="center"
         android:textSize="20dp"
         android:textStyle="bold"
-        app:cornerRadius="100dp"
+        app:cornerRadius="13dp"
+        app:strokeColor="@color/green"
+        app:strokeWidth="2dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:strokeColor="#BFE6C0"
-        app:strokeWidth="3dp" />
+        app:layout_constraintTop_toBottomOf="@+id/swipe_refresh_layout" />
+
+    <ImageView
+        android:id="@+id/iv_logo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_logo"
+        android:layout_marginTop="15dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/img_back"
+        app:layout_constraintTop_toTopOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
