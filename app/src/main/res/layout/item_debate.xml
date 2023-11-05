@@ -5,6 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="100dp"
     app:cardCornerRadius="8dp"
+    app:strokeColor="@color/strokeGray"
+    app:strokeWidth="1dp"
     android:layout_marginTop="10dp"
     app:cardBackgroundColor="@color/white"
     android:background="@drawable/iv_home"
@@ -19,9 +21,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:text="Q. 어린이들에게 잔소리를 해야 할까?"
+            android:paddingEnd="16dp"
+            android:text="Q. 어린이들에게 잔소리를 해야 할까?\n가가가가"
             android:textSize="20sp"
-            android:textStyle="bold"
             app:layout_constraintBottom_toTopOf="@id/tv_name"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -33,16 +35,17 @@
             android:layout_marginStart="16dp"
             android:text="작성자: 정현식"
             android:textSize="20sp"
-            android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_title" />
 
-        <com.google.android.material.button.MaterialButton
+        <Button
             android:id="@+id/btn_delete"
-            android:layout_width="80dp"
-            android:layout_height="45dp"
-            android:text="삭제"
+            style="?attr/materialIconButtonStyle"
+            android:layout_width="1dp"
+            android:layout_height="0dp"
+            android:layout_marginEnd="16dp"
+            app:icon="@drawable/ic_cancel_24"
             app:layout_constraintBottom_toBottomOf="@+id/tv_title"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/tv_title" />
