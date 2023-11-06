@@ -136,6 +136,7 @@ class FavoriteFragment : Fragment() {
             logoutButton.visibility = View.VISIBLE
             binding.textView2.visibility = View.GONE
 
+
             val collectionRef = firestore.collection("User")
                 .document(FirebaseAuth.getInstance().currentUser?.uid ?: return)
             collectionRef.get().addOnCompleteListener { task ->

@@ -77,12 +77,13 @@ class NewspaperDialog : AppCompatActivity() {
         // 페이지가 로딩이 끝나는 시점 콜백
         override fun onPageFinished(view: WebView?, url: String?) {
             super.onPageFinished(view, url)
-            binding.progressBar.visibility = View.GONE
+
         }
 
         // 페이지가 보여지는 시점 콜백
         override fun onPageCommitVisible(view: WebView?, url: String?) {
             super.onPageCommitVisible(view, url)
+            binding.progressBar.visibility = View.GONE
         }
     }
 
@@ -99,6 +100,8 @@ class NewspaperDialog : AppCompatActivity() {
             settings.databaseEnabled = true
             settings.loadsImagesAutomatically = true
             settings.domStorageEnabled = true // 로컬저장소를 허락
+            settings.allowFileAccess = true //파일 접근 허용
+            settings.defaultTextEncodingName = "UTF-8"//인코딩설정
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 settings.mixedContentMode =
                     WebSettings.MIXED_CONTENT_ALWAYS_ALLOW//https에서 http 컨텐츠가 호출 안되는 현상 수정코드
@@ -124,5 +127,7 @@ class NewspaperDialog : AppCompatActivity() {
             overridePendingTransition(R.anim.none, R.anim.slide_down)
         }
     }
+
+
 
 }

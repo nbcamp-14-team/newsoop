@@ -13,6 +13,8 @@ class HomeViewPagerViewModel(
 ): ViewModel() {
     private val _list: MutableLiveData<List<HomeFragmentTabs>> = MutableLiveData()
     val list: LiveData<List<HomeFragmentTabs>> get() = _list
+    private val _resumed: MutableLiveData<Boolean> =MutableLiveData()
+    val resumed get() = _resumed
 
     init{
         _list.value =repository.getList()
@@ -24,11 +26,15 @@ class HomeViewPagerViewModel(
     fun addListAtFirst(query:String,title:String){
         _list.value = repository.addListAtFront(query,title)
     }
+
+    fun refreshNews() {
+        _resumed.value = true
+    }
+
 }
 class HomeViewPagerViewModelFactory : ViewModelProvider.Factory {
 
-    private val repository = HomeViewPagerRepository(
-    )
+    private val repository = HomeViewPagerRepository()
 
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(HomeViewPagerViewModel::class.java)) {

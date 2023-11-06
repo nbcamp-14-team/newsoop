@@ -162,7 +162,10 @@ class MainFragmentRepositoryImpl(
     }
 
     override fun removeLastNewsItem(): List<HomeModel> {
-        newsList.removeAt(newsList.lastIndex)
+        if(newsList.isNotEmpty()){
+            newsList.removeAt(newsList.lastIndex)
+        }
+
         return ArrayList<HomeModel>(newsList)
     }
 
