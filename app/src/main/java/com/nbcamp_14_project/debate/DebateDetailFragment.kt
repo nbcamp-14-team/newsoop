@@ -193,9 +193,18 @@ class DebateDetailFragment : Fragment() {
         }
 
         val title = viewModel.title
+        val originalcontext = viewModel.originalcontext
+        val agreecontext = viewModel.agreecontext
+        val oppositecontext = viewModel.oppositecontext
+        val name = viewModel.name
+
 
         if (title != null) {
             binding.tvTitle.text = title
+            binding.tvContext.text = originalcontext
+            binding.tvAgreecontext.text = agreecontext
+            binding.tvOppositecontext.text = oppositecontext
+            binding.tvName.text = name
         }
 
         adapter = DebateDetailListAdapter(debatedetailList)
@@ -599,61 +608,7 @@ class DebateDetailFragment : Fragment() {
         }
 
         builder.setPositiveButton("확인") { _, _ ->
-//            val commentText = editTextComment.text.toString().trim()
-//            if (commentText.isEmpty()) {
-//                Toast.makeText(context, "댓글 내용을 입력해 주세요", Toast.LENGTH_SHORT).show()
-//            } else if (!isAgreeButtonClicked && !isOppositeButtonClicked) {
-//                Toast.makeText(context, "찬성 혹은 반대를 선택해 주세요", Toast.LENGTH_SHORT).show()
-//            } else {
-//                val user = auth.currentUser
-//                user?.let { currentUser ->
-//                    val userUID = currentUser.uid
-//                    val userUID2 = viewModel.userUID
-//                    val debateId = viewModel.debateId
-//                    val currentDate = Date()
-//                    val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-//                    val formattedDate = dateFormat.format(currentDate)
-//                    val commentType =
-//                        if (isAgreeButtonClicked) Comment.TYPE_AGREE else Comment.TYPE_OPPOSE
-//
-//                    if (debateId != null) {
-//                        val commentCollection = firestore.collection("User")
-//                            .document(userUID2.toString())
-//                            .collection("Debates")
-//                            .document(debateId)
-//                            .collection("Comments")
-//
-//                        // 사용자의 이름을 가져오는 부분 추가
-//                        val userDocRef = firestore.collection("User").document(userUID)
-//                        userDocRef.get()
-//                            .addOnSuccessListener { userDoc ->
-//                                if (userDoc.exists()) {
-//                                    val userName = userDoc.getString("name")
-//                                    val newComment = DebateDetailItem(
-//                                        commentType,
-//                                        text = commentText,
-//                                        user = userName.toString(), // 사용자의 이름으로 설정
-//                                        date = formattedDate,
-//                                        userUID = userUID
-//                                    )
-//                                    val newRef = commentCollection.document()
-//                                    newComment.id = newRef.id
-//                                    newRef.set(newComment)
-//                                        .addOnSuccessListener {
-//                                            debatedetailList.add(newComment)
-//                                            adapter.notifyItemInserted(debatedetailList.size - 1)
-//                                        }
-//                                        .addOnFailureListener { e ->
-//                                            // 실패 처리
-//                                        }
-//                                }
-//                            }
-//                            .addOnFailureListener { e ->
-//                                // 실패 처리
-//                            }
-//                    }
-//                }
-//            }
+
         }
         builder.setNegativeButton("취소", null)
         val dialog = builder.create()

@@ -56,10 +56,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
-        android:backgroundTint="@color/signUpBtn"
+        android:backgroundTint="@color/white"
         android:layout_gravity="bottom|end"
         app:icon="@drawable/ic_plus_24px"
         android:elevation="3dp"
+        app:strokeWidth="2dp"
+        app:strokeColor="@color/green"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
          />

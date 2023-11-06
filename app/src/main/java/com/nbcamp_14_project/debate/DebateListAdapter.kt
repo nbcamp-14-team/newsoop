@@ -20,6 +20,8 @@ class DebateListAdapter(private val debateList: List<DebateItem>) : RecyclerView
 
     inner class ViewHolder(val binding: ItemDebateBinding) : RecyclerView.ViewHolder(binding.root) {
         val title = binding.tvTitle
+        val agree = binding.tvAgree
+        val opposite = binding.tvOpposite
         val name = binding.tvName
         val deleteButton = binding.btnDelete
     }
@@ -35,7 +37,9 @@ class DebateListAdapter(private val debateList: List<DebateItem>) : RecyclerView
         }
         val debateItem = debateList[position]
         holder.title.text = debateItem.title
-        holder.name.text = "이름: ${debateItem.name}"
+        holder.agree.text = debateItem.agreecontext
+        holder.opposite.text = debateItem.oppositecontext
+        holder.name.text = "${debateItem.name}"
 
         holder.deleteButton.setOnClickListener {
             val position = holder.adapterPosition

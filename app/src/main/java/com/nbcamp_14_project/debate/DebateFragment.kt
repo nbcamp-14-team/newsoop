@@ -54,6 +54,11 @@ class DebateFragment : Fragment() {
                 viewModel.debateId = debateItem.id // Firestore 문서 ID
                 viewModel.userUID = debateItem.userUID // Firestore 문서 ID
                 viewModel.title = title // 제목
+                viewModel.name = debateItem.name // 이름
+                viewModel.originalcontext = debateItem.originalcontext // 내용
+                viewModel.agreecontext = debateItem.agreecontext // 찬성 의견
+                viewModel.oppositecontext = debateItem.oppositecontext // 반대 의견
+
                 // 사용자 ID
 
                 val debateDetailFragment = DebateDetailFragment()
@@ -132,13 +137,31 @@ class DebateFragment : Fragment() {
         builder.setView(v1)
 
         val tvdebate: EditText = v1.findViewById(R.id.tv_debate)
+        val tvContext: EditText = v1.findViewById(R.id.tv_context)
+        val tvAgree: EditText = v1.findViewById(R.id.tv_agree)
+        val tvOpposite: EditText = v1.findViewById(R.id.tv_opposite)
 
-        val confirmListener = DialogInterface.OnClickListener { _, _ ->
+        builder.setPositiveButton("확인") { _, _ ->
+
+        }
+
+        builder.setNegativeButton("취소", null)
+        val dialog = builder.create()
+
+        dialog.show()
+        val possitiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE)
+        possitiveButton.setOnClickListener {
             val debateTitle = tvdebate.text.toString()
+            val originalcontext = tvContext.text.toString()
+            val agreecontext = tvAgree.text.toString()
+            val oppositecontext = tvOpposite.text.toString()
 
             if (debateTitle.isEmpty()) {
                 // 토론 주제가 입력되지 않은 경우 오류 메시지 표시
-                Toast.makeText(requireContext(), "토론할 주제를 입력해주세요.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "토론할 주제를 입력해 주세요.", Toast.LENGTH_SHORT).show()
+            } else if (originalcontext.isEmpty() || agreecontext.isEmpty() || oppositecontext.isEmpty()) {
+                // 토론 내용, 찬성 의견, 반대 의견 중 하나라도 비어있는 경우 오류 메시지 표시
+                Toast.makeText(requireContext(), "빈칸의 내용을 모두 입력해 주세요.", Toast.LENGTH_SHORT).show()
             } else {
                 val firestore = FirebaseFirestore.getInstance()
                 val user = FirebaseAuth.getInstance().currentUser
@@ -158,7 +181,14 @@ class DebateFragment : Fragment() {
                                         firestore.collection("User").document(userUID)
                                             .collection("Debates")
                                     val newDebateItem =
-                                        DebateItem(title = debateTitle, name = name, userUID = userUID)
+                                        DebateItem(
+                                            title = debateTitle,
+                                            originalcontext = originalcontext,
+                                            agreecontext = agreecontext,
+                                            oppositecontext = oppositecontext,
+                                            name = name,
+                                            userUID = userUID
+                                        )
                                     val newRef = commentCollection.document()
                                     newDebateItem.id = newRef.id
                                     newRef.set(newDebateItem)
@@ -181,16 +211,13 @@ class DebateFragment : Fragment() {
 
                         }
                 }
+                dialog.dismiss()
             }
+
+
         }
 
-        builder.setPositiveButton("확인", confirmListener)
-        builder.setNegativeButton("취소", null)
-
-        builder.show()
     }
-
-
 
 
     private fun navigateToLoginActivity() {
@@ -210,10 +237,23 @@ class DebateFragment : Fragment() {
                 for (document in documents) {
                     val id = document.id
                     val title = document.getString("title")
+                    val originalcontext = document.getString("originalcontext")
+                    val agree = document.getString("agreecontext")
+                    val opposite = document.getString("oppositecontext")
                     val name = document.getString("name")
                     val userUID = document.getString("userUID")
                     if (title != null && name != null && userUID != null) {
-                        debateList.add(DebateItem(id, title, name, userUID))
+                        debateList.add(
+                            DebateItem(
+                                id,
+                                title,
+                                originalcontext.toString(),
+                                agree.toString(),
+                                opposite.toString(),
+                                name,
+                                userUID
+                            )
+                        )
                     }
                 }
                 adapter.notifyDataSetChanged()
