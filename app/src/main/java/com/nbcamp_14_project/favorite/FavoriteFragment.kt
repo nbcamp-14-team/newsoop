@@ -5,6 +5,7 @@ import android.app.AlertDialog
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
+import android.os.Build.VERSION_CODES.R
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -21,6 +22,7 @@ import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
+import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
@@ -35,15 +37,22 @@ import com.nbcamp_14_project.databinding.FragmentFavoriteBinding
 import com.nbcamp_14_project.detail.DetailInfo
 import com.nbcamp_14_project.detail.DetailViewModel
 import com.nbcamp_14_project.home.HomeFragment
+import com.nbcamp_14_project.home.HomeModel
 import com.nbcamp_14_project.home.HomeNewsAdapter
+import com.nbcamp_14_project.home.HomeViewModel
 import com.nbcamp_14_project.home.HomeViewPagerViewModel
 import com.nbcamp_14_project.home.HomeViewPagerViewModelFactory
 import com.nbcamp_14_project.home.toDetailInfo
 import com.nbcamp_14_project.mainpage.MainActivity
+import com.nbcamp_14_project.search.SearchViewModel
 import com.nbcamp_14_project.setting.SettingActivity
 import com.nbcamp_14_project.ui.login.CategoryFragment
 import com.nbcamp_14_project.ui.login.LoginActivity
 import com.nbcamp_14_project.ui.login.LoginViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import java.util.Date
 
 class FavoriteFragment : Fragment() {
     companion object {
@@ -52,15 +61,18 @@ class FavoriteFragment : Fragment() {
 
     private var _binding: FragmentFavoriteBinding? = null
     private val binding get() = _binding!!
+    private val authorData: ArrayList<HomeModel> = ArrayList()
     private lateinit var adapter: FavoriteListAdapter
     private val viewModel: FavoriteViewModel by activityViewModels()
     private val detailViewModel: DetailViewModel by activityViewModels()
     private val loginViewModel: LoginViewModel by activityViewModels()
     private val homeViewPagerViewModel: HomeViewPagerViewModel by activityViewModels()
+    private val homeViewModel : HomeViewModel by activityViewModels()
     private val firestore = FirebaseFirestore.getInstance()
     private var isLogin = false
     private var auth = FirebaseAuth.getInstance()
     private val authorNameList = mutableListOf<String>()
+    private val query = "임지원"
 
     private val followingAdapter by lazy {
         FollowingListAdapter(//recyclerView에서 클릭이 일어났을 때, Detail에 데이터값을 보냄
@@ -125,6 +137,8 @@ class FavoriteFragment : Fragment() {
 
         // 즐겨찾기 목록 업데이트
         getFavoriteListFromFireStore()
+        getFollowingAuthorListFromFireStore()
+        Log.d("authorList","$authorNameList")
         Log.e("onResume", "#hyunsik")
 
         // 로그인 상태에 따른 화면 처리
@@ -244,6 +258,7 @@ class FavoriteFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         getFollowingAuthorListFromFireStore()
         getFavoriteListFromFireStore()
+
         Log.d("nameList","${authorNameList}")
         loginViewModel.category.observe(requireActivity()) { text ->
             binding.tvFirstCategory.text = "선호 카테고리: $text"
@@ -294,6 +309,7 @@ class FavoriteFragment : Fragment() {
             LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         binding.favoriteList.adapter = adapter
 
+
         // 즐겨찾기 목록 갱신
         viewModel.favoriteList.observe(viewLifecycleOwner) {
             adapter.submitList(it)
@@ -303,19 +319,15 @@ class FavoriteFragment : Fragment() {
             openLoginActivity(view)
         }
 
-//        followingAdapter = FollowingListAdapter {item ->
-//        val detailInfo = item
-//        detailViewModel.setDetailInfo(detailInfo)
-//        val mainActivity = (activity as MainActivity)
-//        mainActivity.runDetailFragment()
-//         }
-
+        viewModel.detailNews("임지원")
         binding.favoriteFollowList.layoutManager =
             LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         binding.favoriteFollowList.adapter = followingAdapter
 
-        viewModel.favoriteList.observe(viewLifecycleOwner) {
-            followingAdapter.submitList(it)
+        with(viewModel){
+            authorList.observe(viewLifecycleOwner){
+                followingAdapter.submitList(favoriteList.value?.toMutableList())
+            }
         }
 
         //setting 페이지로 이동
@@ -434,6 +446,7 @@ class FavoriteFragment : Fragment() {
                     authorNameList.add(fieldValue)
                 }
             }
+
         }.addOnFailureListener { exception ->
             // 접근에 실패했을 때 수행할 작업
         }
@@ -462,5 +475,7 @@ class FavoriteFragment : Fragment() {
             // 업데이트 실패 시
         }
     }
+
+
 
 }
