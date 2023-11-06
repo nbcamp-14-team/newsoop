@@ -4,6 +4,9 @@ import android.app.AlertDialog
 import android.content.Intent
 import android.content.res.ColorStateList
 import android.os.Bundle
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.style.ForegroundColorSpan
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -41,12 +44,14 @@ class DebateDetailFragment : Fragment() {
     private var oppositeClicked = false
     private var isAgreeButtonClicked = false
     private var isOppositeButtonClicked = false
+    private var agreeNum = 0.0
+    private var oppositeNum = 0.0
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentDebatedetailBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -56,10 +61,10 @@ class DebateDetailFragment : Fragment() {
 
 
 
-        // SwipeRefreshLayout 초기화
+//         SwipeRefreshLayout 초기화
         val swipeRefreshLayout = view.findViewById<SwipeRefreshLayout>(R.id.swipe_refresh_layout)
 
-        // Swipe to Refresh 리스너 설정
+//         Swipe to Refresh 리스너 설정
         swipeRefreshLayout.setOnRefreshListener {
             // Swipe to Refresh 동작 시, 데이터 다시 불러오는 작업 수행
             loadComments(viewModel.debateId ?: "")
@@ -112,8 +117,6 @@ class DebateDetailFragment : Fragment() {
         }
 
 
-        // 이후 코드는 댓글 목록을 불러오고 RecyclerView에 표시하는 부분으로 가정하겠습니다.
-        // debatedetailList에 댓글을 추가하고 RecyclerView 업데이트
 
 
         binding.btnComment.setOnClickListener {
@@ -151,20 +154,22 @@ class DebateDetailFragment : Fragment() {
                     agreeImageView.setImageResource(R.drawable.ic_agreex)
                     tvAgree.text = (tvAgree.text.toString().toInt() - 1).toString()
                     removeAgreeVote() // 투표 제거
+                    --agreeNum
+                    getPerNum()
                 } else {
                     // 클릭되지 않았을 때
                     agreeImageView.setImageResource(R.drawable.ic_agree)
                     tvAgree.text = (tvAgree.text.toString().toInt() + 1).toString()
                     addAgreeVote() // 투표 추가
+                    ++agreeNum
+                    getPerNum()
                 }
                 agreeClicked = !agreeClicked // 상태를 토글
             }
         }
 
         updateAgreeCount()
-
         updateOppositeCount()
-
 
         val oppositeImageView = binding.icOpposite
         val tvOpposite = binding.tvOpposite
@@ -178,10 +183,14 @@ class DebateDetailFragment : Fragment() {
                     oppositeImageView.setImageResource(R.drawable.ic_oppositex)
                     tvOpposite.text = (tvOpposite.text.toString().toInt() - 1).toString()
                     removeOppositeVote()
+                    --oppositeNum
+                    getPerNum()
                 } else {
                     oppositeImageView.setImageResource(R.drawable.ic_opposite)
                     tvOpposite.text = (tvOpposite.text.toString().toInt() + 1).toString()
                     addOppositeVote()
+                    ++oppositeNum
+                    getPerNum()
                 }
                 oppositeClicked = !oppositeClicked
             }
@@ -199,12 +208,42 @@ class DebateDetailFragment : Fragment() {
         val name = viewModel.name
 
 
+        val fullAgreeText = "Agree : ${agreecontext}"
+
+// SpannableString을 생성합니다.
+        val spannableString = SpannableString(fullAgreeText)
+
+// "Agree" 문자열이 전체 텍스트에서 시작하는 인덱스를 찾습니다.
+        val startIndex = fullAgreeText.indexOf("Agree")
+
+// "Agree" 부분에 적용할 파란색을 정의합니다.
+        val colorBlue = resources.getColor(R.color.blue) // 원하는 파란색 리소스로 변경하세요
+
+// "Agree"를 파란색으로 변경합니다.
+        spannableString.setSpan(ForegroundColorSpan(colorBlue), startIndex, startIndex + "Agree".length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+
+        val fullDisagreeText = "Disagree : ${oppositecontext}"
+
+// SpannableString을 생성합니다.
+        val spannableString1 = SpannableString(fullDisagreeText)
+
+// "Disagree" 문자열이 전체 텍스트에서 시작하는 인덱스를 찾습니다.
+        val startIndex1 = fullDisagreeText.indexOf("Disagree")
+
+// "Disagree" 부분에 적용할 빨간색을 정의합니다.
+        val colorRed = resources.getColor(R.color.red) // 원하는 빨간색 리소스로 변경하세요
+
+// "Disagree"를 빨간색으로 변경합니다.
+        spannableString1.setSpan(ForegroundColorSpan(colorRed), startIndex1, startIndex1 + "Disagree".length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+
+// TextView에 SpannableString을 설정하여 "Disagree"를 빨간색으로 표시합니다
+
         if (title != null) {
             binding.tvTitle.text = title
             binding.tvContext.text = originalcontext
-            binding.tvAgreecontext.text = agreecontext
-            binding.tvOppositecontext.text = oppositecontext
-            binding.tvName.text = name
+            binding.tvAgreecontext.text = spannableString
+            binding.tvOppositecontext.text = spannableString1
+            binding.tvName.text = "작성자 : ${name}"
         }
 
         adapter = DebateDetailListAdapter(debatedetailList)
@@ -400,12 +439,18 @@ class DebateDetailFragment : Fragment() {
                 .addOnSuccessListener { querySnapshot ->
                     val agreeCount = querySnapshot.size()
                     tvAgree.text = agreeCount.toString()
+                    //찬성 숫자
+                    agreeNum = agreeCount.toDouble()
+                    getPerNum()
+                    Log.d("debate", "agree :$agreeNum")
                 }
                 .addOnFailureListener { e ->
                     // 실패 시에 대응하는 로직을 추가할 수 있습니다.
                     Log.e("hyunsik", "Failed to update Agree count: $e")
                 }
         }
+
+
     }
 
     // 사용자의 userUID가 AgreeVotes에 있는지 확인하는 함수
@@ -503,11 +548,17 @@ class DebateDetailFragment : Fragment() {
                 .addOnSuccessListener { querySnapshot ->
                     val oppositeCount = querySnapshot.size()
                     tvOpposite.text = oppositeCount.toString()
+                    //반대표 숫자
+                    oppositeNum = oppositeCount.toDouble()
+                    getPerNum()
+                    Log.d("debate", "opposite : $oppositeNum")
+
                 }
                 .addOnFailureListener { e ->
                     Log.e("hyunsik", "Failed to update Opposite count: $e")
                 }
         }
+
     }
 
     private fun checkOppositeVoteStatus() {
@@ -616,7 +667,7 @@ class DebateDetailFragment : Fragment() {
 
         dialog.show()
         val possitiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE)
-        possitiveButton.setOnClickListener{
+        possitiveButton.setOnClickListener {
             val commentText = editTextComment.text.toString().trim()
             if (commentText.isEmpty()) {
                 Toast.makeText(context, "댓글 내용을 입력해 주세요", Toast.LENGTH_SHORT).show()
@@ -689,5 +740,24 @@ class DebateDetailFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    // Progress bar 퍼센트 넣기
+    private fun getPerNum() {
+        var perNum = 0.5
+        Log.d("debate", "$agreeNum , $oppositeNum")
+        if (agreeNum == 0.0) {
+            if (oppositeNum == 0.0) {
+                binding.debateProgressBar.progress = 50
+            } else {
+                binding.debateProgressBar.progress = 0
+            }
+        } else if (oppositeNum == 0.0) {
+            binding.debateProgressBar.progress = 100
+        } else {
+            perNum = agreeNum / (agreeNum + oppositeNum)
+            Log.d("perNum", "agree = $agreeNum ,  opposite = $oppositeNum perNum =  $perNum")
+            binding.debateProgressBar.progress = (perNum * 100).toInt()
+        }
     }
 }
