@@ -43,6 +43,7 @@ class HomeFragment(query: String) : Fragment() {
     private val detailViewModel: DetailViewModel by activityViewModels()
     private val loginViewModel: LoginViewModel by activityViewModels()
     private val fireStore = FirebaseFirestore.getInstance()
+    private var isUserHaveCategory: Boolean = false
 
     // HomeFragment Fragment
     private val headLineAdapter by lazy {
@@ -75,7 +76,7 @@ class HomeFragment(query: String) : Fragment() {
     private val homeViewPagerViewModel: HomeViewPagerViewModel by activityViewModels {
         HomeViewPagerViewModelFactory()
     }
-    private var startingNum: Int = 6// 인피니티스크롤 시작지점 지정 변수
+    private var startingNum: Int = 1// 인피니티스크롤 시작지점 지정 변수
 
 
     override fun onCreateView(
@@ -180,18 +181,24 @@ class HomeFragment(query: String) : Fragment() {
 
     private fun infinityAddNews(query: String?) {
         if (queryInbox == "추천") {
+            if (firstHomeCategory.isNullOrBlank()) {
+                viewPagerViewModel.detailNewsInfinity("생활", startingNum)
+                startingNum += 10
+                viewPagerViewModel.isLoading = false
+            } else {
+                viewPagerViewModel.detailNewsInfinityToRecommend(
+                    firstHomeCategory, secondHomeCategory,
+                    thirdHomeCategory, startingNum
+                )
+                viewPagerViewModel.isLoading = false
+                startingNum += 10
+            }
 
-            viewPagerViewModel.detailNewsInfinityToRecommend(
-                firstHomeCategory, secondHomeCategory,
-                thirdHomeCategory, startingNum
-            )
-            viewPagerViewModel.isLoading = false
-            startingNum += 4
         } else {
             viewPagerViewModel.detailNewsInfinity(query!!, startingNum)
 
             viewPagerViewModel.isLoading = false
-            startingNum += 4
+            startingNum += 10
         }
 
     }
@@ -225,6 +232,7 @@ class HomeFragment(query: String) : Fragment() {
                         ) {
                             return@addOnCompleteListener
                         } else {
+                            isUserHaveCategory = true
                             viewPagerViewModel.clearAllItems()
                             Log.d("testCategory", "${document.getString("category")}")
                             firstHomeCategory = document.getString("category")
@@ -237,13 +245,11 @@ class HomeFragment(query: String) : Fragment() {
                                 Log.d("isWork?", "3")
                                 secondHomeCategory = null
                                 viewPagerViewModel.headLineNews(firstHomeCategory ?: "생활", 5)
-//                            viewPagerViewModel.detailNews("생활", 1)//하단 리사이클러뷰에 뉴스 출력
-                            viewPagerViewModel.detailNews(firstHomeCategory ?: "생활", 1)
-                                Log.d("isWork?", "3")
+                                viewPagerViewModel.detailNews(firstHomeCategory ?: "생활", 1)
                             } else if (thirdHomeCategory.isNullOrBlank()) {
                                 Log.d("isWork?", "2")
+                                isUserHaveCategory = true
                                 thirdHomeCategory = null
-
                                 viewPagerViewModel.headLineNews(firstHomeCategory ?: "생활", 3)
                                 viewPagerViewModel.detailRecommendNews(
                                     firstHomeCategory ?: "생활",
@@ -260,9 +266,9 @@ class HomeFragment(query: String) : Fragment() {
                                             secondHomeCategory ?: "생활", 2
                                         )
                                     }
-                                }, 500)
-
+                                }, 1000)
                             } else if (!firstHomeCategory.isNullOrBlank()) {
+                                isUserHaveCategory = true
                                 Log.d("isWork?", "1")
                                 viewPagerViewModel.headLineNews(firstHomeCategory ?: "생활", 2)
                                 viewPagerViewModel.detailRecommendNews(
@@ -280,7 +286,7 @@ class HomeFragment(query: String) : Fragment() {
                                             secondHomeCategory ?: "생활", 1, 2
                                         )
                                     }
-                                }, 500)
+                                }, 1000)
                                 Timer().schedule(object : TimerTask() {
                                     override fun run() {
                                         viewPagerViewModel.headLineNews(
@@ -293,25 +299,26 @@ class HomeFragment(query: String) : Fragment() {
                                             2
                                         )
                                     }
-                                }, 1000)
+                                }, 1500)
 
-                            } else {
-                                Log.d("isWork?", "4")
-                                firstHomeCategory = null
-                                viewPagerViewModel.clearAllItems()
-                                viewPagerViewModel.headLineNews("생활")//메인 ViewPager에 헤드라인 뉴스 출력
-                                viewPagerViewModel.detailNews("생활", 1)//하단 리사이클러뷰에 뉴스 출력
                             }
                         }
                     }
-                } else {
-                    Log.d("isWork?", "5")
                 }
             }
+            if (!isUserHaveCategory) {
+                Log.d("isWork?", "4")
+                firstHomeCategory = null
+                viewPagerViewModel.clearAllItems()
+                viewPagerViewModel.headLineNews("정치")//메인 ViewPager에 헤드라인 뉴스 출력
+                viewPagerViewModel.detailNews("정치", 1)//하단 리사이클러뷰에 뉴스 출력
+                isUserHaveCategory = true
+            }
         }
-
     }
 
-
 }
+
+
+
 
