@@ -45,14 +45,14 @@ class DebateDetailListAdapter(private val debatedetailList: List<DebateDetailIte
             is AgreeViewHolder -> {
                 // 찬성 뷰 홀더에서 뷰 바인딩 및 데이터 설정
                 holder.binding.tvTitle.text = comment.text
-                holder.binding.tvName.text = "사용자: ${comment.user}"
-                holder.binding.tvDate.text = "날짜: ${comment.date}"
+                holder.binding.tvName.text = "${comment.user}"
+                holder.binding.tvDate.text = "${comment.date}"
             }
             is OpposeViewHolder -> {
                 // 반대 뷰 홀더에서 뷰 바인딩 및 데이터 설정
                 holder.binding.tvTitle2.text = comment.text
-                holder.binding.tvName2.text = "사용자: ${comment.user}"
-                holder.binding.tvDate2.text = "날짜: ${comment.date}"
+                holder.binding.tvName2.text = "${comment.user}"
+                holder.binding.tvDate2.text = "${comment.date}"
             }
         }
 
