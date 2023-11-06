@@ -13,6 +13,7 @@ class LoginViewModel: ViewModel() {
     var secondCategory = MutableLiveData<String>()
     var thirdCategory = MutableLiveData<String>()
     private val _isCategoryBooleanValue = MutableLiveData<Boolean>()
+    var authorList = MutableLiveData<List<String>>()
     val isCategoryBooleanValue: LiveData<Boolean>
         get() = _isCategoryBooleanValue
 

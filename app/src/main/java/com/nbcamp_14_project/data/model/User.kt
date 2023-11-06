@@ -8,5 +8,9 @@ data class User(
     var email: String? = null,
     var category: String? = null,
     var secondCategory: String? = null,
-    var thirdCategory: String? = null
+    var thirdCategory: String? = null,
+    var authorNames: String? = null
 )
+
+
+

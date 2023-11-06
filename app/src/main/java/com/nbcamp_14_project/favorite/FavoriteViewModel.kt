@@ -11,7 +11,7 @@ class FavoriteViewModel : ViewModel() {
 
     private val _favoriteList: MutableLiveData<List<DetailInfo>> = MutableLiveData()
     val favoriteList: LiveData<List<DetailInfo>> get() = _favoriteList
-
+    val followingAuthorList =MutableLiveData<String>()
 
 
     var isLogin: Boolean = false

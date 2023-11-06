@@ -11,6 +11,7 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
@@ -26,8 +27,11 @@ import com.nbcamp_14_project.data.model.User
 import com.nbcamp_14_project.databinding.FragmentFavoriteBinding
 import com.nbcamp_14_project.detail.DetailInfo
 import com.nbcamp_14_project.detail.DetailViewModel
+import com.nbcamp_14_project.home.HomeFragment
+import com.nbcamp_14_project.home.HomeNewsAdapter
 import com.nbcamp_14_project.home.HomeViewPagerViewModel
 import com.nbcamp_14_project.home.HomeViewPagerViewModelFactory
+import com.nbcamp_14_project.home.toDetailInfo
 import com.nbcamp_14_project.mainpage.MainActivity
 import com.nbcamp_14_project.setting.SettingActivity
 import com.nbcamp_14_project.ui.login.CategoryFragment
@@ -52,6 +56,20 @@ class FavoriteFragment : Fragment() {
     private val firestore = FirebaseFirestore.getInstance()
     private var isLogin = false
     private var auth = FirebaseAuth.getInstance()
+    private val authorNameList = mutableListOf<String>()
+
+    private val followingAdapter by lazy {
+        FollowingListAdapter(//recyclerView에서 클릭이 일어났을 때, Detail에 데이터값을 보냄
+            onItemClick = { item ->
+                val detailInfo =
+                    item
+                detailViewModel.setDetailInfo(detailInfo)//뷰모델로 전송
+                val mainActivity = (activity as MainActivity)
+                mainActivity.runDetailFragment()//DetailFragment 실행
+            }
+        )
+    }
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -61,22 +79,24 @@ class FavoriteFragment : Fragment() {
         _binding = FragmentFavoriteBinding.inflate(inflater, container, false)
         return binding.root
     }
-    private val checkLoginLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){ result ->
-        if(result.resultCode == Activity.RESULT_OK){
-            val checkLogin = result.data?.getStringExtra(LoginActivity.CHECK_LOGIN)
-            if(checkLogin == "Login"){
-                homeViewPagerViewModel.addListAtFirst("추천","추천")
+
+    private val checkLoginLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                val checkLogin = result.data?.getStringExtra(LoginActivity.CHECK_LOGIN)
+                if (checkLogin == "Login") {
+                    homeViewPagerViewModel.addListAtFirst("추천", "추천")
+                }
             }
         }
-    }
 
     override fun onResume() {
         super.onResume()
 
         // 즐겨찾기 목록 업데이트
         getFavoriteListFromFireStore()
-        Log.e("onResum", "#hyunsik")
 
+        Log.e("onResum", "#hyunsik")
         // 로그인 상태에 따른 화면 처리
         val loginBox = binding.root.findViewById<ConstraintLayout>(R.id.login_box)
         val profileBox = binding.root.findViewById<ConstraintLayout>(R.id.profile_box)
@@ -103,8 +123,7 @@ class FavoriteFragment : Fragment() {
             profileBox.visibility = View.VISIBLE
             logoutButton.visibility = View.VISIBLE
             binding.textView2.visibility = View.GONE
-            binding.fallowText.visibility = View.VISIBLE
-            binding.favoriteFallowList.visibility = View.VISIBLE
+
 
             val collectionRef = firestore.collection("User")
                 .document(FirebaseAuth.getInstance().currentUser?.uid ?: return)
@@ -122,8 +141,6 @@ class FavoriteFragment : Fragment() {
                         binding.tvThirdCategory.text = ", $thirdcategory"
 
 
-
-
                     } else {
                         Log.d("data", "no data")
                     }
@@ -137,30 +154,33 @@ class FavoriteFragment : Fragment() {
             profileBox.visibility = View.INVISIBLE
             logoutButton.visibility = View.INVISIBLE
             binding.textView2.visibility = View.VISIBLE
-            binding.fallowText.visibility = View.INVISIBLE
-            binding.favoriteFallowList.visibility = View.INVISIBLE
+
         }
     }
 
+
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        getFollowingAuthorListFromFireStore()
+        getFavoriteListFromFireStore()
+        Log.d("nameList","${authorNameList}")
         loginViewModel.category.observe(requireActivity()) { text ->
             binding.tvFirstCategory.text = "선호 카테고리: $text"
         }
 
         loginViewModel.secondCategory.observe(requireActivity()) { text ->
-            if (text.isNotEmpty()){
+            if (text.isNotEmpty()) {
                 binding.tvSecondCategory.text = ", $text"
-            }
-            else {
+            } else {
                 binding.tvSecondCategory.text = null
             }
         }
 
         loginViewModel.thirdCategory.observe(requireActivity()) { text ->
-            if (text.isNotEmpty()){
+            if (text.isNotEmpty()) {
                 binding.tvThirdCategory.text = ", $text"
-            }else {
+            } else {
                 binding.tvThirdCategory.text = null
             }
         }
@@ -187,6 +207,21 @@ class FavoriteFragment : Fragment() {
             openLoginActivity(view)
         }
 
+//        followingAdapter = FollowingListAdapter {item ->
+//        val detailInfo = item
+//        detailViewModel.setDetailInfo(detailInfo)
+//        val mainActivity = (activity as MainActivity)
+//        mainActivity.runDetailFragment()
+//         }
+
+        binding.favoriteFollowList.layoutManager =
+            LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        binding.favoriteFollowList.adapter = followingAdapter
+
+        viewModel.favoriteList.observe(viewLifecycleOwner) {
+            followingAdapter.submitList(it)
+        }
+
         //setting 페이지로 이동
         binding.settingBtn.setOnClickListener {
             val intent = Intent(requireContext(), SettingActivity::class.java)
@@ -196,6 +231,7 @@ class FavoriteFragment : Fragment() {
 
         binding.ivFixCategory.setOnClickListener {
             showCategory()
+            getFollowingAuthorListFromFireStore()
             //주변 그림자
             loginViewModel.isCategoryBooleanValue.observe(requireActivity(), Observer { isTrue ->
                 // 불린 값이 변경될 때 수행할 동작을 여기에 추가
@@ -206,7 +242,7 @@ class FavoriteFragment : Fragment() {
                 }
                 updateCategory()
             })
-            if (binding.viewEmpty.visibility == View.INVISIBLE){
+            if (binding.viewEmpty.visibility == View.INVISIBLE) {
                 updateCategory()
             }
         }
@@ -263,6 +299,26 @@ class FavoriteFragment : Fragment() {
             }
     }
 
+    private fun getFollowingAuthorListFromFireStore() {
+        val user = FirebaseAuth.getInstance().currentUser
+        val userUID = user?.uid
+        if (userUID != null){
+        val collectionRef = firestore.collection("User").document(userUID).collection("author")
+
+        collectionRef.get().addOnSuccessListener { querySnapshot ->
+            for (documentSnapshot in querySnapshot.documents) {
+                val fieldValue = documentSnapshot.getString("author")
+                if (fieldValue != null) {
+                    Log.d("authorName","$fieldValue")
+                    authorNameList.add(fieldValue)
+                }
+            }
+        }.addOnFailureListener { exception ->
+            // 접근에 실패했을 때 수행할 작업
+        }
+        }
+    }
+
     // 로그인 화면으로 이동하는 함수
     fun openLoginActivity(view: View) {
         val intent = Intent(requireContext(), LoginActivity::class.java)
@@ -272,7 +328,7 @@ class FavoriteFragment : Fragment() {
     fun updateCategory() {
         val curUser = auth.currentUser
         val user = User()
-        val fbUser = firestore.collection("User").document(curUser?.uid?:return)
+        val fbUser = firestore.collection("User").document(curUser?.uid ?: return)
         val updateData = hashMapOf(
             "category" to loginViewModel.category.value,
             "secondCategory" to loginViewModel.secondCategory.value,

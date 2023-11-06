@@ -52,6 +52,8 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
     private val binding get() = _binding!!
     private val viewModel: DetailViewModel by activityViewModels()
     private var isAnimating = false
+    private val auth = FirebaseAuth.getInstance()
+    private val fbFireStore = FirebaseFirestore.getInstance()
     private lateinit var textToSpeech: TextToSpeech
     private val favoriteViewModel: FavoriteViewModel by activityViewModels()
     private val loginViewModel: LoginViewModel by activityViewModels()
@@ -104,6 +106,12 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
             }
         }
 
+        binding.tvFollowing.setOnClickListener {
+            if (detailInfo != null) {
+                storeAuthorInFireStore(detailInfo)
+            }
+        }
+
         // 텍스트 음성 출력 설정
         textToSpeech = TextToSpeech(requireContext()) { status ->
             if (status == TextToSpeech.SUCCESS) {
@@ -131,6 +139,8 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
 
         initView()
     }
+
+
 
     override fun onDestroyView() {
         super.onDestroyView()
@@ -189,6 +199,21 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
                 "originalLink" to detailInfo.originalLink,
                 "pubDate" to detailInfo.pubDate,
                 "created" to Date()
+            )
+
+            favoriteCollection.add(favoriteData)
+        }
+    }
+
+    private fun storeAuthorInFireStore(detailInfo: DetailInfo) {
+        val user = FirebaseAuth.getInstance().currentUser
+        val userUID = user?.uid
+
+        if (userUID != null) {
+            val db = FirebaseFirestore.getInstance()
+            val favoriteCollection = db.collection("User").document(userUID).collection("author")
+            val favoriteData = hashMapOf(
+                "author" to detailInfo.author,
             )
 
             favoriteCollection.add(favoriteData)

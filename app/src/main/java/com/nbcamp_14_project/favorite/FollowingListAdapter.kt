@@ -9,10 +9,9 @@ import coil.load
 import com.nbcamp_14_project.Utils
 import com.nbcamp_14_project.databinding.ItemRvNewsMainBinding
 import com.nbcamp_14_project.detail.DetailInfo
-import com.nbcamp_14_project.detail.DetailViewModel
 import java.util.Date
 
-class FavoriteListAdapter(private val onItemClick: (DetailInfo) -> Unit) : ListAdapter<DetailInfo, FavoriteListAdapter.ViewHolder>(
+class FollowingListAdapter(private val onItemClick: (DetailInfo) -> Unit) : ListAdapter<DetailInfo, FollowingListAdapter.ViewHolder>(
     object : DiffUtil.ItemCallback<DetailInfo>() {
         // 아이템이 동일한지 비교하기 위한 콜백
         override fun areItemsTheSame(oldItem: DetailInfo, newItem: DetailInfo): Boolean {
