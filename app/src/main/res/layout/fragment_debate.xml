@@ -8,6 +8,7 @@
     tools:context=".debate.DebateFragment">
 
 
+
     <LinearLayout
         android:id="@+id/searchView"
         android:layout_width="match_parent"
@@ -54,11 +55,13 @@
         android:id="@+id/btn_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
         android:layout_marginBottom="16dp"
-        android:backgroundTint="@color/signUpBtn"
+        android:backgroundTint="@color/white"
+        android:layout_gravity="bottom|end"
+        app:icon="@drawable/ic_plus_24px"
         android:elevation="3dp"
-        app:icon="@drawable/ic_plus"
+        app:strokeWidth="2dp"
+        app:strokeColor="@color/green"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
