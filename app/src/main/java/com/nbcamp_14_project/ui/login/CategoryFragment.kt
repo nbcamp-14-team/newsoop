@@ -102,6 +102,7 @@ class CategoryFragment : Fragment() {
         loginViewModel.category.value = greenButtonTextList.getOrNull(0) ?: ""
         loginViewModel.secondCategory.value = greenButtonTextList.getOrNull(1) ?: ""
         loginViewModel.thirdCategory.value = greenButtonTextList.getOrNull(2) ?: ""
+//        loginViewModel.categoryListChange()
 
     }
 

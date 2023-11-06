@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.LinearLayout.VERTICAL
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -16,17 +17,20 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import com.navercorp.nid.NaverIdLoginSDK.applicationContext
 import com.nbcamp_14_project.databinding.FragmentMainBinding
 import com.nbcamp_14_project.detail.DetailViewModel
 import com.nbcamp_14_project.mainpage.MainActivity
+import com.nbcamp_14_project.ui.login.LoginViewModel
 import kotlinx.coroutines.delay
+import retrofit2.HttpException
+import java.util.Timer
+import java.util.TimerTask
 
 class HomeFragment(query: String) : Fragment() {
     companion object {
-        private var firstCategory: String? = null
-        private var secondCategory: String? = null
-        private var thirdCategory: String? = null
+        private var firstHomeCategory: String? = null
+        private var secondHomeCategory: String? = null
+        private var thirdHomeCategory: String? = null
         fun newInstance(query: String) = HomeFragment(query)
     }
 
@@ -37,6 +41,7 @@ class HomeFragment(query: String) : Fragment() {
     private var _binding: FragmentMainBinding? = null
     private val binding get() = _binding!!
     private val detailViewModel: DetailViewModel by activityViewModels()
+    private val loginViewModel: LoginViewModel by activityViewModels()
     private val fireStore = FirebaseFirestore.getInstance()
 
     // HomeFragment Fragment
@@ -64,8 +69,11 @@ class HomeFragment(query: String) : Fragment() {
     }
     private val viewPagerViewModel: HomeViewModel by lazy {
         ViewModelProvider(
-            requireActivity(), HomeModelFactory()
+            this, HomeModelFactory()
         )[HomeViewModel::class.java]
+    }
+    private val homeViewPagerViewModel: HomeViewPagerViewModel by activityViewModels {
+        HomeViewPagerViewModelFactory()
     }
     private var startingNum: Int = 6// 인피니티스크롤 시작지점 지정 변수
 
@@ -82,9 +90,10 @@ class HomeFragment(query: String) : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         initView()//화면 설정 함수
         initViewModel()//뷰모델 설정 함수
-        recommendTab(queryInbox)
-
-
+        if (queryInbox != "추천") {
+            viewPagerViewModel.headLineNews(queryInbox!!)
+            viewPagerViewModel.detailNews(queryInbox!!)
+        }
     }
 
     fun initView() = with(binding) {
@@ -145,26 +154,40 @@ class HomeFragment(query: String) : Fragment() {
 
     }
 
+
     private fun initViewModel() {
         with(viewPagerViewModel) {
             list.observe(viewLifecycleOwner) {
-                headLineAdapter.submitList(it)
+                headLineAdapter.submitList(it.toList())
 
             }
             newsList.observe(viewLifecycleOwner) {
-                newsAdapter.submitList(it)
+                newsAdapter.submitList(it.toList())
+            }
+        }
+        with(homeViewPagerViewModel) {
+            resumed.observe(viewLifecycleOwner) {
+                Log.d("queryInbox", "$queryInbox")
+                try {
+                    recommendTab(queryInbox)
+                } catch (e: HttpException) {
+                    Log.d("HttpException", "atViewModel")
+                }
+
             }
         }
     }
 
     private fun infinityAddNews(query: String?) {
-        if(queryInbox == "추천"){
+        if (queryInbox == "추천") {
 
-            viewPagerViewModel.detailNewsInfinityToRecommend(firstCategory, secondCategory,
-                thirdCategory,startingNum)
+            viewPagerViewModel.detailNewsInfinityToRecommend(
+                firstHomeCategory, secondHomeCategory,
+                thirdHomeCategory, startingNum
+            )
             viewPagerViewModel.isLoading = false
             startingNum += 4
-        }else{
+        } else {
             viewPagerViewModel.detailNewsInfinity(query!!, startingNum)
 
             viewPagerViewModel.isLoading = false
@@ -172,7 +195,8 @@ class HomeFragment(query: String) : Fragment() {
         }
 
     }
-    private fun recommendTab(query: String?){
+
+    private fun recommendTab(query: String?) {
 
         if (query == "추천") { //추천 프래그먼트일 시 ,
 
@@ -185,48 +209,109 @@ class HomeFragment(query: String) : Fragment() {
                 if (task.isSuccessful) {
                     val document = task.result
                     if (document.exists()) {
-                        Log.d("testCategory","${document.getString("category")}")
-                        firstCategory = document.getString("category")
-                        secondCategory = document.getString("secondCategory")
-                        thirdCategory = document.getString("thirdCategory")
+                        var firstCategory = document.getString("category")
+                        var secondCategory = document.getString("secondCategory")
+                        var thirdCategory = document.getString("thirdCategory")
+                        if (secondHomeCategory.isNullOrBlank()) secondHomeCategory = null
+                        if (thirdHomeCategory.isNullOrBlank()) thirdHomeCategory = null
+                        if (firstHomeCategory.isNullOrBlank()) firstHomeCategory = null
+                        if (firstCategory.isNullOrBlank()) firstCategory = null
+                        if (secondCategory.isNullOrBlank()) secondCategory = null
+                        if (thirdCategory.isNullOrBlank()) thirdCategory = null
 
-                        if(secondCategory.isNullOrBlank()){
-                            secondCategory = null
-                            viewPagerViewModel.headLineNews(firstCategory?:"생활", 5)
-                            viewPagerViewModel.detailNews(firstCategory?:"생활",1,5)
-                        }else if(thirdCategory.isNullOrBlank()){
-                            thirdCategory = null
-                            Log.d("isWork?","")
-                            viewPagerViewModel.headLineNews(firstCategory?:"생활", 3)
-                            viewPagerViewModel.detailRecommendNews(firstCategory?:"생활",1,3)
-                            viewPagerViewModel.headLineNews(secondCategory?:"생활",2)
-                            viewPagerViewModel.detailNews(secondCategory?:"생활",2)
-                        }else{
-                            viewPagerViewModel.headLineNews(firstCategory?:"생활",2)
-                            viewPagerViewModel.detailRecommendNews(firstCategory?:"생활",1,2)
-                            viewPagerViewModel.headLineNews(secondCategory?:"생활",2)
-                            viewPagerViewModel.detailRecommendNews(secondCategory?:"생활",1,2)
-                            viewPagerViewModel.headLineNews(thirdCategory?:"생활",1)
-                            viewPagerViewModel.detailNews(secondCategory?:"생활",2)
+                        if (firstHomeCategory == firstCategory
+                            && secondHomeCategory == secondCategory
+                            && thirdHomeCategory == thirdCategory
+                        ) {
+                            return@addOnCompleteListener
+                        } else {
+                            viewPagerViewModel.clearAllItems()
+                            Log.d("testCategory", "${document.getString("category")}")
+                            firstHomeCategory = document.getString("category")
+                            secondHomeCategory = document.getString("secondCategory")
+                            thirdHomeCategory = document.getString("thirdCategory")
+                            viewPagerViewModel.category = firstHomeCategory
+                            if (firstHomeCategory.isNullOrBlank()) firstHomeCategory = null
+
+                            if (secondHomeCategory.isNullOrBlank()) {
+                                Log.d("isWork?", "3")
+                                secondHomeCategory = null
+                                viewPagerViewModel.headLineNews(firstHomeCategory ?: "생활", 5)
+//                            viewPagerViewModel.detailNews("생활", 1)//하단 리사이클러뷰에 뉴스 출력
+                            viewPagerViewModel.detailNews(firstHomeCategory ?: "생활", 1)
+                                Log.d("isWork?", "3")
+                            } else if (thirdHomeCategory.isNullOrBlank()) {
+                                Log.d("isWork?", "2")
+                                thirdHomeCategory = null
+
+                                viewPagerViewModel.headLineNews(firstHomeCategory ?: "생활", 3)
+                                viewPagerViewModel.detailRecommendNews(
+                                    firstHomeCategory ?: "생활",
+                                    1,
+                                    3
+                                )
+                                Timer().schedule(object : TimerTask() {
+                                    override fun run() {
+                                        viewPagerViewModel.headLineNews(
+                                            secondHomeCategory ?: "생활",
+                                            2
+                                        )
+                                        viewPagerViewModel.detailNews(
+                                            secondHomeCategory ?: "생활", 2
+                                        )
+                                    }
+                                }, 500)
+
+                            } else if (!firstHomeCategory.isNullOrBlank()) {
+                                Log.d("isWork?", "1")
+                                viewPagerViewModel.headLineNews(firstHomeCategory ?: "생활", 2)
+                                viewPagerViewModel.detailRecommendNews(
+                                    firstHomeCategory ?: "생활",
+                                    1,
+                                    2
+                                )
+                                Timer().schedule(object : TimerTask() {
+                                    override fun run() {
+                                        viewPagerViewModel.headLineNews(
+                                            secondHomeCategory ?: "생활",
+                                            2
+                                        )
+                                        viewPagerViewModel.detailRecommendNews(
+                                            secondHomeCategory ?: "생활", 1, 2
+                                        )
+                                    }
+                                }, 500)
+                                Timer().schedule(object : TimerTask() {
+                                    override fun run() {
+                                        viewPagerViewModel.headLineNews(
+                                            thirdHomeCategory ?: "생활",
+                                            1
+                                        )
+                                        viewPagerViewModel.detailNews(
+                                            thirdHomeCategory ?: "생활",
+                                            1,
+                                            2
+                                        )
+                                    }
+                                }, 1000)
+
+                            } else {
+                                Log.d("isWork?", "4")
+                                firstHomeCategory = null
+                                viewPagerViewModel.clearAllItems()
+                                viewPagerViewModel.headLineNews("생활")//메인 ViewPager에 헤드라인 뉴스 출력
+                                viewPagerViewModel.detailNews("생활", 1)//하단 리사이클러뷰에 뉴스 출력
+                            }
                         }
-
-                    } else {
-                        Log.d("data", "no data")
                     }
-                }else{
-                    firstCategory = null
-                    viewPagerViewModel.headLineNews("생활")//메인 ViewPager에 헤드라인 뉴스 출력
-                    viewPagerViewModel.detailNews("생활", 1)//하단 리사이클러뷰에 뉴스 출력
-
+                } else {
+                    Log.d("isWork?", "5")
                 }
-
             }
-
-        }else{
-            viewPagerViewModel.headLineNews(query!!)
-            viewPagerViewModel.detailNews(query!!)
         }
 
     }
+
+
 }
 

@@ -1,10 +1,12 @@
 package com.nbcamp_14_project.mainpage
 
 import android.content.Intent
+import android.graphics.PorterDuff
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.core.content.ContextCompat
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.google.firebase.auth.FirebaseAuth
@@ -15,6 +17,7 @@ import com.nbcamp_14_project.detail.DetailFragment
 import com.nbcamp_14_project.databinding.ActivityMainBinding
 import com.nbcamp_14_project.detail.DetailInfo
 import com.nbcamp_14_project.ui.login.LoginActivity
+import kotlinx.coroutines.selects.select
 
 class MainActivity : AppCompatActivity() {
 
@@ -73,13 +76,8 @@ class MainActivity : AppCompatActivity() {
                 R.drawable.ic_news,
                 R.drawable.ic_like,
             )
-//            val selectedTabIcons = listOf<Int>(
-//                R.drawable.ic_selected_home,
-//                R.drawable.ic_selected_search,
-//                R.drawable.ic_selected_like,
-//                R.drawable.ic_selected_news,
-//                R.drawable.ic_selected_debate
-//            )
+
+
             TabLayoutMediator(tabLayout, viewpager) { tab, position ->
                 tab.setText(tabTitle[position])
                 tab.setIcon(

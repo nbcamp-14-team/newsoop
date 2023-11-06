@@ -28,21 +28,23 @@ class HomeViewModel(
     private val _newsList: MutableLiveData<List<HomeModel>> = MutableLiveData()
     val newsList: LiveData<List<HomeModel>> get() = _newsList
     var isLoading: Boolean = false
+    var category: String? = null
 
     init {
         _list.value = repository.getList()
     }
+
     private val VIEW_TYPE_ITEM = 0
     private val VIEW_TYPE_LOADING = 1
 
-    fun headLineNews(query: String,display: Int? = 5) {
+    fun headLineNews(query: String, display: Int? = 5) {
         viewModelScope.launch {
-            val docs = searchNews(query, display,sort = "sim")
+            val docs = searchNews(query, display, sort = "sim")
             val item = docs.items ?: return@launch
+            var currentList = repository.getNewsList()
             for (i in item.indices) {//아이템 개수만큼 for문 실행
                 val thumbnail = getThumbnail(item[i].link.toString())
                 var title = item[i].title!!.replace("<b>", "")
-                Log.d("title", "$title")
                 title = title.replace("</b>", "")
                 title = title.replace("&quot;", "\"")
                 title = title.replace("&amp;", "&")
@@ -50,11 +52,9 @@ class HomeViewModel(
                 description = description?.replace("</b>", "")
                 description = description?.replace("&quot;", "\"")
                 val link = item[i].link
-                Log.d("link", "$link")
                 val pubDate = item[i].pubDate
                 var date = Date(pubDate)
                 date = date
-                Log.d("date", "$date")
                 val author = getAuthor(item[i].link.toString())
                 _list.value = repository.addHeadLineItem(
                     HomeModel(
@@ -72,9 +72,9 @@ class HomeViewModel(
 
         }
     }
-    fun detailRecommendNews(query: String, startingNum: Int? = null,display:Int? = 5) {
+
+    fun detailRecommendNews(query: String, startingNum: Int? = null, display: Int? = 5) {
         viewModelScope.launch {
-            Log.d("help","$query")
             val docs = searchNews(query, display, startingNum?.plus(5), sort = "sim")
             val item = docs.items ?: return@launch
             var currentList = repository.getNewsList()
@@ -90,9 +90,7 @@ class HomeViewModel(
                 val link = item[i].link
                 val pubDate = item[i].pubDate
                 var date = Date(pubDate)
-                Log.d("date", "$date")
                 val author = getAuthor(item[i].link.toString())
-                Log.d("linkRecycler", "$link + $author")
                 currentList = repository.addNewsItem(
                     HomeModel(
                         title = title,
@@ -108,12 +106,10 @@ class HomeViewModel(
             }
             _newsList.value = currentList
 
-
-
         }
     }
 
-    fun detailNews(query: String, startingNum: Int? = null,display:Int? = 5) {
+    fun detailNews(query: String, startingNum: Int? = null, display: Int? = 5) {
         viewModelScope.launch {
             val docs = searchNews(query, display, startingNum?.plus(5), sort = "sim")
             val item = docs.items ?: return@launch
@@ -130,9 +126,7 @@ class HomeViewModel(
                 val link = item[i].link
                 val pubDate = item[i].pubDate
                 var date = Date(pubDate)
-                Log.d("date", "$date")
                 val author = getAuthor(item[i].link.toString())
-                Log.d("linkRecycler", "$link + $author")
                 currentList = repository.addNewsItem(
                     HomeModel(
                         title = title,
@@ -144,7 +138,6 @@ class HomeViewModel(
                         viewType = VIEW_TYPE_ITEM
                     )
                 )
-
             }
             currentList = repository.addNewsItem(
                 HomeModel(
@@ -152,12 +145,15 @@ class HomeViewModel(
                 )
             )
             _newsList.value = currentList
-
-
-
         }
     }
-    fun detailNewsInfinity(query: String/** 검색어 */, startingNum: Int? = null/** 토큰 */) {
+
+    fun detailNewsInfinity(
+        query: String
+        /** 검색어 */
+        , startingNum: Int? = null
+        /** 토큰 */
+    ) {
         viewModelScope.launch {
 
             val docs = searchNews(query, 10, startingNum, sort = "sim")
@@ -176,9 +172,7 @@ class HomeViewModel(
                 val link = item[i].link
                 val pubDate = item[i].pubDate
                 var date = Date(pubDate)
-                Log.d("date", "$date")
                 val author = getAuthor(item[i].link.toString())
-                Log.d("linkRecycler", "$link + $author")
                 currentList = repository.addNewsItem(
                     HomeModel(
                         title = title,
@@ -190,7 +184,6 @@ class HomeViewModel(
                         viewType = VIEW_TYPE_ITEM
                     )
                 )
-
             }
             currentList = repository.addNewsItem(
                 HomeModel(
@@ -199,13 +192,18 @@ class HomeViewModel(
             )
             _newsList.value = currentList
             isLoading = true
-            Log.d("LoadingViewModel","$isLoading")
         }
-
     }
-    fun detailNewsInfinityToRecommend(firstCategory: String?,secondCategory:String?,thirdCategory:String?, startingNum: Int? = null/** 토큰 */) {
+
+    fun detailNewsInfinityToRecommend(
+        firstCategory: String?,
+        secondCategory: String?,
+        thirdCategory: String?,
+        startingNum: Int? = null
+        /** 토큰 */
+    ) {
         viewModelScope.launch {
-            val docs = searchNews(firstCategory?:"생활", 3, startingNum, sort = "sim")
+            val docs = searchNews(firstCategory ?: "생활", 3, startingNum, sort = "sim")
             val item = docs.items ?: return@launch
             var currentList = repository.getNewsList()
             currentList = repository.removeLastNewsItem()
@@ -237,7 +235,7 @@ class HomeViewModel(
                 )
 
             }
-            val secondDocs = searchNews(secondCategory?:"생활", 3, startingNum, sort = "sim")
+            val secondDocs = searchNews(secondCategory ?: "생활", 3, startingNum, sort = "sim")
             val secondItem = secondDocs.items ?: return@launch
             for (i in secondItem.indices) {//아이템 개수만큼 for문 실행
                 val thumbnail = getThumbnail(secondItem[i].link.toString())
@@ -267,7 +265,7 @@ class HomeViewModel(
                 )
 
             }
-            val thirdDocs = searchNews(thirdCategory?:"생활", 3, startingNum, sort = "sim")
+            val thirdDocs = searchNews(thirdCategory ?: "생활", 3, startingNum, sort = "sim")
             val thirdItem = thirdDocs.items ?: return@launch
             for (i in thirdItem.indices) {//아이템 개수만큼 for문 실행
                 val thumbnail = getThumbnail(thirdItem[i].link.toString())
@@ -306,18 +304,18 @@ class HomeViewModel(
 
 
             isLoading = true
-            Log.d("LoadingViewModel","$isLoading")
+            Log.d("LoadingViewModel", "$isLoading")
         }
 
     }
+
     suspend fun getThumbnail(url: String): String? {//썸네일 가져오기
-        Log.d("ERRR", "$url")
+
         var thumbnail: String?
         try {
             withContext(Dispatchers.IO) {
                 val docs = Jsoup.connect(url).get()
                 thumbnail = docs.select("meta[property=og:image]").attr("content")
-                Log.d("success2", "$thumbnail")
             }
             if (thumbnail == null || thumbnail == "") return null
             return thumbnail
@@ -339,21 +337,17 @@ class HomeViewModel(
                 val docs = Jsoup.connect(url).get()
                 author = docs.select("meta[name=dable:author]")?.attr("content")
                     .toString()//radioKorea에서 가져오는법
-                Log.d("authortest", "$author")
                 author = Utils.getAuthorName(author)
                 if (author == "") {
                     author = docs.select("em[class=media_end_head_journalist_name]")?.html()
                         .toString()//radioKorea에서 가져오는법
-                    Log.d("authortest1", "$author")
                     author = Utils.getAuthorName(author)
                     if (author == "") {
                         author = docs.select("meta[property=dable:author]")?.attr("content")
                             .toString()//radioKorea에서 가져오는법
-                        Log.d("authortest2", "$author")
                         author = Utils.getAuthorName(author)
                         if (author == "") {
                             author = docs.select("p[class=byline_p]").select("span").html()
-                            Log.d("authortest3", "$author")
                             if (author?.length!!.toInt() > 3) {
                                 val position = Utils.findStringIndex(author, "=")
                                 if (position != null) {
@@ -364,67 +358,49 @@ class HomeViewModel(
                                 author =
                                     docs.select("meta[property=og:article:author]")
                                         ?.attr("content")
-                                Log.d("authortest4", "$author")
                                 author = Utils.getAuthorName(author)
                                 if (author == "") {
                                     author =
                                         docs.select("meta[property=dd:author]")?.attr("content")
-                                    Log.d("authortest5", "$author")
                                     author = Utils.getAuthorName(author)
                                     if (author == "") {
                                         author =
                                             docs.select("div[class=journalist_name]")?.html()
-                                        Log.d("authortest6", "$author")
                                         author = Utils.getAuthorName(author)
                                         if (author == "") {
                                             author = docs.select("meta[property=dd:author]")
                                                 ?.attr("content")
-                                            Log.d("authortest7", "$author")
                                             author = Utils.getAuthorName(author)
                                             if (author == "") {
                                                 author =
                                                     docs.select("span[class=d_newsName]")
                                                         .html()
-                                                Log.d("authortest8", "$author")
                                                 author = Utils.getAuthorName(author)
                                                 if (author == "") {
                                                     author =
                                                         docs.select("span[class=writer]")
                                                             .html()
-                                                    Log.d("authortest9", "$author")
                                                     author = Utils.getAuthorName(author)
                                                     if (author == "") {
                                                         author =
                                                             docs.select("div[class=writer_info]")
                                                                 .attr("span")
-                                                        Log.d("authortest10", "$author")
                                                         author = Utils.getAuthorName(author)
                                                         if (author == "") {
                                                             author =
                                                                 docs.select("p[class=wr]")
                                                                     .html()
-                                                            Log.d(
-                                                                "authortest11",
-                                                                "$author"
-                                                            )
                                                             author = Utils.getAuthorName(author)
                                                             if (author == "") {
                                                                 author =
                                                                     docs.select("p[class=article_byline]")
                                                                         .attr("span")
-                                                                Log.d(
-                                                                    "authortest12",
-                                                                    "$author"
-                                                                )
                                                                 author = Utils.getAuthorName(author)
                                                                 if (author == "") {
                                                                     author =
                                                                         docs.select("span[class=name]")
                                                                             .html()
-                                                                    Log.d(
-                                                                        "authortest13",
-                                                                        "$author"
-                                                                    )
+
                                                                     author =
                                                                         Utils.getAuthorName(author)
                                                                 }
@@ -437,10 +413,7 @@ class HomeViewModel(
                                                                             " ",
                                                                             ""
                                                                         )
-                                                                    Log.d(
-                                                                        "authortest14",
-                                                                        "$author"
-                                                                    )
+
                                                                     author =
                                                                         Utils.getAuthorName(author)
                                                                     if (author == "") {
@@ -449,10 +422,7 @@ class HomeViewModel(
                                                                                 "span[id=writeName]"
                                                                             )
                                                                                 .html()
-                                                                        Log.d(
-                                                                            "authortest15",
-                                                                            "$author"
-                                                                        )
+
                                                                         author =
                                                                             Utils.getAuthorName(
                                                                                 author
@@ -465,10 +435,7 @@ class HomeViewModel(
                                                                                     .attr(
                                                                                         "span"
                                                                                     )
-                                                                            Log.d(
-                                                                                "authortest16",
-                                                                                "$author"
-                                                                            )
+
                                                                             author =
                                                                                 Utils.getAuthorName(
                                                                                     author
@@ -492,7 +459,6 @@ class HomeViewModel(
                         }
                     }
                 }
-                Log.d("author", "$author")
             }
             if (author == null) return author
             return author
@@ -537,7 +503,8 @@ class HomeViewModel(
     fun modifyItem(item: HomeModel?) {
         _newsList.value = repository.modifyNewsItem(item)
     }
-    fun modifyNewsItemIsLikeToLink(item: HomeModel?){
+
+    fun modifyNewsItemIsLikeToLink(item: HomeModel?) {
         _list.value = repository.modifyNewsItemIsLikeToLink(item)
     }
 }
