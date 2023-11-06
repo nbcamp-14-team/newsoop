@@ -293,7 +293,7 @@ class NewspaperRepositoryImpl(
             idGenerate.getAndIncrement(),
             "YTN",
             R.drawable.logo_ytn,
-            "https://m.ytn.co.kr/newslist/news_list.php?mcd=0106",
+            "https://m.ytn.co.kr/newslist/news_list.php?s_mcd=0106",
             "문화"
         ),
         NewspaperModel(

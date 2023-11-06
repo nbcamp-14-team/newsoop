@@ -1,6 +1,7 @@
 package com.nbcamp_14_project.home
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,10 +19,13 @@ class HomeViewPagerFragment : Fragment() {
     private val viewPagerAdapter by lazy {
         HomeViewPagerAdapter(requireActivity())
     }//runDetailFragment
-    private val viewModel: HomeViewPagerViewModel by lazy{
-        ViewModelProvider(
-            requireActivity(),HomeViewPagerViewModelFactory()
-        )[HomeViewPagerViewModel::class.java]
+//    private val viewModel: HomeViewPagerViewModel by lazy{
+//        ViewModelProvider(
+//            requireActivity(),HomeViewPagerViewModelFactory()
+//        )[HomeViewPagerViewModel::class.java]
+//    }
+    private val viewModel: HomeViewPagerViewModel by activityViewModels{
+        HomeViewPagerViewModelFactory()
     }
     private var isLogin = false
     override fun onCreateView(
@@ -43,11 +47,17 @@ class HomeViewPagerFragment : Fragment() {
             viewpager.run {
                 isUserInputEnabled = false
             }
-            viewpager.offscreenPageLimit = 1//생명주기 관련 코드
+            viewpager.offscreenPageLimit = 2//생명주기 관련 코드
             TabLayoutMediator(binding.tabLayout, binding.viewpager) { tab, position ->
                 tab.setText(viewPagerAdapter.getTitle(position))
             }.attach()
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Log.d("HomeView","aa")
+        viewModel.refreshNews()
     }
     private fun initViewModel() {
         with(viewModel) {
