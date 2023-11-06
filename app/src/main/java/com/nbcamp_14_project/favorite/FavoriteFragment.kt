@@ -142,13 +142,15 @@ class FavoriteFragment : Fragment() {
                     val document = task.result
                     if (document.exists()) {
                         val nameField = document.getString("name")
-                        val category = document.getString("category") ?: ""
-                        val secondcategory = document.getString("secondCategory") ?: ""
-                        val thirdcategory = document.getString("thirdCategory") ?: ""
+                        val category = document.getString("category") ?:""
+                        val secondcategory = document.getString("secondCategory") ?:""
+                        val thirdcategory = document.getString("thirdCategory") ?:""
                         binding.tvNick.text = "이름 : $nameField"
                         binding.tvFirstCategory.text = "선호 카데고리: $category"
                         binding.tvSecondCategory.text = ", $secondcategory"
                         binding.tvThirdCategory.text = ", $thirdcategory"
+
+
 
 
                     } else {
@@ -164,6 +166,7 @@ class FavoriteFragment : Fragment() {
             profileBox.visibility = View.INVISIBLE
             logoutButton.visibility = View.INVISIBLE
             binding.textView2.visibility = View.VISIBLE
+
         }
     }
 
@@ -224,17 +227,18 @@ class FavoriteFragment : Fragment() {
         }
 
         loginViewModel.secondCategory.observe(requireActivity()) { text ->
-            if (text.isNotEmpty()) {
+            if (text.isNotEmpty()){
                 binding.tvSecondCategory.text = ", $text"
-            } else {
+            }
+            else {
                 binding.tvSecondCategory.text = null
             }
         }
 
         loginViewModel.thirdCategory.observe(requireActivity()) { text ->
-            if (text.isNotEmpty()) {
+            if (text.isNotEmpty()){
                 binding.tvThirdCategory.text = ", $text"
-            } else {
+            }else {
                 binding.tvThirdCategory.text = null
             }
         }
@@ -387,7 +391,7 @@ class FavoriteFragment : Fragment() {
     fun updateCategory() {
         val curUser = auth.currentUser
         val user = User()
-        val fbUser = firestore.collection("User").document(curUser?.uid ?: return)
+        val fbUser = firestore.collection("User").document(curUser?.uid?:return)
         val updateData = hashMapOf(
             "category" to loginViewModel.category.value,
             "secondCategory" to loginViewModel.secondCategory.value,

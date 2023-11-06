@@ -19,7 +19,7 @@
         android:id="@+id/login_box"
         android:layout_width="415dp"
         android:layout_height="428dp"
-        android:visibility="visible"
+        android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/setting_btn">
@@ -87,7 +87,7 @@
         android:id="@+id/profile_box"
         android:layout_width="match_parent"
         android:layout_height="160dp"
-        android:visibility="invisible"
+        android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -129,7 +129,7 @@
                 android:layout_height="wrap_content"
                 android:text="선호 카테고리 : "
                 android:textColor="#5E5959"
-                android:textSize="16sp" />
+                android:textSize="16sp"/>
 
             <TextView
                 android:id="@+id/tv_second_category"
@@ -137,7 +137,7 @@
                 android:layout_height="wrap_content"
                 android:text=""
                 android:textColor="#5E5959"
-                android:textSize="16sp" />
+                android:textSize="16sp"/>
 
             <TextView
                 android:id="@+id/tv_third_category"
@@ -145,10 +145,11 @@
                 android:layout_height="wrap_content"
                 android:text=""
                 android:textColor="#5E5959"
-                android:textSize="16sp" />
+                android:textSize="16sp"/>
 
 
         </LinearLayout>
+
 
 
         <ImageView
@@ -157,10 +158,10 @@
             android:layout_height="26dp"
             android:scaleType="centerCrop"
             android:src="@drawable/ic_change"
-            app:layout_constraintBottom_toBottomOf="@id/tv_category"
+            app:layout_constraintStart_toEndOf="@+id/tv_category"
             app:layout_constraintEnd_toEndOf="@id/profile_box"
-            app:layout_constraintHorizontal_bias="0.8"
-            app:layout_constraintStart_toEndOf="@+id/tv_category" />
+            app:layout_constraintBottom_toBottomOf="@id/tv_category"
+            app:layout_constraintHorizontal_bias="0.8"/>
 
         <TextView
             android:id="@+id/btn_fav_news"
@@ -204,17 +205,16 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/profile_box" />
 
-
     <View
         android:id="@+id/view_empty"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:background="@color/categoryBackBlur"
         android:visibility="invisible"
-        app:layout_constraintBottom_toTopOf="@id/frag_category"
+        android:background="@color/categoryBackBlur"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/frag_category"/>
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/frag_category"

@@ -5,8 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#FFFFFF"
-    android:clickable="true"
     android:backgroundTint="@color/white"
+    android:clickable="true"
     tools:context=".detail.DetailFragment">
 
 
@@ -15,7 +15,7 @@
         android:layout_width="20dp"
         android:layout_height="20dp"
         android:layout_marginLeft="16dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="16dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_back" />
@@ -24,8 +24,8 @@
         android:id="@+id/img_mic"
         android:layout_width="25dp"
         android:layout_height="25dp"
-        android:layout_marginLeft="265dp"
-        app:layout_constraintStart_toEndOf="@+id/img_back"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintEnd_toStartOf="@+id/img_share"
         app:layout_constraintTop_toTopOf="@+id/img_back"
         app:srcCompat="@drawable/ic_mic" />
 
@@ -33,8 +33,8 @@
         android:id="@+id/img_share"
         android:layout_width="25dp"
         android:layout_height="25dp"
-        android:layout_marginLeft="10dp"
-        app:layout_constraintStart_toEndOf="@+id/img_mic"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintEnd_toStartOf="@+id/img_like"
         app:layout_constraintTop_toTopOf="@+id/img_mic"
         app:srcCompat="@drawable/ic_share" />
 
@@ -42,21 +42,32 @@
         android:id="@+id/img_like"
         android:layout_width="25dp"
         android:layout_height="25dp"
-        android:layout_marginLeft="10dp"
-        app:layout_constraintStart_toEndOf="@+id/img_share"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/img_share"
         app:srcCompat="@drawable/ic_like" />
 
-    <ImageView
-        android:id="@+id/img_thumbnail"
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardView"
         android:layout_width="match_parent"
-        android:layout_height="230dp"
-        android:layout_marginTop="16dp"
-        android:background="@drawable/bg_round"
-        android:src="@drawable/img_muhandojeon"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="20dp"
+        app:cardCornerRadius="20dp"
+        app:layout_constraintTop_toBottomOf="@+id/img_back"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/img_back" />
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <ImageView
+            android:id="@+id/img_thumbnail"
+            android:layout_width="match_parent"
+            android:layout_height="230dp"
+            android:src="@drawable/img_muhandojeon"
+            android:scaleType="centerCrop" />
+    </androidx.cardview.widget.CardView>
+
 
     <TextView
         android:id="@+id/tv_title"
@@ -64,14 +75,14 @@
         android:layout_height="52dp"
         android:layout_marginLeft="16dp"
         android:layout_marginTop="20dp"
-        android:textColor="@color/black"
         android:layout_marginEnd="50dp"
         android:text="Title: Unmasking the Truth\nInvestigative Report expo"
+        android:textColor="@color/black"
         android:textSize="20dp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/img_thumbnail" />
+        app:layout_constraintTop_toBottomOf="@+id/cardView" />
 
     <TextView
         android:id="@+id/tv_name"
@@ -100,17 +111,17 @@
         android:id="@+id/tv_date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="330dp"
+        android:layout_marginEnd="16dp"
         android:layout_marginBottom="8dp"
         android:gravity="top"
         android:text="1분전"
         app:layout_constraintBottom_toBottomOf="@+id/tv_name"
-        app:layout_constraintStart_toStartOf="@+id/tv_name" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <ScrollView
         android:id="@+id/sv_description"
         android:layout_width="409dp"
-        android:layout_height="200dp"
+        android:layout_height="160dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -122,33 +133,34 @@
             android:id="@+id/tv_description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:textColorHint="@color/black"
             android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="20dp"
             android:text="The nuclear-powered USS Ronald Reagan aircraft carrier arrived at the southeastern port of Busan following trilateral naval drills involving the United States, South Korea and Japan in a show of force against North Korea."
             android:textColor="@color/black"
+            android:textColorHint="@color/black"
             android:textSize="17dp" />
 
     </ScrollView>
 
-    <com.google.android.material.button.MaterialButton
+    <Button
         android:id="@+id/btn_text"
         android:layout_width="230dp"
-        android:layout_height="42dp"
-        android:layout_marginTop="4dp"
-        android:text="원문 보기"
+        android:layout_height="50dp"
+        style="@style/Widget.Material3.Button.TextButton"
         android:padding="0dp"
+        android:text="원문 보기"
+        android:layout_marginTop="4dp"
         android:textColor="@color/black"
+        android:gravity="center"
         android:textSize="20dp"
         android:textStyle="bold"
+        app:cornerRadius="13dp"
+        app:strokeColor="@color/green"
+        app:strokeWidth="2dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/sv_description"
-        app:cornerRadius="100dp"
-        android:backgroundTint="@color/white"
-        app:strokeColor="#BFE6C0"
-        app:strokeWidth="3dp"/>
+        app:layout_constraintTop_toBottomOf="@+id/sv_description" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

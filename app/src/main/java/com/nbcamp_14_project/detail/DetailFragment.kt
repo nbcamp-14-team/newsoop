@@ -32,6 +32,8 @@ import com.nbcamp_14_project.databinding.FragmentFavoriteBinding
 import com.nbcamp_14_project.databinding.FragmentSearchBinding
 import com.nbcamp_14_project.favorite.FavoriteListAdapter
 import com.nbcamp_14_project.favorite.FavoriteViewModel
+import com.nbcamp_14_project.home.HomeModelFactory
+import com.nbcamp_14_project.home.HomeViewModel
 import com.nbcamp_14_project.newspaper.NewspaperDialog
 import com.nbcamp_14_project.search.SearchListAdapter
 import com.nbcamp_14_project.search.SearchViewModel
@@ -55,11 +57,17 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
     private lateinit var textToSpeech: TextToSpeech
     private val favoriteViewModel: FavoriteViewModel by activityViewModels()
     private val loginViewModel: LoginViewModel by activityViewModels()
+    private val homeViewModel: HomeViewModel by viewModels({ requireParentFragment() })
     private val searchViewModel: SearchViewModel by lazy {
         ViewModelProvider(
             requireActivity(), SearchViewModelFactory()
         )[SearchViewModel::class.java]
     }
+    private val fireStore = FirebaseFirestore.getInstance()
+    var isLike:Boolean? = false
+
+
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -69,12 +77,33 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
         // Detail 정보 가져오기
         val detailInfo = viewModel.detailInfo.value
 
-        // 즐겨찾기 여부 확인
+//         즐겨찾기 여부 확인
         val isFavorite = favoriteViewModel.favoriteList.value?.contains(detailInfo) == true
         if (isFavorite) {
             binding.imgLike.setImageResource(R.drawable.ic_check)
         } else {
             binding.imgLike.setImageResource(R.drawable.ic_like)
+        }
+        val collectionRef = fireStore.collection("User")
+            .document(FirebaseAuth.getInstance().currentUser?.uid ?: return)
+            .collection("favorites")
+            .document(detailInfo?.title.toString())
+        collectionRef.get().addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                val document = task.result
+                if (document.exists()) {
+                    isLike = document.getBoolean("isLike")
+                    Log.d("isLike??","$isLike")
+                    if (isLike == true) {
+                        binding.imgLike.setImageResource(R.drawable.ic_check)
+                    } else {
+                        binding.imgLike.setImageResource(R.drawable.ic_like)
+                    }
+                }
+            }
+            else{
+                return@addOnCompleteListener
+            }
         }
 
         // 즐겨찾기 버튼 클릭 리스너
@@ -83,8 +112,9 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
             if (user != null) {
                 // 사용자가 로그인한 경우
                 if (detailInfo != null) {
-                    val isFavorite = favoriteViewModel.favoriteList.value?.contains(detailInfo) == true
-                    if (isFavorite) {
+                    val isFavorite =
+                        favoriteViewModel.favoriteList.value?.contains(detailInfo) == true
+                    if (isFavorite || isLike == true ) {
                         favoriteViewModel.removeFavoriteItem(detailInfo)
                         searchViewModel.modifyFavoriteItemToPosition(detailInfo)
                         binding.imgLike.setImageResource(R.drawable.ic_like)
@@ -180,7 +210,8 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
 
         if (userUID != null) {
             val db = FirebaseFirestore.getInstance()
-            val favoriteCollection = db.collection("User").document(userUID).collection("favorites")
+            val favoriteCollection =
+                db.collection("User").document(userUID).collection("favorites")
             val favoriteData = hashMapOf(
                 "title" to detailInfo.title,
                 "thumbnail" to detailInfo.thumbnail,
@@ -188,10 +219,11 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
                 "author" to detailInfo.author,
                 "originalLink" to detailInfo.originalLink,
                 "pubDate" to detailInfo.pubDate,
-                "created" to Date()
+                "created" to Date(),
+                "isLike" to detailInfo.isLike
             )
 
-            favoriteCollection.add(favoriteData)
+            favoriteCollection.document(detailInfo.title.toString()).set(favoriteData)
         }
     }
 

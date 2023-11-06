@@ -12,7 +12,7 @@ data class HomeModel(
     val isFollowing: Boolean = false,
     val link: String? = null,//원문 링크
     val pubDate: Date? = null,//발간일자
-    val viewType: Int,
+    val viewType: Int? = null,
     var isLike: Boolean? = false//좋아요 확인
 )
 
