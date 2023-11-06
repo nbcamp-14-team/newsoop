@@ -38,4 +38,5 @@ class HomeViewPagerAdapter(fragmentActivity: FragmentActivity):FragmentStateAdap
         list = data.toMutableList()
         notifyDataSetChanged()
     }
+
 }

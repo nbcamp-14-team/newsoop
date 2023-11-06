@@ -1,53 +1,76 @@
-<?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="90dp"
-    android:padding="10dp"
-    android:layout_margin="10dp"
-    android:background="@drawable/iv_debate"
-    android:id="@+id/container"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_height="wrap_content"
+    android:minHeight="70dp"
+    app:cardCornerRadius="8dp"
+    app:strokeColor="@color/strokeGray"
+    app:strokeWidth="1dp"
+    android:layout_marginTop="10dp"
+    app:cardBackgroundColor="@color/white"
+    android:background="@drawable/iv_home"
+    app:cardElevation="4dp">
 
-    <TextView
-        android:id="@+id/tv_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:text="Q. 어린이들에게 잔소리를 해야 할까?"
-        android:textSize="20dp"
-        android:textStyle="bold"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="@dimen/list_card_view_padding">
 
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="2"
+            android:text="Q. 어린이들에게 잔소리를 해야 할까?"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toStartOf="@id/btn_delete"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/tv_agree"/>
 
-    <TextView
-        android:id="@+id/tv_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="작성자: 정현식"
-        android:textSize="18dp"
-        android:layout_marginTop="5dp"
-        android:layout_marginStart="5dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_title" />
+        <Button
+            android:id="@+id/btn_delete"
+            style="?attr/materialIconButtonStyle"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            app:icon="@drawable/ic_cancel_24"
+            android:alpha="0.5"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_title"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/tv_title"
+            app:layout_constraintTop_toTopOf="@+id/tv_title" />
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btn_delete"
-        android:layout_width="50dp"
-        android:layout_height="40dp"
-        android:backgroundTint="@color/white"
-        android:padding="0dp"
-        android:text="삭제"
-        android:textColor="@color/black"
-        android:textSize="10dp"
-        android:textStyle="bold"
-        app:cornerRadius="100dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/tv_name"
-        app:strokeColor="#BFE6C0"
-        app:strokeWidth="3dp" />
+        <TextView
+            android:id="@+id/tv_agree"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="A: 찬성합니다."
+            app:layout_constraintStart_toStartOf="@+id/tv_title"
+            app:layout_constraintTop_toBottomOf="@+id/tv_title"
+            app:layout_constraintBottom_toTopOf="@+id/tv_opposite"/>
+
+        <TextView
+            android:id="@+id/tv_opposite"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="B: 반대합니다."
+            app:layout_constraintStart_toStartOf="@+id/tv_agree"
+            app:layout_constraintTop_toBottomOf="@+id/tv_agree"
+            app:layout_constraintBottom_toTopOf="@+id/tv_name"/>
+
+        <TextView
+            android:id="@+id/tv_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="정현식"
+            app:layout_constraintStart_toStartOf="@+id/tv_opposite"
+            app:layout_constraintTop_toBottomOf="@+id/tv_opposite"
+            app:layout_constraintBottom_toTopOf="parent"/>
 
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.google.android.material.card.MaterialCardView>

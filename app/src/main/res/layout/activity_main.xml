@@ -61,6 +61,7 @@
         app:tabIndicatorGravity="top"
         app:tabIndicatorColor="#FF229627"
         app:tabTextColor="@color/tab_select"
+        app:tabIconTint="@color/tab_select"
         app:tabTextAppearance="@style/tab_text"
         app:tabIndicatorFullWidth="false">
         <com.google.android.material.tabs.TabItem

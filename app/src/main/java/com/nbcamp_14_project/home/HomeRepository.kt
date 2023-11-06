@@ -24,6 +24,7 @@ interface MainFragmentRepository {
     fun removeLastNewsItem():List<HomeModel>
     fun modifyHeadLineItem(item: HomeModel?):List<HomeModel>
     fun modifyNewsItem(item: HomeModel?):List<HomeModel>
+    fun modifyNewsItemIsLikeToLink(item: HomeModel?):List<HomeModel>
     fun clearNewsItems():List<HomeModel>
     fun clearHeadLineItems():List<HomeModel>
 
@@ -111,6 +112,23 @@ class MainFragmentRepositoryImpl(
         return ArrayList<HomeModel>(newsList)
 
     }
+    override fun modifyNewsItemIsLikeToLink(item: HomeModel?):List<HomeModel> {
+        fun findIndex(item: HomeModel?):Int{
+            if(item == null) return 0
+            val findItem = newsList.find{
+                it.link == item.link
+            }
+            return newsList.indexOf(findItem)
+        }
+        val findPosition = findIndex(item)
+        if(findPosition < 0){
+            return newsList
+        }
+        if(item == null) return newsList
+        newsList[findPosition].isLike = item.isLike
+        return ArrayList<HomeModel>(newsList)
+
+    }
 
     override fun removeHeadLineItem(item: HomeModel?):List<HomeModel> {
         fun findIndex(item: HomeModel?):Int{
@@ -144,7 +162,10 @@ class MainFragmentRepositoryImpl(
     }
 
     override fun removeLastNewsItem(): List<HomeModel> {
-        newsList.removeAt(newsList.lastIndex)
+        if(newsList.isNotEmpty()){
+            newsList.removeAt(newsList.lastIndex)
+        }
+
         return ArrayList<HomeModel>(newsList)
     }
 

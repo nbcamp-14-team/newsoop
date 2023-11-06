@@ -149,14 +149,14 @@
 
 
         </LinearLayout>
-        
+
 
 
         <ImageView
             android:id="@+id/iv_fix_category"
             android:layout_width="26dp"
             android:layout_height="26dp"
-android:scaleType="centerCrop"
+            android:scaleType="centerCrop"
             android:src="@drawable/ic_change"
             app:layout_constraintStart_toEndOf="@+id/tv_category"
             app:layout_constraintEnd_toEndOf="@id/profile_box"

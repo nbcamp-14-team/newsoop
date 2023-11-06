@@ -54,6 +54,8 @@ class DebateDetailFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+
+
         // SwipeRefreshLayout 초기화
         val swipeRefreshLayout = view.findViewById<SwipeRefreshLayout>(R.id.swipe_refresh_layout)
 
@@ -191,9 +193,18 @@ class DebateDetailFragment : Fragment() {
         }
 
         val title = viewModel.title
+        val originalcontext = viewModel.originalcontext
+        val agreecontext = viewModel.agreecontext
+        val oppositecontext = viewModel.oppositecontext
+        val name = viewModel.name
+
 
         if (title != null) {
             binding.tvTitle.text = title
+            binding.tvContext.text = originalcontext
+            binding.tvAgreecontext.text = agreecontext
+            binding.tvOppositecontext.text = oppositecontext
+            binding.tvName.text = name
         }
 
         adapter = DebateDetailListAdapter(debatedetailList)
@@ -536,6 +547,7 @@ class DebateDetailFragment : Fragment() {
         val editTextComment = dialogView.findViewById<EditText>(R.id.tv_comment)
         val btnAgree = dialogView.findViewById<MaterialButton>(R.id.btn_agree)
         val btnOpposite = dialogView.findViewById<MaterialButton>(R.id.btn_opposite)
+
         builder.setView(dialogView)
 
         builder.setTitle("댓글 추가하기")
@@ -596,6 +608,15 @@ class DebateDetailFragment : Fragment() {
         }
 
         builder.setPositiveButton("확인") { _, _ ->
+
+        }
+        builder.setNegativeButton("취소", null)
+        val dialog = builder.create()
+
+
+        dialog.show()
+        val possitiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE)
+        possitiveButton.setOnClickListener{
             val commentText = editTextComment.text.toString().trim()
             if (commentText.isEmpty()) {
                 Toast.makeText(context, "댓글 내용을 입력해 주세요", Toast.LENGTH_SHORT).show()
@@ -650,10 +671,12 @@ class DebateDetailFragment : Fragment() {
                             }
                     }
                 }
+                dialog.dismiss()
             }
+
         }
-        builder.setNegativeButton("취소", null)
-        builder.show()
+
+
     }
 
 

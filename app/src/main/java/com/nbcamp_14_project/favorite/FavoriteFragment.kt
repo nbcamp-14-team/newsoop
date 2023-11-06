@@ -1,7 +1,10 @@
 package com.nbcamp_14_project.favorite
 
 import android.app.Activity
+import android.app.AlertDialog
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -9,19 +12,23 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
+import android.widget.Toast
+import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.FirebaseStorage
 import com.nbcamp_14_project.R
 import com.nbcamp_14_project.data.model.User
 import com.nbcamp_14_project.databinding.FragmentFavoriteBinding
@@ -37,9 +44,6 @@ import com.nbcamp_14_project.setting.SettingActivity
 import com.nbcamp_14_project.ui.login.CategoryFragment
 import com.nbcamp_14_project.ui.login.LoginActivity
 import com.nbcamp_14_project.ui.login.LoginViewModel
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 
 class FavoriteFragment : Fragment() {
     companion object {
@@ -90,13 +94,39 @@ class FavoriteFragment : Fragment() {
             }
         }
 
+    private val user = FirebaseAuth.getInstance().currentUser
+    private val userUID = user?.uid
+    private var selectedImageUri: Uri? = null
+    private val pickImageActivityResult =//갤러리에서 선택한 사진 적용
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+            with(binding) {
+                if (result.resultCode == Activity.RESULT_OK) {
+                    val data: Intent? = result.data
+                    if (data != null) {
+                        selectedImageUri = data.data
+                        if (selectedImageUri != null) {
+                            binding.imgProfile.setImageURI(selectedImageUri)
+
+                            if (userUID != null) {
+                                // 기존의 image 삭제하기
+                                deleteFirebaseImage(userUID)
+                                setFirebaseImage()
+                            }
+                        } else {
+                            Toast.makeText(activity, "사진을 가져오는데 실패했습니다.", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                }
+            }
+        }
+
     override fun onResume() {
         super.onResume()
 
         // 즐겨찾기 목록 업데이트
         getFavoriteListFromFireStore()
+        Log.e("onResume", "#hyunsik")
 
-        Log.e("onResum", "#hyunsik")
         // 로그인 상태에 따른 화면 처리
         val loginBox = binding.root.findViewById<ConstraintLayout>(R.id.login_box)
         val profileBox = binding.root.findViewById<ConstraintLayout>(R.id.profile_box)
@@ -159,6 +189,56 @@ class FavoriteFragment : Fragment() {
     }
 
 
+    // 갤러리에서 사진 보는 함수
+    private fun navigateGallery() {
+        val intent = Intent(Intent.ACTION_PICK)
+        intent.type = "image/*"
+        pickImageActivityResult.launch(intent)
+    }
+
+    // 권한부여 Dialog 생성
+    private fun showPermissionContextPopup() {
+        AlertDialog.Builder(activity)
+            .setTitle("권한을 부여해주세요")
+            .setMessage("권한을 부여해주세요")
+            .setPositiveButton("권한 부여") { _, _ ->
+                requestPermissions(arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE), 1000)
+            }
+            .setNegativeButton("취소") { _, _ -> }
+            .create()
+            .show()
+    }
+
+    // firebase profile image upload
+    private fun setFirebaseImage() {
+        Log.d("img", "get user : $userUID")
+        val storage = FirebaseStorage.getInstance()
+        var imgFileName = "IMAGE_" + userUID + ".jpg"
+        var storageRef = storage.reference.child("profiles").child(imgFileName)
+        storageRef.putFile(selectedImageUri!!).addOnSuccessListener {
+            Toast.makeText(requireContext(), "이미지를 firebase에 업로드 했습니다.", Toast.LENGTH_SHORT)
+                .show()
+        }.addOnFailureListener {
+            Toast.makeText(requireContext(), "이미지 업로드에 실패했습니다..", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    //firebase profile image 지우기
+    private fun deleteFirebaseImage(userUID: String) {
+        val storage = FirebaseStorage.getInstance()
+        var imgFileName = "IMAGE_" + userUID + ".jpg"
+        var storageRef = storage.reference.child("profiles").child(imgFileName)
+        storageRef.delete().addOnSuccessListener {
+            Log.d("img", "이미지 삭제 성공")
+            Toast.makeText(requireContext(), "이미지를 firebase에서 삭제 합니다..", Toast.LENGTH_SHORT)
+                .show()
+        }.addOnFailureListener {
+            Toast.makeText(requireContext(), "이미지 삭제를 실패했습니다.", Toast.LENGTH_SHORT).show()
+        }
+
+    }
+
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -185,6 +265,22 @@ class FavoriteFragment : Fragment() {
             }
         }
 
+        // firebase에서 이미지 가져오기
+        if (userUID != null) {
+            Log.d("img", "이미지 가져오기 시작")
+            val storage = FirebaseStorage.getInstance()
+            var imgFileName = "IMAGE_" + userUID + ".jpg"
+            storage.reference.child("profiles")
+                .child(imgFileName).downloadUrl.addOnSuccessListener {
+                    Glide.with(requireContext()).load(it).into(binding.imgProfile)
+                    Log.d("img", "이미지 가져오기 성공 : $it")
+                }.addOnFailureListener {
+                    Log.d("img", it.message.toString())
+                    Toast.makeText(requireContext(), "이미지 불러오기 실패", Toast.LENGTH_SHORT).show()
+                }
+        }
+
+
         // RecyclerView 어댑터 초기화
         adapter = FavoriteListAdapter { item ->
             val detailInfo = item
@@ -193,7 +289,7 @@ class FavoriteFragment : Fragment() {
             mainActivity.runDetailFragment()
         }
 
-        // TODO : RecyclerView 설정 - 가로 방향
+        //RecyclerView 설정 - 가로 방향
         binding.favoriteList.layoutManager =
             LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         binding.favoriteList.adapter = adapter
@@ -226,6 +322,31 @@ class FavoriteFragment : Fragment() {
         binding.settingBtn.setOnClickListener {
             val intent = Intent(requireContext(), SettingActivity::class.java)
             startActivity(intent)
+        }
+
+        //프로필 이미지 올리기
+        binding.imgProfile.setOnClickListener {
+            Log.d("img", "start")
+            when {
+                // 갤러리 접근 권한이 있는 경우
+                ContextCompat.checkSelfPermission(
+                    requireActivity(),
+                    android.Manifest.permission.READ_EXTERNAL_STORAGE
+                ) == PackageManager.PERMISSION_GRANTED -> {
+                    Log.d("img", "getImage")
+                    navigateGallery()
+                }
+                // 갤러리 접근 권한이 없는 경우
+                shouldShowRequestPermissionRationale(android.Manifest.permission.READ_EXTERNAL_STORAGE)
+                -> {
+                    Log.d("img", "showPermission")
+                    showPermissionContextPopup()
+                }
+                // 권한 요청(requestPermissions) -> 갤러리 접근(onRequestPermissionResult)
+                else -> requestPermissions(
+                    arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE), 1000
+                )
+            }
         }
 
 
@@ -340,8 +461,6 @@ class FavoriteFragment : Fragment() {
         }.addOnFailureListener { e ->
             // 업데이트 실패 시
         }
-
-
     }
 
 }
