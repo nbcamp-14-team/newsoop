@@ -89,12 +89,10 @@ class FavoriteFragment : Fragment() {
                         if (selectedImageUri != null) {
                             binding.imgProfile.load(selectedImageUri) {
                                 transformations(CircleCropTransformation())
-                            }
-
-                            if (userUID != null) {
-                                // 기존의 image 삭제하기
-                                deleteFirebaseImage(userUID)
-                                setFirebaseImage()
+                                if (userUID != null) {
+                                    deleteFirebaseImage(userUID)
+                                    setFirebaseImage()
+                                }
                             }
                         } else {
                             Toast.makeText(activity, "사진을 가져오는데 실패했습니다.", Toast.LENGTH_SHORT).show()
@@ -247,7 +245,8 @@ class FavoriteFragment : Fragment() {
             var imgFileName = "IMAGE_" + userUID + ".jpg"
             storage.reference.child("profiles")
                 .child(imgFileName).downloadUrl.addOnSuccessListener {
-                    binding.imgProfile.load(it) {
+                    selectedImageUri = it
+                    binding.imgProfile.load(selectedImageUri) {
                         transformations(CircleCropTransformation())
                     }
                     //Glide.with(requireContext()).load(it).into(binding.imgProfile)
