@@ -24,6 +24,7 @@
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:maxLines="2"
+            android:textStyle="bold"
             android:text="Q. 어린이들에게 잔소리를 해야 할까?"
             android:textSize="18sp"
             app:layout_constraintEnd_toStartOf="@id/btn_delete"
@@ -48,6 +49,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="A: 찬성합니다."
+            android:textSize="14sp"
             app:layout_constraintStart_toStartOf="@+id/tv_title"
             app:layout_constraintTop_toBottomOf="@+id/tv_title"
             app:layout_constraintBottom_toTopOf="@+id/tv_opposite"/>
@@ -57,6 +59,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="B: 반대합니다."
+            android:textSize="14sp"
+
             app:layout_constraintStart_toStartOf="@+id/tv_agree"
             app:layout_constraintTop_toBottomOf="@+id/tv_agree"
             app:layout_constraintBottom_toTopOf="@+id/tv_name"/>
@@ -66,6 +70,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="정현식"
+            android:textSize="12sp"
+            android:textColor="#5B5C5E"
             app:layout_constraintStart_toStartOf="@+id/tv_opposite"
             app:layout_constraintTop_toBottomOf="@+id/tv_opposite"
             app:layout_constraintBottom_toTopOf="parent"/>
