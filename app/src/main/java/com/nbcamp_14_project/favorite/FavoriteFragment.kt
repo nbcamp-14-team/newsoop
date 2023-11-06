@@ -199,8 +199,7 @@ class FavoriteFragment : Fragment() {
         var imgFileName = "IMAGE_" + userUID + ".jpg"
         var storageRef = storage.reference.child("profiles").child(imgFileName)
         storageRef.putFile(selectedImageUri!!).addOnSuccessListener {
-            Toast.makeText(requireContext(), "이미지를 firebase에 업로드 했습니다.", Toast.LENGTH_SHORT)
-                .show()
+            Log.d("img", "이미지 업로드 성공")
         }.addOnFailureListener {
             Toast.makeText(requireContext(), "이미지 업로드에 실패했습니다..", Toast.LENGTH_SHORT).show()
         }
@@ -213,8 +212,6 @@ class FavoriteFragment : Fragment() {
         var storageRef = storage.reference.child("profiles").child(imgFileName)
         storageRef.delete().addOnSuccessListener {
             Log.d("img", "이미지 삭제 성공")
-            Toast.makeText(requireContext(), "이미지를 firebase에서 삭제 합니다..", Toast.LENGTH_SHORT)
-                .show()
         }.addOnFailureListener {
             Toast.makeText(requireContext(), "이미지 삭제를 실패했습니다.", Toast.LENGTH_SHORT).show()
         }
