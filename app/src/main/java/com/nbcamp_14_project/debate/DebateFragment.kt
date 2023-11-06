@@ -21,7 +21,7 @@ import com.nbcamp_14_project.databinding.FragmentDebateBinding
 import com.nbcamp_14_project.ui.login.LoginActivity
 
 class DebateFragment : Fragment() {
-    private var _binding: FragmentDebateBinding? = null
+    private var _binding: com.nbcamp_14_project.databinding.FragmentDebateBinding? = null
     private val binding get() = _binding!!
     private lateinit var adapter: DebateListAdapter
     private val debateList = ArrayList<DebateItem>()
@@ -41,7 +41,25 @@ class DebateFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        adapter = DebateListAdapter(debateList)
+        binding.searchBtn.setOnClickListener {
+            val searchText = binding.searchInput.text.toString()
+
+            // 검색어와 일치하는 항목을 저장할 목록을 만듭니다.
+            val searchResults = ArrayList<DebateItem>()
+
+            // 검색어와 tv_title을 비교하여 일치하는 항목을 찾습니다.
+            for (debateItem in debateList) {
+                if (debateItem.title.contains(searchText, ignoreCase = true)) {
+                    searchResults.add(debateItem)
+                }
+            }
+
+            // 어댑터에 검색 결과를 설정하여 RecyclerView를 업데이트합니다.
+            adapter.setDebateList(searchResults)
+        }
+
+
+        adapter = DebateListAdapter()
         binding.debateList.layoutManager = LinearLayoutManager(context)
         binding.debateList.adapter = adapter
 
@@ -89,7 +107,7 @@ class DebateFragment : Fragment() {
                             .addOnSuccessListener {
                                 // Firestore에서 삭제 성공
                                 debateList.removeAt(position)
-                                adapter.notifyDataSetChanged()
+                                adapter.setDebateList(debateList)
                             }
                             .addOnFailureListener { e ->
                                 // 삭제 실패
@@ -129,7 +147,7 @@ class DebateFragment : Fragment() {
 
 
     private fun showAddDebateDialog() {
-        val builder = AlertDialog.Builder(requireContext())
+        val builder = AlertDialog.Builder(requireContext(), R.style.RoundedCornersAlertDialog)
         builder.setTitle("토론 추가하기")
         builder.setIcon(R.drawable.ic_people)
 
@@ -194,7 +212,7 @@ class DebateFragment : Fragment() {
                                     newRef.set(newDebateItem)
                                         .addOnSuccessListener { documentReference ->
                                             debateList.add(newDebateItem)
-                                            adapter.notifyDataSetChanged()
+                                            adapter.setDebateList(debateList)
                                         }
                                         .addOnFailureListener { e ->
 
@@ -256,7 +274,7 @@ class DebateFragment : Fragment() {
                         )
                     }
                 }
-                adapter.notifyDataSetChanged()
+                adapter.setDebateList(debateList)
             }
             .addOnFailureListener { e ->
 

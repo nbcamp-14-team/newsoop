@@ -4,6 +4,9 @@ import android.app.AlertDialog
 import android.content.Intent
 import android.content.res.ColorStateList
 import android.os.Bundle
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.style.ForegroundColorSpan
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -57,13 +60,13 @@ class DebateDetailFragment : Fragment() {
 
 
         // SwipeRefreshLayout 초기화
-        val swipeRefreshLayout = view.findViewById<SwipeRefreshLayout>(R.id.swipe_refresh_layout)
+//        val swipeRefreshLayout = view.findViewById<SwipeRefreshLayout>(R.id.swipe_refresh_layout)
 
         // Swipe to Refresh 리스너 설정
-        swipeRefreshLayout.setOnRefreshListener {
-            // Swipe to Refresh 동작 시, 데이터 다시 불러오는 작업 수행
-            loadComments(viewModel.debateId ?: "")
-        }
+//        swipeRefreshLayout.setOnRefreshListener {
+//            // Swipe to Refresh 동작 시, 데이터 다시 불러오는 작업 수행
+//            loadComments(viewModel.debateId ?: "")
+//        }
 
 
         val spinner = binding.homeSpinner
@@ -199,12 +202,42 @@ class DebateDetailFragment : Fragment() {
         val name = viewModel.name
 
 
+        val fullAgreeText = "Agree : ${agreecontext}"
+
+// SpannableString을 생성합니다.
+        val spannableString = SpannableString(fullAgreeText)
+
+// "Agree" 문자열이 전체 텍스트에서 시작하는 인덱스를 찾습니다.
+        val startIndex = fullAgreeText.indexOf("Agree")
+
+// "Agree" 부분에 적용할 파란색을 정의합니다.
+        val colorBlue = resources.getColor(R.color.blue) // 원하는 파란색 리소스로 변경하세요
+
+// "Agree"를 파란색으로 변경합니다.
+        spannableString.setSpan(ForegroundColorSpan(colorBlue), startIndex, startIndex + "Agree".length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+
+        val fullDisagreeText = "Disagree : ${oppositecontext}"
+
+// SpannableString을 생성합니다.
+        val spannableString1 = SpannableString(fullDisagreeText)
+
+// "Disagree" 문자열이 전체 텍스트에서 시작하는 인덱스를 찾습니다.
+        val startIndex1 = fullDisagreeText.indexOf("Disagree")
+
+// "Disagree" 부분에 적용할 빨간색을 정의합니다.
+        val colorRed = resources.getColor(R.color.red) // 원하는 빨간색 리소스로 변경하세요
+
+// "Disagree"를 빨간색으로 변경합니다.
+        spannableString1.setSpan(ForegroundColorSpan(colorRed), startIndex1, startIndex1 + "Disagree".length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+
+// TextView에 SpannableString을 설정하여 "Disagree"를 빨간색으로 표시합니다
+
         if (title != null) {
             binding.tvTitle.text = title
             binding.tvContext.text = originalcontext
-            binding.tvAgreecontext.text = agreecontext
-            binding.tvOppositecontext.text = oppositecontext
-            binding.tvName.text = name
+            binding.tvAgreecontext.text = spannableString
+            binding.tvOppositecontext.text = spannableString1
+            binding.tvName.text = "작성자 : ${name}"
         }
 
         adapter = DebateDetailListAdapter(debatedetailList)
@@ -329,9 +362,9 @@ class DebateDetailFragment : Fragment() {
                 }
         }
 
-        val swipeRefreshLayout = view?.findViewById<SwipeRefreshLayout>(R.id.swipe_refresh_layout)
-        swipeRefreshLayout?.isRefreshing = false
-
+//        val swipeRefreshLayout = view?.findViewById<SwipeRefreshLayout>(R.id.swipe_refresh_layout)
+//        swipeRefreshLayout?.isRefreshing = false
+//
     }
 
 

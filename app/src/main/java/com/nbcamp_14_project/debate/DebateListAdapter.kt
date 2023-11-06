@@ -9,8 +9,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.nbcamp_14_project.R
 import com.nbcamp_14_project.databinding.ItemDebateBinding
 
-class DebateListAdapter(private val debateList: List<DebateItem>) : RecyclerView.Adapter<DebateListAdapter.ViewHolder>() {
-
+class DebateListAdapter() : RecyclerView.Adapter<DebateListAdapter.ViewHolder>() {
+    private val debateList: MutableList<DebateItem> = mutableListOf()
     interface ItemClick {
         fun onClick(view: View, position: Int, title: String)
         fun onDeleteClick(position: Int)
@@ -37,9 +37,9 @@ class DebateListAdapter(private val debateList: List<DebateItem>) : RecyclerView
         }
         val debateItem = debateList[position]
         holder.title.text = debateItem.title
-        holder.agree.text = debateItem.agreecontext
-        holder.opposite.text = debateItem.oppositecontext
-        holder.name.text = "${debateItem.name}"
+        holder.agree.text = "찬성 : ${debateItem.agreecontext}"
+        holder.opposite.text = "반대 : ${debateItem.oppositecontext}"
+        holder.name.text = "작성자 : ${debateItem.name}"
 
         holder.deleteButton.setOnClickListener {
             val position = holder.adapterPosition
@@ -56,4 +56,13 @@ class DebateListAdapter(private val debateList: List<DebateItem>) : RecyclerView
     override fun getItemCount(): Int {
         return debateList.size
     }
+    fun setDebateList(newDebateList: List<DebateItem>) {
+        debateList.clear()
+        debateList.addAll(newDebateList)
+        notifyDataSetChanged()
+    }
+
+
+
+
 }
