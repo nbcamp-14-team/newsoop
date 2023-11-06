@@ -125,6 +125,31 @@
                 app:layout_constraintEnd_toStartOf="@+id/tv_vs"
                 app:layout_constraintStart_toEndOf="@+id/ic_agree"
                 app:layout_constraintTop_toTopOf="@+id/ic_agree" />
+    <ProgressBar
+        android:id="@+id/debate_progress_bar"
+        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+        android:layout_width="250dp"
+        android:layout_height="50dp"
+        android:background="#F44336"
+        android:max="100"
+        android:progress="50"
+        android:progressDrawable="@drawable/progress_drawable"
+        app:layout_constraintBottom_toTopOf="@+id/swipe_refresh_layout"
+        app:layout_constraintEnd_toStartOf="@+id/ic_opposite"
+        app:layout_constraintStart_toEndOf="@+id/ic_agree"
+        app:layout_constraintTop_toBottomOf="@+id/tv_opinion2" />
+
+    <TextView
+        android:id="@+id/tv_agree"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="0"
+        android:textSize="40dp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/ic_agree"
+        app:layout_constraintEnd_toStartOf="@+id/tv_vs"
+        app:layout_constraintStart_toEndOf="@+id/ic_agree"
+        app:layout_constraintTop_toTopOf="@+id/ic_agree" />
 
             <TextView
                 android:id="@+id/tv_opposite"

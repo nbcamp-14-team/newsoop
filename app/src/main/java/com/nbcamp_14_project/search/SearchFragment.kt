@@ -142,7 +142,6 @@ class SearchFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         initView()
         initViewModel()
-        val user = FirebaseAuth.getInstance().currentUser
         val userUID = user?.uid
         if (userUID != null) {
             getRecentSearchListFirebase(userUID)

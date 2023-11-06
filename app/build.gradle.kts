@@ -102,11 +102,8 @@ dependencies {
     implementation("com.firebaseui:firebase-ui-storage:8.0.1")
     implementation("com.github.bumptech.glide:compiler:4.13.2")
     //swipe
-    implementation ("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
-
+    implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
 
     //오픈소스 라이선스
     implementation("com.google.android.gms:play-services-oss-licenses:17.0.0")
-    //Glide
-    implementation("com.github.bumptech.glide:glide:4.16.0")
 }

@@ -21,7 +21,8 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.bumptech.glide.Glide
+import coil.load
+import coil.transform.CircleCropTransformation
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -86,12 +87,12 @@ class FavoriteFragment : Fragment() {
                     if (data != null) {
                         selectedImageUri = data.data
                         if (selectedImageUri != null) {
-                            binding.imgProfile.setImageURI(selectedImageUri)
-
-                            if (userUID != null) {
-                                // 기존의 image 삭제하기
-                                deleteFirebaseImage(userUID)
-                                setFirebaseImage()
+                            binding.imgProfile.load(selectedImageUri) {
+                                transformations(CircleCropTransformation())
+                                if (userUID != null) {
+                                    deleteFirebaseImage(userUID)
+                                    setFirebaseImage()
+                                }
                             }
                         } else {
                             Toast.makeText(activity, "사진을 가져오는데 실패했습니다.", Toast.LENGTH_SHORT).show()
@@ -135,7 +136,6 @@ class FavoriteFragment : Fragment() {
             logoutButton.visibility = View.VISIBLE
             binding.textView2.visibility = View.GONE
 
-
             val collectionRef = firestore.collection("User")
                 .document(FirebaseAuth.getInstance().currentUser?.uid ?: return)
             collectionRef.get().addOnCompleteListener { task ->
@@ -143,15 +143,13 @@ class FavoriteFragment : Fragment() {
                     val document = task.result
                     if (document.exists()) {
                         val nameField = document.getString("name")
-                        val category = document.getString("category") ?:""
-                        val secondcategory = document.getString("secondCategory") ?:""
-                        val thirdcategory = document.getString("thirdCategory") ?:""
+                        val category = document.getString("category") ?: ""
+                        val secondcategory = document.getString("secondCategory") ?: ""
+                        val thirdcategory = document.getString("thirdCategory") ?: ""
                         binding.tvNick.text = "이름 : $nameField"
                         binding.tvFirstCategory.text = "선호 카데고리: $category"
                         binding.tvSecondCategory.text = ", $secondcategory"
                         binding.tvThirdCategory.text = ", $thirdcategory"
-
-
 
 
                     } else {
@@ -196,11 +194,10 @@ class FavoriteFragment : Fragment() {
     private fun setFirebaseImage() {
         Log.d("img", "get user : $userUID")
         val storage = FirebaseStorage.getInstance()
-        var imgFileName = "IMAGE_" + userUID + ".jpg"
+        var imgFileName = "IMAGE_$userUID.jpg"
         var storageRef = storage.reference.child("profiles").child(imgFileName)
         storageRef.putFile(selectedImageUri!!).addOnSuccessListener {
-            Toast.makeText(requireContext(), "이미지를 firebase에 업로드 했습니다.", Toast.LENGTH_SHORT)
-                .show()
+            Log.d("img", "이미지 업로드 성공")
         }.addOnFailureListener {
             Toast.makeText(requireContext(), "이미지 업로드에 실패했습니다..", Toast.LENGTH_SHORT).show()
         }
@@ -209,16 +206,13 @@ class FavoriteFragment : Fragment() {
     //firebase profile image 지우기
     private fun deleteFirebaseImage(userUID: String) {
         val storage = FirebaseStorage.getInstance()
-        var imgFileName = "IMAGE_" + userUID + ".jpg"
+        var imgFileName = "IMAGE_$userUID.jpg"
         var storageRef = storage.reference.child("profiles").child(imgFileName)
         storageRef.delete().addOnSuccessListener {
             Log.d("img", "이미지 삭제 성공")
-            Toast.makeText(requireContext(), "이미지를 firebase에서 삭제 합니다..", Toast.LENGTH_SHORT)
-                .show()
         }.addOnFailureListener {
             Toast.makeText(requireContext(), "이미지 삭제를 실패했습니다.", Toast.LENGTH_SHORT).show()
         }
-
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -228,34 +222,34 @@ class FavoriteFragment : Fragment() {
         }
 
         loginViewModel.secondCategory.observe(requireActivity()) { text ->
-            if (text.isNotEmpty()){
+            if (text.isNotEmpty()) {
                 binding.tvSecondCategory.text = ", $text"
-            }
-            else {
+            } else {
                 binding.tvSecondCategory.text = null
             }
         }
 
         loginViewModel.thirdCategory.observe(requireActivity()) { text ->
-            if (text.isNotEmpty()){
+            if (text.isNotEmpty()) {
                 binding.tvThirdCategory.text = ", $text"
-            }else {
+            } else {
                 binding.tvThirdCategory.text = null
             }
         }
 
         // firebase에서 이미지 가져오기
         if (userUID != null) {
-            Log.d("img", "이미지 가져오기 시작")
             val storage = FirebaseStorage.getInstance()
-            var imgFileName = "IMAGE_" + userUID + ".jpg"
+            var imgFileName = "IMAGE_$userUID.jpg"
             storage.reference.child("profiles")
                 .child(imgFileName).downloadUrl.addOnSuccessListener {
-                    Glide.with(requireContext()).load(it).into(binding.imgProfile)
-                    Log.d("img", "이미지 가져오기 성공 : $it")
+                    selectedImageUri = it
+                    binding.imgProfile.load(selectedImageUri) {
+                        transformations(CircleCropTransformation())
+                    }
+                    Log.d("img", "이미지 가져오기 성공")
                 }.addOnFailureListener {
                     Log.d("img", it.message.toString())
-                    Toast.makeText(requireContext(), "이미지 불러오기 실패", Toast.LENGTH_SHORT).show()
                 }
         }
 
@@ -392,7 +386,7 @@ class FavoriteFragment : Fragment() {
     fun updateCategory() {
         val curUser = auth.currentUser
         val user = User()
-        val fbUser = firestore.collection("User").document(curUser?.uid?:return)
+        val fbUser = firestore.collection("User").document(curUser?.uid ?: return)
         val updateData = hashMapOf(
             "category" to loginViewModel.category.value,
             "secondCategory" to loginViewModel.secondCategory.value,
