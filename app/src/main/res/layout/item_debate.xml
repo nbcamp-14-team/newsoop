@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="100dp"
+    android:layout_height="wrap_content"
+    android:minHeight="70dp"
     app:cardCornerRadius="8dp"
     app:strokeColor="@color/strokeGray"
     app:strokeWidth="1dp"
@@ -14,41 +15,60 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:padding="@dimen/list_card_view_padding">
 
         <TextView
             android:id="@+id/tv_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="2"
+            android:text="Q. 어린이들에게 잔소리를 해야 할까?"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toStartOf="@id/btn_delete"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/tv_agree"/>
+
+        <Button
+            android:id="@+id/btn_delete"
+            style="?attr/materialIconButtonStyle"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            app:icon="@drawable/ic_cancel_24"
+            android:alpha="0.5"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_title"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/tv_title"
+            app:layout_constraintTop_toTopOf="@+id/tv_title" />
+
+        <TextView
+            android:id="@+id/tv_agree"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:paddingEnd="16dp"
-            android:text="Q. 어린이들에게 잔소리를 해야 할까?\n가가가가"
-            android:textSize="20sp"
-            app:layout_constraintBottom_toTopOf="@id/tv_name"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:text="A: 찬성합니다."
+            app:layout_constraintStart_toStartOf="@+id/tv_title"
+            app:layout_constraintTop_toBottomOf="@+id/tv_title"
+            app:layout_constraintBottom_toTopOf="@+id/tv_opposite"/>
+
+        <TextView
+            android:id="@+id/tv_opposite"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="B: 반대합니다."
+            app:layout_constraintStart_toStartOf="@+id/tv_agree"
+            app:layout_constraintTop_toBottomOf="@+id/tv_agree"
+            app:layout_constraintBottom_toTopOf="@+id/tv_name"/>
 
         <TextView
             android:id="@+id/tv_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:text="작성자: 정현식"
-            android:textSize="20sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_title" />
-
-        <Button
-            android:id="@+id/btn_delete"
-            style="?attr/materialIconButtonStyle"
-            android:layout_width="1dp"
-            android:layout_height="0dp"
-            android:layout_marginEnd="16dp"
-            app:icon="@drawable/ic_cancel_24"
-            app:layout_constraintBottom_toBottomOf="@+id/tv_title"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/tv_title" />
+            android:text="정현식"
+            app:layout_constraintStart_toStartOf="@+id/tv_opposite"
+            app:layout_constraintTop_toBottomOf="@+id/tv_opposite"
+            app:layout_constraintBottom_toTopOf="parent"/>
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
