@@ -152,7 +152,6 @@ class DebateDetailFragment : Fragment() {
                     agreeImageView.setImageResource(R.drawable.ic_agreex)
                     tvAgree.text = (tvAgree.text.toString().toInt() - 1).toString()
                     removeAgreeVote() // 투표 제거
-                    //TODO :
                     --agreeNum
                     getPerNum()
                 } else {
@@ -160,7 +159,6 @@ class DebateDetailFragment : Fragment() {
                     agreeImageView.setImageResource(R.drawable.ic_agree)
                     tvAgree.text = (tvAgree.text.toString().toInt() + 1).toString()
                     addAgreeVote() // 투표 추가
-                    // TODO :
                     ++agreeNum
                     getPerNum()
                 }
@@ -170,8 +168,6 @@ class DebateDetailFragment : Fragment() {
 
         updateAgreeCount()
         updateOppositeCount()
-        //TODO : 퍼센트 바 셋팅
-        getPerNum()
 
         val oppositeImageView = binding.icOpposite
         val tvOpposite = binding.tvOpposite
@@ -185,14 +181,12 @@ class DebateDetailFragment : Fragment() {
                     oppositeImageView.setImageResource(R.drawable.ic_oppositex)
                     tvOpposite.text = (tvOpposite.text.toString().toInt() - 1).toString()
                     removeOppositeVote()
-                    //TODO :
                     --oppositeNum
                     getPerNum()
                 } else {
                     oppositeImageView.setImageResource(R.drawable.ic_opposite)
                     tvOpposite.text = (tvOpposite.text.toString().toInt() + 1).toString()
                     addOppositeVote()
-                    // TODO :
                     ++oppositeNum
                     getPerNum()
                 }
@@ -411,8 +405,9 @@ class DebateDetailFragment : Fragment() {
                 .addOnSuccessListener { querySnapshot ->
                     val agreeCount = querySnapshot.size()
                     tvAgree.text = agreeCount.toString()
-                    //TODO : 찬성 숫자
+                    //찬성 숫자
                     agreeNum = agreeCount.toDouble()
+                    getPerNum()
                     Log.d("debate", "agree :$agreeNum")
                 }
                 .addOnFailureListener { e ->
@@ -420,6 +415,8 @@ class DebateDetailFragment : Fragment() {
                     Log.e("hyunsik", "Failed to update Agree count: $e")
                 }
         }
+
+
     }
 
     // 사용자의 userUID가 AgreeVotes에 있는지 확인하는 함수
@@ -517,8 +514,9 @@ class DebateDetailFragment : Fragment() {
                 .addOnSuccessListener { querySnapshot ->
                     val oppositeCount = querySnapshot.size()
                     tvOpposite.text = oppositeCount.toString()
-                    //TODO : 반대표 숫자
+                    //반대표 숫자
                     oppositeNum = oppositeCount.toDouble()
+                    getPerNum()
                     Log.d("debate", "opposite : $oppositeNum")
 
                 }
@@ -526,6 +524,7 @@ class DebateDetailFragment : Fragment() {
                     Log.e("hyunsik", "Failed to update Opposite count: $e")
                 }
         }
+
     }
 
     private fun checkOppositeVoteStatus() {
@@ -708,15 +707,17 @@ class DebateDetailFragment : Fragment() {
         _binding = null
     }
 
-    // TODO : 프로그레스 바에 퍼센트 넣기
+    // Progress bar 퍼센트 넣기
     private fun getPerNum() {
         var perNum = 0.5
         Log.d("debate", "$agreeNum , $oppositeNum")
-        if (agreeNum == 0.0 && oppositeNum == 0.0) {
-
-        } else if (agreeNum == 0.0 && oppositeNum > 0.0) {
-            binding.debateProgressBar.progress = 0
-        } else if (oppositeNum == 0.0 && agreeNum > 0.0) {
+        if (agreeNum == 0.0) {
+            if (oppositeNum == 0.0) {
+                binding.debateProgressBar.progress = 50
+            } else {
+                binding.debateProgressBar.progress = 0
+            }
+        } else if (oppositeNum == 0.0) {
             binding.debateProgressBar.progress = 100
         } else {
             val a = agreeNum + oppositeNum
