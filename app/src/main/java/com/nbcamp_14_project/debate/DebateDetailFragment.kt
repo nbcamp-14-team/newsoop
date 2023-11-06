@@ -61,14 +61,14 @@ class DebateDetailFragment : Fragment() {
 
 
 
-        // SwipeRefreshLayout 초기화
-//        val swipeRefreshLayout = view.findViewById<SwipeRefreshLayout>(R.id.swipe_refresh_layout)
+//         SwipeRefreshLayout 초기화
+        val swipeRefreshLayout = view.findViewById<SwipeRefreshLayout>(R.id.swipe_refresh_layout)
 
-        // Swipe to Refresh 리스너 설정
-//        swipeRefreshLayout.setOnRefreshListener {
-//            // Swipe to Refresh 동작 시, 데이터 다시 불러오는 작업 수행
-//            loadComments(viewModel.debateId ?: "")
-//        }
+//         Swipe to Refresh 리스너 설정
+        swipeRefreshLayout.setOnRefreshListener {
+            // Swipe to Refresh 동작 시, 데이터 다시 불러오는 작업 수행
+            loadComments(viewModel.debateId ?: "")
+        }
 
 
         val spinner = binding.homeSpinner
@@ -117,8 +117,6 @@ class DebateDetailFragment : Fragment() {
         }
 
 
-        // 이후 코드는 댓글 목록을 불러오고 RecyclerView에 표시하는 부분으로 가정하겠습니다.
-        // debatedetailList에 댓글을 추가하고 RecyclerView 업데이트
 
 
         binding.btnComment.setOnClickListener {
@@ -370,9 +368,9 @@ class DebateDetailFragment : Fragment() {
                 }
         }
 
-//        val swipeRefreshLayout = view?.findViewById<SwipeRefreshLayout>(R.id.swipe_refresh_layout)
-//        swipeRefreshLayout?.isRefreshing = false
-//
+        val swipeRefreshLayout = view?.findViewById<SwipeRefreshLayout>(R.id.swipe_refresh_layout)
+        swipeRefreshLayout?.isRefreshing = false
+
     }
 
 
