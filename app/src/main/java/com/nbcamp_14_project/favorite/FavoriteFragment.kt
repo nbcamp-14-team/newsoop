@@ -134,8 +134,7 @@ class FavoriteFragment : Fragment() {
             profileBox.visibility = View.VISIBLE
             logoutButton.visibility = View.VISIBLE
             binding.textView2.visibility = View.GONE
-            binding.fallowText.visibility = View.VISIBLE
-            binding.favoriteFallowList.visibility = View.VISIBLE
+
 
             val collectionRef = firestore.collection("User")
                 .document(FirebaseAuth.getInstance().currentUser?.uid ?: return)
@@ -168,8 +167,7 @@ class FavoriteFragment : Fragment() {
             profileBox.visibility = View.INVISIBLE
             logoutButton.visibility = View.INVISIBLE
             binding.textView2.visibility = View.VISIBLE
-            binding.fallowText.visibility = View.INVISIBLE
-            binding.favoriteFallowList.visibility = View.INVISIBLE
+
         }
     }
 
