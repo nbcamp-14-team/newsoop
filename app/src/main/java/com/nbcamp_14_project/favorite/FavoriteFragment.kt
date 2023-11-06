@@ -134,7 +134,8 @@ class FavoriteFragment : Fragment() {
             profileBox.visibility = View.VISIBLE
             logoutButton.visibility = View.VISIBLE
             binding.textView2.visibility = View.GONE
-
+            binding.fallowText.visibility = View.VISIBLE
+            binding.favoriteFallowList.visibility = View.VISIBLE
 
             val collectionRef = firestore.collection("User")
                 .document(FirebaseAuth.getInstance().currentUser?.uid ?: return)
@@ -147,9 +148,9 @@ class FavoriteFragment : Fragment() {
                         val secondcategory = document.getString("secondCategory") ?:""
                         val thirdcategory = document.getString("thirdCategory") ?:""
                         binding.tvNick.text = "이름 : $nameField"
-//                        binding.tvFirstCategory.text = "선호 카데고리: $category"
-//                        binding.tvSecondCategory.text = ", $secondcategory"
-//                        binding.tvThirdCategory.text = ", $thirdcategory"
+                        binding.tvFirstCategory.text = "선호 카데고리: $category"
+                        binding.tvSecondCategory.text = ", $secondcategory"
+                        binding.tvThirdCategory.text = ", $thirdcategory"
 
 
 
@@ -167,7 +168,8 @@ class FavoriteFragment : Fragment() {
             profileBox.visibility = View.INVISIBLE
             logoutButton.visibility = View.INVISIBLE
             binding.textView2.visibility = View.VISIBLE
-
+            binding.fallowText.visibility = View.INVISIBLE
+            binding.favoriteFallowList.visibility = View.INVISIBLE
         }
     }
 
@@ -255,7 +257,7 @@ class FavoriteFragment : Fragment() {
                     Log.d("img", "이미지 가져오기 성공 : $it")
                 }.addOnFailureListener {
                     Log.d("img", it.message.toString())
-                    Toast.makeText(requireContext(), "이미지 불러오기 실패", Toast.LENGTH_SHORT).show() // 수정필요
+                    Toast.makeText(requireContext(), "이미지 불러오기 실패", Toast.LENGTH_SHORT).show()
                 }
         }
 
