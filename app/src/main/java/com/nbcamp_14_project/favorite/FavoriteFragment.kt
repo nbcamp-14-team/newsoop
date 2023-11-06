@@ -136,7 +136,6 @@ class FavoriteFragment : Fragment() {
             logoutButton.visibility = View.VISIBLE
             binding.textView2.visibility = View.GONE
 
-
             val collectionRef = firestore.collection("User")
                 .document(FirebaseAuth.getInstance().currentUser?.uid ?: return)
             collectionRef.get().addOnCompleteListener { task ->
@@ -195,7 +194,7 @@ class FavoriteFragment : Fragment() {
     private fun setFirebaseImage() {
         Log.d("img", "get user : $userUID")
         val storage = FirebaseStorage.getInstance()
-        var imgFileName = "IMAGE_" + userUID + ".jpg"
+        var imgFileName = "IMAGE_$userUID.jpg"
         var storageRef = storage.reference.child("profiles").child(imgFileName)
         storageRef.putFile(selectedImageUri!!).addOnSuccessListener {
             Log.d("img", "이미지 업로드 성공")
@@ -207,14 +206,13 @@ class FavoriteFragment : Fragment() {
     //firebase profile image 지우기
     private fun deleteFirebaseImage(userUID: String) {
         val storage = FirebaseStorage.getInstance()
-        var imgFileName = "IMAGE_" + userUID + ".jpg"
+        var imgFileName = "IMAGE_$userUID.jpg"
         var storageRef = storage.reference.child("profiles").child(imgFileName)
         storageRef.delete().addOnSuccessListener {
             Log.d("img", "이미지 삭제 성공")
         }.addOnFailureListener {
             Toast.makeText(requireContext(), "이미지 삭제를 실패했습니다.", Toast.LENGTH_SHORT).show()
         }
-
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -241,20 +239,17 @@ class FavoriteFragment : Fragment() {
 
         // firebase에서 이미지 가져오기
         if (userUID != null) {
-            Log.d("img", "이미지 가져오기 시작")
             val storage = FirebaseStorage.getInstance()
-            var imgFileName = "IMAGE_" + userUID + ".jpg"
+            var imgFileName = "IMAGE_$userUID.jpg"
             storage.reference.child("profiles")
                 .child(imgFileName).downloadUrl.addOnSuccessListener {
                     selectedImageUri = it
                     binding.imgProfile.load(selectedImageUri) {
                         transformations(CircleCropTransformation())
                     }
-                    //Glide.with(requireContext()).load(it).into(binding.imgProfile)
-                    Log.d("img", "이미지 가져오기 성공 : $it")
+                    Log.d("img", "이미지 가져오기 성공")
                 }.addOnFailureListener {
                     Log.d("img", it.message.toString())
-                    Toast.makeText(requireContext(), "이미지 불러오기 실패", Toast.LENGTH_SHORT).show()
                 }
         }
 

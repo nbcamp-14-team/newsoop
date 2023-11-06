@@ -41,19 +41,20 @@ class DebateDetailFragment : Fragment() {
     private var oppositeClicked = false
     private var isAgreeButtonClicked = false
     private var isOppositeButtonClicked = false
+    private var agreeNum = 0.0
+    private var oppositeNum = 0.0
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentDebatedetailBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
 
 
         // SwipeRefreshLayout 초기화
@@ -151,20 +152,26 @@ class DebateDetailFragment : Fragment() {
                     agreeImageView.setImageResource(R.drawable.ic_agreex)
                     tvAgree.text = (tvAgree.text.toString().toInt() - 1).toString()
                     removeAgreeVote() // 투표 제거
+                    //TODO :
+                    --agreeNum
+                    getPerNum()
                 } else {
                     // 클릭되지 않았을 때
                     agreeImageView.setImageResource(R.drawable.ic_agree)
                     tvAgree.text = (tvAgree.text.toString().toInt() + 1).toString()
                     addAgreeVote() // 투표 추가
+                    // TODO :
+                    ++agreeNum
+                    getPerNum()
                 }
                 agreeClicked = !agreeClicked // 상태를 토글
             }
         }
 
         updateAgreeCount()
-
         updateOppositeCount()
-
+        //TODO : 퍼센트 바 셋팅
+        getPerNum()
 
         val oppositeImageView = binding.icOpposite
         val tvOpposite = binding.tvOpposite
@@ -178,10 +185,16 @@ class DebateDetailFragment : Fragment() {
                     oppositeImageView.setImageResource(R.drawable.ic_oppositex)
                     tvOpposite.text = (tvOpposite.text.toString().toInt() - 1).toString()
                     removeOppositeVote()
+                    //TODO :
+                    --oppositeNum
+                    getPerNum()
                 } else {
                     oppositeImageView.setImageResource(R.drawable.ic_opposite)
                     tvOpposite.text = (tvOpposite.text.toString().toInt() + 1).toString()
                     addOppositeVote()
+                    // TODO :
+                    ++oppositeNum
+                    getPerNum()
                 }
                 oppositeClicked = !oppositeClicked
             }
@@ -197,7 +210,6 @@ class DebateDetailFragment : Fragment() {
         val agreecontext = viewModel.agreecontext
         val oppositecontext = viewModel.oppositecontext
         val name = viewModel.name
-
 
         if (title != null) {
             binding.tvTitle.text = title
@@ -388,7 +400,6 @@ class DebateDetailFragment : Fragment() {
         val tvAgree = binding.tvAgree
         val userUID = viewModel.userUID
 
-
         if (debateId != null) {
             val agreeVotesRef = firestore.collection("User")
                 .document(userUID.toString())
@@ -400,6 +411,9 @@ class DebateDetailFragment : Fragment() {
                 .addOnSuccessListener { querySnapshot ->
                     val agreeCount = querySnapshot.size()
                     tvAgree.text = agreeCount.toString()
+                    //TODO : 찬성 숫자
+                    agreeNum = agreeCount.toDouble()
+                    Log.d("debate", "agree :$agreeNum")
                 }
                 .addOnFailureListener { e ->
                     // 실패 시에 대응하는 로직을 추가할 수 있습니다.
@@ -503,6 +517,10 @@ class DebateDetailFragment : Fragment() {
                 .addOnSuccessListener { querySnapshot ->
                     val oppositeCount = querySnapshot.size()
                     tvOpposite.text = oppositeCount.toString()
+                    //TODO : 반대표 숫자
+                    oppositeNum = oppositeCount.toDouble()
+                    Log.d("debate", "opposite : $oppositeNum")
+
                 }
                 .addOnFailureListener { e ->
                     Log.e("hyunsik", "Failed to update Opposite count: $e")
@@ -616,7 +634,7 @@ class DebateDetailFragment : Fragment() {
 
         dialog.show()
         val possitiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE)
-        possitiveButton.setOnClickListener{
+        possitiveButton.setOnClickListener {
             val commentText = editTextComment.text.toString().trim()
             if (commentText.isEmpty()) {
                 Toast.makeText(context, "댓글 내용을 입력해 주세요", Toast.LENGTH_SHORT).show()
@@ -679,7 +697,6 @@ class DebateDetailFragment : Fragment() {
 
     }
 
-
     private fun navigateToLoginActivity() {
         // LoginActivity로 이동하는 Intent를 생성
         val intent = Intent(requireContext(), LoginActivity::class.java)
@@ -689,5 +706,23 @@ class DebateDetailFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    // TODO : 프로그레스 바에 퍼센트 넣기
+    private fun getPerNum() {
+        var perNum = 0.5
+        Log.d("debate", "$agreeNum , $oppositeNum")
+        if (agreeNum == 0.0 && oppositeNum == 0.0) {
+
+        } else if (agreeNum == 0.0 && oppositeNum > 0.0) {
+            binding.debateProgressBar.progress = 0
+        } else if (oppositeNum == 0.0 && agreeNum > 0.0) {
+            binding.debateProgressBar.progress = 100
+        } else {
+            val a = agreeNum + oppositeNum
+            perNum = agreeNum / a
+            Log.d("perNum", "agree = $agreeNum ,  opposite = $oppositeNum perNum =  $perNum")
+            binding.debateProgressBar.progress = (perNum * 100).toInt()
+        }
     }
 }
