@@ -720,8 +720,7 @@ class DebateDetailFragment : Fragment() {
         } else if (oppositeNum == 0.0) {
             binding.debateProgressBar.progress = 100
         } else {
-            val a = agreeNum + oppositeNum
-            perNum = agreeNum / a
+            perNum = agreeNum / (agreeNum + oppositeNum)
             Log.d("perNum", "agree = $agreeNum ,  opposite = $oppositeNum perNum =  $perNum")
             binding.debateProgressBar.progress = (perNum * 100).toInt()
         }
