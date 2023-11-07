@@ -66,7 +66,7 @@ class MainActivity : AppCompatActivity() {
             viewpager.run {
                 isUserInputEnabled = false
             }
-            viewpager.offscreenPageLimit = viewPagerAdapter.itemCount//생명주기 관련 코드
+            viewpager.offscreenPageLimit = 2//생명주기 관련 코드
             //TabLayout 연동
             val tabTitle = listOf("홈", "검색","토론방" ,"신문사별","즐겨찾기")
             val tabIcons = listOf<Int>(
