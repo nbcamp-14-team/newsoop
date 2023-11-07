@@ -207,7 +207,7 @@ class HomeFragment(query: String) : Fragment() {
     private fun recommendTab(query: String?) {
 
         if (query == "추천") { //추천 프래그먼트일 시 ,
-
+            Log.d("isWork", "run")
             /**
              * 파이어베이스에서 카테고리 가져오기
              */
@@ -248,28 +248,35 @@ class HomeFragment(query: String) : Fragment() {
                                 secondHomeCategory = null
                                 viewPagerViewModel.headLineNews(
                                     firstHomeCategory ?: "생활",
-                                    5)
+                                    5
+                                )
                                 viewPagerViewModel.detailNews(
                                     firstHomeCategory ?: "생활",
-                                    1)
+                                    1
+                                )
                             } else if (thirdHomeCategory.isNullOrBlank()) {
                                 Log.d("isWork?", "2")
                                 isUserHaveCategory = true
                                 thirdHomeCategory = null
                                 viewPagerViewModel.headLineNews(
                                     firstHomeCategory ?: "생활",
-                                    3)
+                                    3
+                                )
                                 viewPagerViewModel.headLineNews(
                                     secondHomeCategory ?: "생활",
                                     2
                                 )
-                                viewPagerViewModel.twoCategoryDetailNews(firstCategory,secondCategory,1)
+                                viewPagerViewModel.twoCategoryDetailNews(
+                                    firstCategory,
+                                    secondCategory,
+                                    1
+                                )
                             } else if (!firstHomeCategory.isNullOrBlank()) {
                                 isUserHaveCategory = true
                                 Log.d("isWork?", "1")
                                 viewPagerViewModel.headLineNews(
-                                    firstHomeCategory ?: "생활"
-                                    , 2)
+                                    firstHomeCategory ?: "생활", 2
+                                )
                                 viewPagerViewModel.headLineNews(
                                     secondHomeCategory ?: "생활",
                                     2
@@ -278,22 +285,27 @@ class HomeFragment(query: String) : Fragment() {
                                     thirdHomeCategory ?: "생활",
                                     1
                                 )
-                                viewPagerViewModel.threeCategoryDetailNews(firstCategory,secondCategory, thirdCategory, 1)
+                                viewPagerViewModel.threeCategoryDetailNews(
+                                    firstCategory,
+                                    secondCategory,
+                                    thirdCategory,
+                                    1
+                                )
 
-                            } else if (!isUserHaveCategory) {
-                                Log.d("isWork?", "4")
-                                firstHomeCategory = null
-                                viewPagerViewModel.clearAllItems()
-                                viewPagerViewModel.headLineNews("정치")//메인 ViewPager에 헤드라인 뉴스 출력
-                                viewPagerViewModel.detailNews("정치", 1)//하단 리사이클러뷰에 뉴스 출력
-                                isUserHaveCategory = true
                             }
                         }
                     }
                 } else {
-                    Log.d("fail", "fail")
+                    Log.d("iswork", "fail")
                 }
-
+            }
+            if (!isUserHaveCategory) {
+                Log.d("isWork?", "4")
+                firstHomeCategory = null
+                viewPagerViewModel.clearAllItems()
+                viewPagerViewModel.headLineNews("정치")//메인 ViewPager에 헤드라인 뉴스 출력
+                viewPagerViewModel.detailNews("정치", 1)//하단 리사이클러뷰에 뉴스 출력
+                isUserHaveCategory = true
             }
         }
     }
