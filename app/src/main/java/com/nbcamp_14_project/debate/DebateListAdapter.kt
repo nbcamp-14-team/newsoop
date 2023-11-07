@@ -39,7 +39,7 @@ class DebateListAdapter() : RecyclerView.Adapter<DebateListAdapter.ViewHolder>()
         holder.title.text = debateItem.title
         holder.agree.text = "찬성 : ${debateItem.agreecontext}"
         holder.opposite.text = "반대 : ${debateItem.oppositecontext}"
-        holder.name.text = "작성자 : ${debateItem.name}"
+        holder.name.text = "${debateItem.name}"
 
         holder.deleteButton.setOnClickListener {
             val position = holder.adapterPosition
