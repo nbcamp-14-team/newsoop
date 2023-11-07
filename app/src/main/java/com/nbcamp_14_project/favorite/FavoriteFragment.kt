@@ -134,6 +134,7 @@ class FavoriteFragment : Fragment() {
             }
         }
     private val permissionList = android.Manifest.permission.READ_EXTERNAL_STORAGE
+    private val permissionImage = android.Manifest.permission.READ_MEDIA_IMAGES
     private val requestPermission = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) {
