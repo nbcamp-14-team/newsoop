@@ -10,7 +10,7 @@
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:layout_marginTop="20dp"
-        android:layout_marginEnd="30dp"
+        android:layout_marginEnd="10dp"
         android:src="@drawable/ic_settings"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -140,7 +140,7 @@
                 android:layout_height="wrap_content"
                 android:text=""
                 android:textColor="#5E5959"
-                android:textSize="16sp"/>
+                android:textSize="20sp"/>
 
             <TextView
                 android:id="@+id/tv_third_category"
@@ -148,7 +148,7 @@
                 android:layout_height="wrap_content"
                 android:text=""
                 android:textColor="#5E5959"
-                android:textSize="16sp"/>
+                android:textSize="20sp"/>
 
         </LinearLayout>
 
@@ -159,7 +159,7 @@
             android:scaleType="centerCrop"
             android:src="@drawable/ic_change"
             android:layout_marginTop="10dp"
-            android:layout_marginEnd="30dp"
+            android:layout_marginEnd="10dp"
             app:layout_constraintEnd_toEndOf="@id/profile_box"
             app:layout_constraintBottom_toBottomOf="@id/tv_category" />
 
@@ -208,29 +208,29 @@
 
 
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/favorite_list"
-        android:layout_width="0dp"
-        android:layout_marginTop="10dp"
-        android:layout_height="wrap_content"
-        android:scrollbarFadeDuration="0"
-        android:scrollbars="horizontal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/btn_fav_news" />
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/favorite_list"
+            android:layout_width="0dp"
+            android:layout_marginTop="10dp"
+            android:layout_height="wrap_content"
+            android:scrollbarFadeDuration="0"
+            android:scrollbars="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/btn_fav_news" />
 
-    <TextView
-        android:id="@+id/follow_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="20dp"
-        android:text="팔로우한 기자님의 기사"
-        android:textColor="#4A4949"
-        android:textSize="20dp"
-        android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/favorite_list" />
+        <TextView
+            android:id="@+id/follow_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="20dp"
+            android:text="팔로우한 기자님의 기사"
+            android:textColor="#4A4949"
+            android:textSize="20dp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/favorite_list" />
 
         <View
             android:layout_width="match_parent"
@@ -244,35 +244,36 @@
             app:layout_constraintStart_toStartOf="parent"
             />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/favorite_follow_list"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:scrollbarFadeDuration="0"
-        android:scrollbars="horizontal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/follow_text" />
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/favorite_follow_list"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:scrollbarFadeDuration="0"
+            android:scrollIndicators="none"
+            android:scrollbars="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/follow_text" />
 
-    <View
-        android:id="@+id/view_empty"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:visibility="invisible"
-        android:background="@color/categoryBackBlur"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/frag_category"/>
+        <View
+            android:id="@+id/view_empty"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:visibility="invisible"
+            android:background="@color/categoryBackBlur"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/frag_category"/>
 
-    <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/frag_category"
-        android:layout_width="match_parent"
-        android:layout_height="480dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/frag_category"
+            android:layout_width="match_parent"
+            android:layout_height="480dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
