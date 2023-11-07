@@ -18,6 +18,7 @@ class LoginViewModel: ViewModel() {
 
 
     private val _isCategoryBooleanValue = MutableLiveData<Boolean>()
+    var authorList = MutableLiveData<List<String>>()
     val isCategoryBooleanValue: LiveData<Boolean>
         get() = _isCategoryBooleanValue
 

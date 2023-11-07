@@ -217,7 +217,7 @@ class DebateDetailFragment : Fragment() {
         val startIndex = fullAgreeText.indexOf("Agree")
 
 // "Agree" 부분에 적용할 파란색을 정의합니다.
-        val colorBlue = resources.getColor(R.color.blue) // 원하는 파란색 리소스로 변경하세요
+        val colorBlue = resources.getColor(R.color.agree_blue) // 원하는 파란색 리소스로 변경하세요
 
 // "Agree"를 파란색으로 변경합니다.
         spannableString.setSpan(ForegroundColorSpan(colorBlue), startIndex, startIndex + "Agree".length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
@@ -231,7 +231,7 @@ class DebateDetailFragment : Fragment() {
         val startIndex1 = fullDisagreeText.indexOf("Disagree")
 
 // "Disagree" 부분에 적용할 빨간색을 정의합니다.
-        val colorRed = resources.getColor(R.color.red) // 원하는 빨간색 리소스로 변경하세요
+        val colorRed = resources.getColor(R.color.disagree_red) // 원하는 빨간색 리소스로 변경하세요
 
 // "Disagree"를 빨간색으로 변경합니다.
         spannableString1.setSpan(ForegroundColorSpan(colorRed), startIndex1, startIndex1 + "Disagree".length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
@@ -593,7 +593,7 @@ class DebateDetailFragment : Fragment() {
     }
 
     private fun showAddCommentDialog() {
-        val builder = AlertDialog.Builder(requireContext())
+        val builder = AlertDialog.Builder(requireContext(), R.style.RoundedCornersAlertDialog)
         val dialogView = layoutInflater.inflate(R.layout.dialog_debatedetail, null)
         val editTextComment = dialogView.findViewById<EditText>(R.id.tv_comment)
         val btnAgree = dialogView.findViewById<MaterialButton>(R.id.btn_agree)

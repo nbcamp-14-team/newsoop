@@ -19,6 +19,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.nbcamp_14_project.R
 import com.nbcamp_14_project.databinding.FragmentDebateBinding
 import com.nbcamp_14_project.ui.login.LoginActivity
+import java.util.Date
 
 class DebateFragment : Fragment() {
     private var _binding: com.nbcamp_14_project.databinding.FragmentDebateBinding? = null
@@ -198,6 +199,7 @@ class DebateFragment : Fragment() {
                                     val commentCollection =
                                         firestore.collection("User").document(userUID)
                                             .collection("Debates")
+                                    val timestamp = Date()
                                     val newDebateItem =
                                         DebateItem(
                                             title = debateTitle,
@@ -205,7 +207,8 @@ class DebateFragment : Fragment() {
                                             agreecontext = agreecontext,
                                             oppositecontext = oppositecontext,
                                             name = name,
-                                            userUID = userUID
+                                            userUID = userUID,
+                                            timestamp = timestamp
                                         )
                                     val newRef = commentCollection.document()
                                     newDebateItem.id = newRef.id
@@ -260,6 +263,7 @@ class DebateFragment : Fragment() {
                     val opposite = document.getString("oppositecontext")
                     val name = document.getString("name")
                     val userUID = document.getString("userUID")
+                    val timestamp = Date()
                     if (title != null && name != null && userUID != null) {
                         debateList.add(
                             DebateItem(
@@ -269,7 +273,8 @@ class DebateFragment : Fragment() {
                                 agree.toString(),
                                 opposite.toString(),
                                 name,
-                                userUID
+                                userUID,
+                                timestamp
                             )
                         )
                     }
