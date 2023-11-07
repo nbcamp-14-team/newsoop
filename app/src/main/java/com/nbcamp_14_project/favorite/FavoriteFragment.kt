@@ -153,7 +153,8 @@ class FavoriteFragment : Fragment() {
         super.onResume()
         // 즐겨찾기 목록 업데이트
         getFavoriteListFromFireStore()
-
+        getFollowingAuthorListFromFireStore()
+        Log.d("authorList","$authorNameList")
         Log.d("authorList", "$authorNameList")
         Log.d("authorquery", "$queryAuthorList")
         Log.d("viewmodel", "${viewModel.authorList.value}")
@@ -269,7 +270,7 @@ class FavoriteFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        getFollowingAuthorListFromFireStore()
+
         getFavoriteListFromFireStore()
         initViewModel()
 
