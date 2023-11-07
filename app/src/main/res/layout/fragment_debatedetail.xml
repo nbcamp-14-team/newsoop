@@ -2,8 +2,7 @@
 <androidx.swiperefreshlayout.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/swipe_refresh_layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_marginTop="10dp">
+    android:layout_height="match_parent">
 
     <androidx.constraintlayout.widget.ConstraintLayout xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
@@ -56,21 +55,21 @@
                     android:layout_marginTop="10dp"
                     android:text="사과는 맛있다"
                     android:textColor="@color/black"
-                    android:textSize="30dp"
+                    android:textSize="28dp"
                     android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="3dp"
-                    android:layout_marginStart="20dp"
-                    android:layout_marginEnd="20dp"
-                    android:background="#E1DCDC"
-                    app:layout_constraintBottom_toTopOf="@+id/tv_thisagree"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/tv_opinion2" />
+                <!--                <View-->
+                <!--                    android:layout_width="match_parent"-->
+                <!--                    android:layout_height="3dp"-->
+                <!--                    android:layout_marginStart="20dp"-->
+                <!--                    android:layout_marginEnd="20dp"-->
+                <!--                    android:background="#E1DCDC"-->
+                <!--                    app:layout_constraintBottom_toTopOf="@+id/tv_thisagree"-->
+                <!--                    app:layout_constraintEnd_toEndOf="parent"-->
+                <!--                    app:layout_constraintStart_toStartOf="parent"-->
+                <!--                    app:layout_constraintTop_toBottomOf="@+id/tv_opinion2" />-->
 
                 <TextView
                     android:id="@+id/tv_thisagree"
@@ -79,8 +78,9 @@
                     android:layout_marginStart="20dp"
                     android:layout_marginTop="10dp"
                     android:text=" Agree"
-                    android:textColor="#011ABC"
+                    android:textColor="#2196F3"
                     android:textSize="20dp"
+                    android:visibility="gone"
                     android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/tv_opinion2" />
@@ -107,7 +107,8 @@
                     android:layout_marginTop="10dp"
                     android:layout_marginEnd="20dp"
                     android:text="Disagree"
-                    android:textColor="#E91E63"
+                    android:visibility="gone"
+                    android:textColor="#F44336"
                     android:textSize="20dp"
                     android:textStyle="bold"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -118,6 +119,7 @@
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:layout_marginStart="20dp"
+                    android:layout_marginTop="10dp"
                     android:src="@drawable/ic_agreex"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/tv_thisagree" />
@@ -127,6 +129,7 @@
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:layout_marginEnd="20dp"
+                    android:layout_marginTop="10dp"
                     android:src="@drawable/ic_oppositex"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/tv_thisopposite" />
@@ -137,7 +140,7 @@
                     style="@style/Widget.AppCompat.ProgressBar.Horizontal"
                     android:layout_width="230dp"
                     android:layout_height="20dp"
-                    android:layout_marginBottom="10dp"
+                    android:layout_marginBottom="5dp"
                     android:background="#F44336"
                     android:max="100"
                     android:progress="50"
@@ -201,33 +204,32 @@
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/debatedetail_list"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
-                    android:background="#7AEFEFEF"
+                    android:background="@color/white"
                     android:nestedScrollingEnabled="false"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/tv_opinion" />
-
-
-                <Button
-                    android:id="@+id/btn_comment"
-                    style="@style/Widget.Material3.Button.TextButton"
-                    android:layout_width="150dp"
-                    android:layout_height="50dp"
-                    android:layout_marginRight="20dp"
-                    android:gravity="center"
-                    android:padding="0dp"
-                    android:text="댓글 추가하기"
-                    android:textColor="@color/black"
-                    android:textSize="20dp"
-                    android:textStyle="bold"
-                    app:cornerRadius="13dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/debatedetail_list"
-                    app:strokeColor="@color/green"
-                    app:strokeWidth="2dp" />
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tv_opinion"
+                    app:layout_constraintVertical_bias="0" />
+
+
+                <!--                <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton-->
+                <!--                    android:id="@+id/btn_comment"-->
+                <!--                    android:layout_width="wrap_content"-->
+                <!--                    android:layout_height="wrap_content"-->
+                <!--                    android:layout_gravity="bottom|end"-->
+                <!--                    android:layout_marginEnd="20dp"-->
+                <!--                    android:layout_marginBottom="20dp"-->
+                <!--                    android:backgroundTint="@color/white"-->
+                <!--                    android:elevation="3dp"-->
+                <!--                    app:icon="@drawable/ic_plus_24px"-->
+                <!--                    app:layout_constraintBottom_toBottomOf="parent"-->
+                <!--                    app:layout_constraintEnd_toEndOf="parent"-->
+                <!--                    app:strokeColor="@color/green"-->
+                <!--                    app:strokeWidth="2dp" />-->
+
 
                 <TextView
                     android:id="@+id/tv_name"
@@ -244,7 +246,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
-                    android:minHeight="130dp"
+                    android:minHeight="80dp"
                     android:paddingStart="20dp"
                     android:paddingEnd="20dp"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -257,7 +259,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
                         android:text="내용"
-                        android:textSize="20dp"
+                        android:textSize="18dp"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
@@ -284,7 +286,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="20dp"
-                        android:layout_marginTop="10dp"
+                        android:layout_marginTop="15dp"
                         android:text="찬성: 사과는 맛있다."
                         android:textSize="20sp"
                         android:textStyle="bold"
@@ -305,7 +307,7 @@
 
                     <View
                         android:layout_width="match_parent"
-                        android:layout_height="3dp"
+                        android:layout_height="2dp"
                         android:layout_marginStart="20dp"
                         android:layout_marginEnd="20dp"
                         android:background="#E1DCDC"
@@ -315,6 +317,21 @@
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.core.widget.NestedScrollView>
+
+        <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+        android:id="@+id/btn_comment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="20dp"
+        android:backgroundTint="@color/white"
+        android:elevation="3dp"
+        app:icon="@drawable/ic_plus_24px"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:strokeColor="@color/green"
+        app:strokeWidth="2dp" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
