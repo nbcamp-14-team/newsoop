@@ -9,7 +9,8 @@
         android:id="@+id/setting_btn"
         android:layout_width="30dp"
         android:layout_height="30dp"
-        android:layout_marginEnd="10dp"
+        android:layout_marginEnd="30dp"
+        android:layout_marginTop="20dp"
         android:src="@drawable/ic_settings"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -19,7 +20,7 @@
         android:id="@+id/login_box"
         android:layout_width="415dp"
         android:layout_height="428dp"
-        android:visibility="visible"
+        android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/setting_btn">
@@ -87,7 +88,7 @@
         android:id="@+id/profile_box"
         android:layout_width="match_parent"
         android:layout_height="160dp"
-        android:visibility="invisible"
+        android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -129,7 +130,7 @@
                 android:layout_height="wrap_content"
                 android:text="선호 카테고리 : "
                 android:textColor="#5E5959"
-                android:textSize="16sp"/>
+                android:textSize="18sp"/>
 
             <TextView
                 android:id="@+id/tv_second_category"
@@ -206,7 +207,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
-        android:text="팔로우한 기자님의 기사"
+        android:text="구독한 기자의 기사"
         android:textColor="#4A4949"
         android:textSize="20dp"
         android:textStyle="bold"
