@@ -36,6 +36,10 @@ class SearchViewModel(
         _recentSearchList.value = repository.getRecentSearchList()
     }
 
+    fun clearRecentSearch() {
+        _recentSearchList.value = repository.clearRecentSearchList()
+    }
+
     fun removeRecentSearchItem(searchWord: String) {
         _recentSearchList.value = repository.removeRecentSearchItem(searchWord)
     }

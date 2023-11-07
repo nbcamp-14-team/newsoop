@@ -164,7 +164,7 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
                 .centerCrop()
                 .into(binding.imgThumbnail)
             binding.tvDescription.text = info.description
-            binding.tvName.text = info.author
+            binding.tvName.text = "${info.author} 기자"
         }
 
         initView()

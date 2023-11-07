@@ -279,8 +279,6 @@ class DebateDetailFragment : Fragment() {
                             .delete()
                             .addOnSuccessListener {
                                 Log.d("hyunsik", "deletedebatedetailList=$debatedetailList")
-                                Toast.makeText(requireContext(), "삭제 성공!!.", Toast.LENGTH_SHORT)
-                                    .show()
                                 debatedetailList.removeAt(position)
                                 Log.d("hyunsik", "removedebatedetailList=$debatedetailList")
 
