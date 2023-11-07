@@ -79,6 +79,7 @@ class HomeViewModel(
             val docs = searchNews(query, display, startingNum?.plus(5), sort = "sim")
             val item = docs.items ?: return@launch
             var currentList = repository.getNewsList()
+            currentList = repository.removeLastNewsItem()
             for (i in item.indices) {//아이템 개수만큼 for문 실행
                 val thumbnail = getThumbnail(item[i].link.toString())
                 var title = item[i].title!!.replace("<b>", "")
@@ -115,6 +116,7 @@ class HomeViewModel(
             val docs = searchNews(query, display, startingNum?.plus(5), sort = "sim")
             val item = docs.items ?: return@launch
             var currentList = repository.getNewsList()
+            currentList = repository.removeLastNewsItem()
             for (i in item.indices) {//아이템 개수만큼 for문 실행
                 val thumbnail = getThumbnail(item[i].link.toString())
                 var title = item[i].title!!.replace("<b>", "")
