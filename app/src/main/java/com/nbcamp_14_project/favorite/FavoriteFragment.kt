@@ -136,6 +136,20 @@ class FavoriteFragment : Fragment() {
                 }
             }
         }
+    private val permissionList = android.Manifest.permission.READ_EXTERNAL_STORAGE
+    private val requestPermission = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) {
+        when (it) {
+            true -> {
+                Toast.makeText(requireContext(), "권한 허가", Toast.LENGTH_SHORT).show()
+            }
+
+            false -> {
+                Toast.makeText(requireContext(), "권한 거부 하셨습니다.", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
 
     override fun onResume() {
         super.onResume()
@@ -239,9 +253,9 @@ class FavoriteFragment : Fragment() {
     private fun showPermissionContextPopup() {
         AlertDialog.Builder(activity)
             .setTitle("권한을 부여해주세요")
-            .setMessage("권한을 부여해주세요")
+            .setMessage("프로필 업로드를 위해 갤러리에 접근할 권한을 허용해주세요.")
             .setPositiveButton("권한 부여") { _, _ ->
-                requestPermissions(arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE), 1000)
+                requestPermission.launch(permissionList)
             }
             .setNegativeButton("취소") { _, _ -> }
             .create()
@@ -257,7 +271,7 @@ class FavoriteFragment : Fragment() {
         storageRef.putFile(selectedImageUri!!).addOnSuccessListener {
             Log.d("img", "이미지 업로드 성공")
         }.addOnFailureListener {
-            Toast.makeText(requireContext(), "이미지 업로드에 실패했습니다..", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), "이미지 업로드에 실패했습니다.", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -375,9 +389,7 @@ class FavoriteFragment : Fragment() {
                     showPermissionContextPopup()
                 }
                 // 권한 요청(requestPermissions) -> 갤러리 접근(onRequestPermissionResult)
-                else -> requestPermissions(
-                    arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE), 1000
-                )
+                else -> requestPermission.launch(permissionList)
             }
         }
 

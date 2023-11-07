@@ -136,6 +136,10 @@ class SearchFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         user = FirebaseAuth.getInstance().currentUser
+        if (user != null) {
+            viewModel.clearRecentSearch()
+            getRecentSearchListFirebase(userUID = user!!.uid)
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

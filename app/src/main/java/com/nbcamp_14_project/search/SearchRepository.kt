@@ -27,6 +27,7 @@ interface SearchRepository {
     fun getRecentSearchList(): List<String>
     fun addRecentSearchList(searchWord: String): List<String>
     fun removeRecentSearchItem(searchWord: String): List<String>
+    fun clearRecentSearchList(): List<String>
 }
 
 class SearchRepositoryImpl(
@@ -123,8 +124,15 @@ class SearchRepositoryImpl(
                 Log.d("searchFirebase", "is fail : $searchWord")
             }
         }
-        
+
         recentSearchList.remove(searchWord)
         return recentSearchList
     }
+
+    override fun clearRecentSearchList(): List<String> {
+        recentSearchList.clear()
+        return ArrayList<String>(recentSearchList)
+    }
+
+
 }
