@@ -394,7 +394,6 @@ class FavoriteFragment : Fragment() {
 
         binding.ivFixCategory.setOnClickListener {
             showCategory()
-            getFollowingAuthorListFromFireStore()
             //주변 그림자
             loginViewModel.isCategoryBooleanValue.observe(requireActivity(), Observer { isTrue ->
                 // 불린 값이 변경될 때 수행할 동작을 여기에 추가
