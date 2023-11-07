@@ -621,7 +621,7 @@ class DebateDetailFragment : Fragment() {
                     btnAgree.strokeColor = ColorStateList.valueOf(
                         ContextCompat.getColor(
                             requireContext(),
-                            R.color.agree_blue // 클릭 시 blue로 변경
+                            R.color.blue // 클릭 시 blue로 변경
                         )
                     )
                 }
