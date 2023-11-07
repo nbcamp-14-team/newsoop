@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.util.AttributeSet
 import android.util.Log
@@ -19,12 +20,10 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import coil.load
 import coil.transform.CircleCropTransformation
@@ -35,19 +34,15 @@ import com.google.firebase.firestore.Query
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import com.nbcamp_14_project.R
-import com.nbcamp_14_project.api.NewsCollector
 import com.nbcamp_14_project.data.model.User
 import com.nbcamp_14_project.databinding.FragmentFavoriteBinding
 import com.nbcamp_14_project.detail.DetailInfo
 import com.nbcamp_14_project.detail.DetailViewModel
 import com.nbcamp_14_project.home.HomeModel
-import com.nbcamp_14_project.home.HomeModelFactory
 import com.nbcamp_14_project.home.HomeViewModel
 import com.nbcamp_14_project.home.HomeViewPagerViewModel
 import com.nbcamp_14_project.home.toDetailInfo
 import com.nbcamp_14_project.mainpage.MainActivity
-import com.nbcamp_14_project.search.SearchViewModel
-import com.nbcamp_14_project.search.SearchViewModelFactory
 import com.nbcamp_14_project.setting.SettingActivity
 import com.nbcamp_14_project.ui.login.CategoryFragment
 import com.nbcamp_14_project.ui.login.LoginActivity
@@ -64,7 +59,7 @@ class FavoriteFragment : Fragment() {
     private val binding get() = _binding!!
     private val authorData: ArrayList<HomeModel> = ArrayList()
     private lateinit var adapter: FavoriteListAdapter
-    private val viewModel: FavoriteViewModel by lazy{
+    private val viewModel: FavoriteViewModel by lazy {
         ViewModelProvider(
             requireActivity(), FavoriteViewModel.FavoriteViewModelFactory()
         )[FavoriteViewModel::class.java]
@@ -72,7 +67,7 @@ class FavoriteFragment : Fragment() {
     private val detailViewModel: DetailViewModel by activityViewModels()
     private val loginViewModel: LoginViewModel by activityViewModels()
     private val homeViewPagerViewModel: HomeViewPagerViewModel by activityViewModels()
-    private val homeViewModel : HomeViewModel by activityViewModels()
+    private val homeViewModel: HomeViewModel by activityViewModels()
     private val firestore = FirebaseFirestore.getInstance()
     private var isLogin = false
     private var auth = FirebaseAuth.getInstance()
@@ -139,6 +134,7 @@ class FavoriteFragment : Fragment() {
             }
         }
     private val permissionList = android.Manifest.permission.READ_EXTERNAL_STORAGE
+    private val permissionImage = android.Manifest.permission.READ_MEDIA_IMAGES
     private val requestPermission = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) {
@@ -158,14 +154,10 @@ class FavoriteFragment : Fragment() {
         // 즐겨찾기 목록 업데이트
         getFavoriteListFromFireStore()
 
-        Log.d("authorList","$authorNameList")
+        Log.d("authorList", "$authorNameList")
         Log.d("authorquery", "$queryAuthorList")
         Log.d("viewmodel", "${viewModel.authorList.value}")
         Log.e("onResume", "#hyunsik")
-
-
-
-
 
 
         // 로그인 상태에 따른 화면 처리
@@ -237,12 +229,12 @@ class FavoriteFragment : Fragment() {
     }
 
     // 권한부여 Dialog 생성
-    private fun showPermissionContextPopup() {
+    private fun showPermissionContextPopup(permission: String) {
         AlertDialog.Builder(activity)
             .setTitle("권한을 부여해주세요")
             .setMessage("프로필 업로드를 위해 갤러리에 접근할 권한을 허용해주세요.")
             .setPositiveButton("권한 부여") { _, _ ->
-                requestPermission.launch(permissionList)
+                requestPermission.launch(permission)
             }
             .setNegativeButton("취소") { _, _ -> }
             .create()
@@ -275,7 +267,6 @@ class FavoriteFragment : Fragment() {
     }
 
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         getFollowingAuthorListFromFireStore()
@@ -283,7 +274,7 @@ class FavoriteFragment : Fragment() {
         initViewModel()
 
 
-        Log.d("nameList","${authorNameList}")
+        Log.d("nameList", "${authorNameList}")
         loginViewModel.category.observe(requireActivity()) { text ->
             binding.tvFirstCategory.text = "선호 카테고리: $text"
         }
@@ -349,9 +340,6 @@ class FavoriteFragment : Fragment() {
         binding.favoriteFollowList.adapter = followingAdapter
 
 
-
-
-
         //setting 페이지로 이동
         binding.settingBtn.setOnClickListener {
             val intent = Intent(requireContext(), SettingActivity::class.java)
@@ -361,24 +349,46 @@ class FavoriteFragment : Fragment() {
         //프로필 이미지 올리기
         binding.imgProfile.setOnClickListener {
             Log.d("img", "start")
-            when {
-                // 갤러리 접근 권한이 있는 경우
-                ContextCompat.checkSelfPermission(
-                    requireActivity(),
-                    android.Manifest.permission.READ_EXTERNAL_STORAGE
-                ) == PackageManager.PERMISSION_GRANTED -> {
-                    Log.d("img", "getImage")
-                    navigateGallery()
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                when {
+                    // 갤러리 접근 권한이 있는 경우
+                    ContextCompat.checkSelfPermission(
+                        requireActivity(),
+                        permissionImage
+                    ) == PackageManager.PERMISSION_GRANTED -> {
+                        Log.d("img", "getImage")
+                        navigateGallery()
+                    }
+                    // 갤러리 접근 권한이 없는 경우
+                    shouldShowRequestPermissionRationale(permissionImage)
+                    -> {
+                        Log.d("img", "showPermission")
+                        showPermissionContextPopup(permissionImage)
+                    }
+                    // 권한 요청(requestPermissions) -> 갤러리 접근(onRequestPermissionResult)
+                    else -> showPermissionContextPopup(permissionImage)
                 }
-                // 갤러리 접근 권한이 없는 경우
-                shouldShowRequestPermissionRationale(android.Manifest.permission.READ_EXTERNAL_STORAGE)
-                -> {
-                    Log.d("img", "showPermission")
-                    showPermissionContextPopup()
+            } else {
+                when {
+                    // 갤러리 접근 권한이 있는 경우
+                    ContextCompat.checkSelfPermission(
+                        requireActivity(),
+                        android.Manifest.permission.READ_EXTERNAL_STORAGE
+                    ) == PackageManager.PERMISSION_GRANTED -> {
+                        Log.d("img", "getImage")
+                        navigateGallery()
+                    }
+                    // 갤러리 접근 권한이 없는 경우
+                    shouldShowRequestPermissionRationale(android.Manifest.permission.READ_EXTERNAL_STORAGE)
+                    -> {
+                        Log.d("img", "showPermission")
+                        showPermissionContextPopup(permissionList)
+                    }
+                    // 권한 요청(requestPermissions) -> 갤러리 접근(onRequestPermissionResult)
+                    else -> showPermissionContextPopup(permissionList)
                 }
-                // 권한 요청(requestPermissions) -> 갤러리 접근(onRequestPermissionResult)
-                else -> requestPermission.launch(permissionList)
             }
+
         }
 
 
@@ -400,12 +410,13 @@ class FavoriteFragment : Fragment() {
             }
         }
     }
-    fun initViewModel(){
+
+    fun initViewModel() {
         with(viewModel) {
-            authorList.observe(viewLifecycleOwner){
+            authorList.observe(viewLifecycleOwner) {
                 followingAdapter.submitList(list.value?.toList())
             }
-            list.observe(viewLifecycleOwner){
+            list.observe(viewLifecycleOwner) {
                 followingAdapter.submitList(it)
             }
         }
@@ -466,23 +477,23 @@ class FavoriteFragment : Fragment() {
     private fun getFollowingAuthorListFromFireStore() {
         val user = FirebaseAuth.getInstance().currentUser
         val userUID = user?.uid
-        if (userUID != null){
+        if (userUID != null) {
             val collectionRef = firestore.collection("User").document(userUID).collection("author")
 
             collectionRef.get().addOnSuccessListener { querySnapshot ->
                 for (documentSnapshot in querySnapshot.documents) {
                     val fieldValue = documentSnapshot.getString("author")
                     if (fieldValue != null) {
-                        Log.d("authorName","$fieldValue")
+                        Log.d("authorName", "$fieldValue")
                         authorNameList.add(fieldValue)
                         val removeDuplicatedStrings = HashSet<String>()
-                        for (value in authorNameList){
+                        for (value in authorNameList) {
                             removeDuplicatedStrings.add(value)
                         }
                         val queryList = removeDuplicatedStrings.toString()
                         queryAuthorList.add(queryList)
-                        if (queryAuthorList.size >1){
-                            for (i in 0 until queryAuthorList.size -1){
+                        if (queryAuthorList.size > 1) {
+                            for (i in 0 until queryAuthorList.size - 1) {
 
                                 queryAuthorList.removeAt(0)
                             }
@@ -500,15 +511,15 @@ class FavoriteFragment : Fragment() {
         val authorList = viewModel.authorList.value.toString()
         val regex = """\[(.*)\]""".toRegex()
         val regexResult = regex.find(authorList)
-        if (regexResult != null){
+        if (regexResult != null) {
             val innerListString = regexResult.groupValues[1]
             val innerList = innerListString.split(",").map { it.trim() }
             val random = Random()
 
-            if(innerList.isNotEmpty()){
+            if (innerList.isNotEmpty()) {
                 val randomIndex = random.nextInt(innerList.size)
                 val query = innerList[randomIndex]
-                viewModel.detailNews(query+" 기자")
+                viewModel.detailNews(query + " 기자")
                 Log.d("viewmodel", "$query")
             }
         }
@@ -538,13 +549,16 @@ class FavoriteFragment : Fragment() {
     }
 
 
-
 }
 
-class LinearLayoutManagerWrapper: LinearLayoutManager {
+class LinearLayoutManagerWrapper : LinearLayoutManager {
     constructor(context: Context) : super(context)
 
-    constructor(context: Context, orientation: Int, reverseLayout: Boolean) : super(context, orientation, reverseLayout)
+    constructor(context: Context, orientation: Int, reverseLayout: Boolean) : super(
+        context,
+        orientation,
+        reverseLayout
+    )
 
     constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int, defStyleRes: Int)
             : super(context, attrs, defStyleAttr, defStyleRes)
