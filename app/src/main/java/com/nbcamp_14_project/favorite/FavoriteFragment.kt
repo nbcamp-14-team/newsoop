@@ -5,7 +5,6 @@ import android.app.AlertDialog
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
-import android.os.Build.VERSION_CODES.R
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -22,6 +21,8 @@ import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import coil.load
@@ -33,27 +34,27 @@ import com.google.firebase.firestore.Query
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import com.nbcamp_14_project.R
+import com.nbcamp_14_project.api.RetrofitInstance
 import com.nbcamp_14_project.data.model.User
 import com.nbcamp_14_project.databinding.FragmentFavoriteBinding
 import com.nbcamp_14_project.detail.DetailInfo
 import com.nbcamp_14_project.detail.DetailViewModel
-import com.nbcamp_14_project.home.HomeFragment
+import com.nbcamp_14_project.domain.GetSearchNewsUseCase
 import com.nbcamp_14_project.home.HomeModel
-import com.nbcamp_14_project.home.HomeNewsAdapter
 import com.nbcamp_14_project.home.HomeViewModel
 import com.nbcamp_14_project.home.HomeViewPagerViewModel
-import com.nbcamp_14_project.home.HomeViewPagerViewModelFactory
+import com.nbcamp_14_project.home.MainFragmentRepository
 import com.nbcamp_14_project.home.toDetailInfo
 import com.nbcamp_14_project.mainpage.MainActivity
+import com.nbcamp_14_project.search.SearchRepositoryImpl
 import com.nbcamp_14_project.search.SearchViewModel
+import com.nbcamp_14_project.search.SearchViewModelFactory
 import com.nbcamp_14_project.setting.SettingActivity
 import com.nbcamp_14_project.ui.login.CategoryFragment
 import com.nbcamp_14_project.ui.login.LoginActivity
 import com.nbcamp_14_project.ui.login.LoginViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import java.util.Date
+import java.util.concurrent.atomic.AtomicInteger
+
 
 class FavoriteFragment : Fragment() {
     companion object {
@@ -64,7 +65,18 @@ class FavoriteFragment : Fragment() {
     private val binding get() = _binding!!
     private val authorData: ArrayList<HomeModel> = ArrayList()
     private lateinit var adapter: FavoriteListAdapter
-    private val viewModel: FavoriteViewModel by activityViewModels()
+    private val viewModel: FavoriteViewModel by lazy{
+
+         val repository = SearchRepositoryImpl(
+            AtomicInteger(0),
+            RetrofitInstance.search
+        )
+        ViewModelProvider(this,object :ViewModelProvider.Factory{
+            override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                return FavoriteViewModel(GetSearchNewsUseCase(repository))as T
+            }
+        }).get(FavoriteViewModel::class.java)
+    }
     private val detailViewModel: DetailViewModel by activityViewModels()
     private val loginViewModel: LoginViewModel by activityViewModels()
     private val homeViewPagerViewModel: HomeViewPagerViewModel by activityViewModels()
@@ -73,6 +85,7 @@ class FavoriteFragment : Fragment() {
     private var isLogin = false
     private var auth = FirebaseAuth.getInstance()
     private val authorNameList = mutableListOf<String>()
+    private val queryAuthorList = mutableListOf<String>()
     private val query = "임지원"
 
     private val followingAdapter by lazy {
@@ -80,7 +93,7 @@ class FavoriteFragment : Fragment() {
             onItemClick = { item ->
                 val detailInfo =
                     item
-                detailViewModel.setDetailInfo(detailInfo)//뷰모델로 전송
+                detailViewModel.setDetailInfo(item.toDetailInfo())//뷰모델로 전송
                 val mainActivity = (activity as MainActivity)
                 mainActivity.runDetailFragment()//DetailFragment 실행
             }
@@ -140,6 +153,7 @@ class FavoriteFragment : Fragment() {
         getFavoriteListFromFireStore()
         getFollowingAuthorListFromFireStore()
         Log.d("authorList","$authorNameList")
+        Log.d("authorquery", "$queryAuthorList")
         Log.e("onResume", "#hyunsik")
 
         // 로그인 상태에 따른 화면 처리
@@ -323,7 +337,7 @@ class FavoriteFragment : Fragment() {
 
         with(viewModel){
             authorList.observe(viewLifecycleOwner){
-                followingAdapter.submitList(favoriteList.value?.toMutableList())
+                followingAdapter.submitList(list.value?.toList())
             }
         }
 
@@ -441,6 +455,13 @@ class FavoriteFragment : Fragment() {
                 if (fieldValue != null) {
                     Log.d("authorName","$fieldValue")
                     authorNameList.add(fieldValue)
+                    val removeDuplicatedStrings = HashSet<String>()
+                    for (value in authorNameList){
+                        removeDuplicatedStrings.add(value)
+                    }
+                    val queryList = removeDuplicatedStrings.toList()
+                    queryAuthorList.add(queryList.toString())
+
                 }
             }
 
