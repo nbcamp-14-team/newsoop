@@ -21,7 +21,6 @@ import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -34,26 +33,23 @@ import com.google.firebase.firestore.Query
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import com.nbcamp_14_project.R
-import com.nbcamp_14_project.api.RetrofitInstance
+import com.nbcamp_14_project.api.NewsCollector
 import com.nbcamp_14_project.data.model.User
 import com.nbcamp_14_project.databinding.FragmentFavoriteBinding
 import com.nbcamp_14_project.detail.DetailInfo
 import com.nbcamp_14_project.detail.DetailViewModel
-import com.nbcamp_14_project.domain.GetSearchNewsUseCase
 import com.nbcamp_14_project.home.HomeModel
+import com.nbcamp_14_project.home.HomeModelFactory
 import com.nbcamp_14_project.home.HomeViewModel
 import com.nbcamp_14_project.home.HomeViewPagerViewModel
-import com.nbcamp_14_project.home.MainFragmentRepository
 import com.nbcamp_14_project.home.toDetailInfo
 import com.nbcamp_14_project.mainpage.MainActivity
-import com.nbcamp_14_project.search.SearchRepositoryImpl
 import com.nbcamp_14_project.search.SearchViewModel
 import com.nbcamp_14_project.search.SearchViewModelFactory
 import com.nbcamp_14_project.setting.SettingActivity
 import com.nbcamp_14_project.ui.login.CategoryFragment
 import com.nbcamp_14_project.ui.login.LoginActivity
 import com.nbcamp_14_project.ui.login.LoginViewModel
-import java.util.concurrent.atomic.AtomicInteger
 
 
 class FavoriteFragment : Fragment() {
@@ -66,16 +62,9 @@ class FavoriteFragment : Fragment() {
     private val authorData: ArrayList<HomeModel> = ArrayList()
     private lateinit var adapter: FavoriteListAdapter
     private val viewModel: FavoriteViewModel by lazy{
-
-         val repository = SearchRepositoryImpl(
-            AtomicInteger(0),
-            RetrofitInstance.search
-        )
-        ViewModelProvider(this,object :ViewModelProvider.Factory{
-            override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                return FavoriteViewModel(GetSearchNewsUseCase(repository))as T
-            }
-        }).get(FavoriteViewModel::class.java)
+        ViewModelProvider(
+            requireActivity(), FavoriteViewModel.FavoriteViewModelFactory()
+        )[FavoriteViewModel::class.java]
     }
     private val detailViewModel: DetailViewModel by activityViewModels()
     private val loginViewModel: LoginViewModel by activityViewModels()
@@ -109,6 +98,7 @@ class FavoriteFragment : Fragment() {
         _binding = FragmentFavoriteBinding.inflate(inflater, container, false)
         return binding.root
     }
+
 
     private val checkLoginLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -268,6 +258,8 @@ class FavoriteFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         getFollowingAuthorListFromFireStore()
         getFavoriteListFromFireStore()
+        initViewModel()
+
 
         Log.d("nameList","${authorNameList}")
         loginViewModel.category.observe(requireActivity()) { text ->
@@ -329,17 +321,13 @@ class FavoriteFragment : Fragment() {
         binding.tvLogin.setOnClickListener {
             openLoginActivity(view)
         }
-
-        viewModel.detailNews("임지원")
         binding.favoriteFollowList.layoutManager =
             LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         binding.favoriteFollowList.adapter = followingAdapter
+        viewModel.detailNews("임지원")
 
-        with(viewModel){
-            authorList.observe(viewLifecycleOwner){
-                followingAdapter.submitList(list.value?.toList())
-            }
-        }
+
+
 
         //setting 페이지로 이동
         binding.settingBtn.setOnClickListener {
@@ -391,6 +379,17 @@ class FavoriteFragment : Fragment() {
             }
         }
     }
+    fun initViewModel(){
+        with(viewModel) {
+            authorList.observe(viewLifecycleOwner){
+                followingAdapter.submitList(list.value?.toList())
+            }
+            list.observe(viewLifecycleOwner){
+                followingAdapter.submitList(it)
+            }
+        }
+    }
+
 
     //카테고리 보여주기
     private fun showCategory() {
@@ -447,27 +446,27 @@ class FavoriteFragment : Fragment() {
         val user = FirebaseAuth.getInstance().currentUser
         val userUID = user?.uid
         if (userUID != null){
-        val collectionRef = firestore.collection("User").document(userUID).collection("author")
+            val collectionRef = firestore.collection("User").document(userUID).collection("author")
 
-        collectionRef.get().addOnSuccessListener { querySnapshot ->
-            for (documentSnapshot in querySnapshot.documents) {
-                val fieldValue = documentSnapshot.getString("author")
-                if (fieldValue != null) {
-                    Log.d("authorName","$fieldValue")
-                    authorNameList.add(fieldValue)
-                    val removeDuplicatedStrings = HashSet<String>()
-                    for (value in authorNameList){
-                        removeDuplicatedStrings.add(value)
+            collectionRef.get().addOnSuccessListener { querySnapshot ->
+                for (documentSnapshot in querySnapshot.documents) {
+                    val fieldValue = documentSnapshot.getString("author")
+                    if (fieldValue != null) {
+                        Log.d("authorName","$fieldValue")
+                        authorNameList.add(fieldValue)
+                        val removeDuplicatedStrings = HashSet<String>()
+                        for (value in authorNameList){
+                            removeDuplicatedStrings.add(value)
+                        }
+                        val queryList = removeDuplicatedStrings.toList()
+                        queryAuthorList.add(queryList.toString())
+
                     }
-                    val queryList = removeDuplicatedStrings.toList()
-                    queryAuthorList.add(queryList.toString())
-
                 }
-            }
 
-        }.addOnFailureListener { exception ->
-            // 접근에 실패했을 때 수행할 작업
-        }
+            }.addOnFailureListener { exception ->
+                // 접근에 실패했을 때 수행할 작업
+            }
         }
     }
 

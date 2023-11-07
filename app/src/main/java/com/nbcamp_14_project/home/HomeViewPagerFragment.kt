@@ -10,6 +10,8 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.tabs.TabLayoutMediator
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 import com.nbcamp_14_project.databinding.FragmentViewpagerHomeBinding
 
 
@@ -40,7 +42,8 @@ class HomeViewPagerFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         with(binding) {
             initViewModel()
-            if (FirebaseAuth.getInstance().currentUser != null) {
+
+            if (FirebaseAuth.getInstance().currentUser != null ) {
                 viewModel.addListAtFirst("추천","추천")
             }
             viewpager.adapter = viewPagerAdapter

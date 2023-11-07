@@ -4,11 +4,19 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.nbcamp_14_project.Utils
+import com.nbcamp_14_project.api.NewsCollector
+import com.nbcamp_14_project.api.RetrofitInstance
 import com.nbcamp_14_project.detail.DetailInfo
 import com.nbcamp_14_project.domain.GetSearchNewsUseCase
 import com.nbcamp_14_project.home.HomeModel
+import com.nbcamp_14_project.home.HomeViewModel
+import com.nbcamp_14_project.home.MainFragmentRepositoryImpl
+import com.nbcamp_14_project.search.SearchRepository
+import com.nbcamp_14_project.search.SearchRepositoryImpl
+import com.nbcamp_14_project.search.SearchViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -16,9 +24,12 @@ import org.jsoup.Jsoup
 import java.io.EOFException
 import java.io.IOException
 import java.util.Date
+import java.util.concurrent.atomic.AtomicInteger
 import java.util.zip.ZipException
 
-class FavoriteViewModel(private val searchNews: GetSearchNewsUseCase) : ViewModel() {
+class FavoriteViewModel(
+    private val repository: FavoriteRepository
+) : ViewModel() {
     // ViewModel 클래스 정의
     private val _list: MutableLiveData<List<HomeModel>> = MutableLiveData()
     val list: LiveData<List<HomeModel>> get() = _list
@@ -86,9 +97,9 @@ class FavoriteViewModel(private val searchNews: GetSearchNewsUseCase) : ViewMode
 
     fun detailNews(query: String, startingNum: Int? = null, display: Int? = 5) {
         viewModelScope.launch {
-            val docs = searchNews(query, display, startingNum?.plus(5), sort = "sim")
+            val docs = repository.getNews(query, display, startingNum?.plus(5), sort = "sim")
             val item = docs.items ?: return@launch
-            var currentList = _list.value?.toMutableList()
+            var currentList = repository.getList()
             for (i in item.indices) {//아이템 개수만큼 for문 실행
                 val thumbnail = getThumbnail(item[i].link.toString())
                 var title = item[i].title!!.replace("<b>", "")
@@ -102,7 +113,7 @@ class FavoriteViewModel(private val searchNews: GetSearchNewsUseCase) : ViewMode
                 val pubDate = item[i].pubDate
                 var date = Date(pubDate)
                 val author = getAuthor(item[i].link.toString())
-                currentList?.add(
+                currentList = repository.addNewsItem(
                     HomeModel(
                         title = title,
                         thumbnail = thumbnail,
@@ -113,8 +124,8 @@ class FavoriteViewModel(private val searchNews: GetSearchNewsUseCase) : ViewMode
                     )
                 )
             }
-
-            _list.value = currentList!!
+            Log.d("isListNull","$currentList")
+            _list.value = currentList
         }
     }
 
@@ -280,6 +291,23 @@ class FavoriteViewModel(private val searchNews: GetSearchNewsUseCase) : ViewMode
         }
         return null
     }
+    class FavoriteViewModelFactory() : ViewModelProvider.Factory {
+        private val repository = FavoriteRepository(
+            AtomicInteger(0),
+            RetrofitInstance.search
+        )
 
+
+        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+            if (modelClass.isAssignableFrom(FavoriteViewModel::class.java)) {
+                return FavoriteViewModel(
+                    repository
+                ) as T
+            } else {
+                throw IllegalArgumentException("Not found ViewModel class.")
+            }
+
+        }
+    }
 
 }

@@ -82,7 +82,6 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/profile_box"
         android:layout_width="match_parent"
@@ -135,9 +134,7 @@
                 android:id="@+id/tv_second_category"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text=""
-                android:textColor="#5E5959"
-                android:textSize="16sp"/>
+                android:text=""/>
 
             <TextView
                 android:id="@+id/tv_third_category"
@@ -147,10 +144,7 @@
                 android:textColor="#5E5959"
                 android:textSize="16sp"/>
 
-
         </LinearLayout>
-
-
 
         <ImageView
             android:id="@+id/iv_fix_category"
@@ -192,7 +186,6 @@
             app:strokeColor="#BFE6C0"
             app:strokeWidth="3dp" />
 
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.recyclerview.widget.RecyclerView
@@ -228,7 +221,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/follow_text" />
 
-
     <View
         android:id="@+id/view_empty"
         android:layout_width="match_parent"
@@ -247,9 +239,5 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
-
-
-
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>
