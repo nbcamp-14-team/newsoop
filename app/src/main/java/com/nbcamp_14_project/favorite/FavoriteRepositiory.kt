@@ -33,4 +33,9 @@ class FavoriteRepository(
         list.add(item.copy(id = idGenerate.getAndIncrement()))
         return list
     }
+
+    fun clearList(): List<HomeModel>{
+        list.clear()
+        return list
+    }
 }
