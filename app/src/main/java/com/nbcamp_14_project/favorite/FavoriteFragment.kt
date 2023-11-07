@@ -50,6 +50,7 @@ import com.nbcamp_14_project.setting.SettingActivity
 import com.nbcamp_14_project.ui.login.CategoryFragment
 import com.nbcamp_14_project.ui.login.LoginActivity
 import com.nbcamp_14_project.ui.login.LoginViewModel
+import java.util.Random
 
 
 class FavoriteFragment : Fragment() {
@@ -75,7 +76,7 @@ class FavoriteFragment : Fragment() {
     private var auth = FirebaseAuth.getInstance()
     private val authorNameList = mutableListOf<String>()
     private val queryAuthorList = mutableListOf<String>()
-    private val query = "임지원"
+    private lateinit var query: String
 
     private val followingAdapter by lazy {
         FollowingListAdapter(//recyclerView에서 클릭이 일어났을 때, Detail에 데이터값을 보냄
@@ -144,7 +145,27 @@ class FavoriteFragment : Fragment() {
         getFollowingAuthorListFromFireStore()
         Log.d("authorList","$authorNameList")
         Log.d("authorquery", "$queryAuthorList")
+        Log.d("viewmodel", "${viewModel.authorList.value}")
         Log.e("onResume", "#hyunsik")
+
+        val authorList = viewModel.authorList.value.toString()
+        val regex = """\[(.*)\]""".toRegex()
+        val regexResult = regex.find(authorList)
+        if (regexResult != null){
+            val innerListString = regexResult.groupValues[1]
+            val innerList = innerListString.split(",").map { it.trim() }
+            val random = Random()
+
+            if(innerList.isNotEmpty()){
+                val randomIndex = random.nextInt(innerList.size)
+                val query = innerList[randomIndex]
+                Log.d("viewmodel", "$query")
+            }
+        }
+
+
+
+
 
         // 로그인 상태에 따른 화면 처리
         val loginBox = binding.root.findViewById<ConstraintLayout>(R.id.login_box)
@@ -458,10 +479,17 @@ class FavoriteFragment : Fragment() {
                         for (value in authorNameList){
                             removeDuplicatedStrings.add(value)
                         }
-                        val queryList = removeDuplicatedStrings.toList()
-                        queryAuthorList.add(queryList.toString())
+                        val queryList = removeDuplicatedStrings.toString()
+                        queryAuthorList.add(queryList)
+                        if (queryAuthorList.size >1){
+                            for (i in 0 until queryAuthorList.size -1){
+
+                                queryAuthorList.removeAt(0)
+                            }
+                        }
 
                     }
+                    viewModel.addAuthorList(queryAuthorList)
                 }
 
             }.addOnFailureListener { exception ->
