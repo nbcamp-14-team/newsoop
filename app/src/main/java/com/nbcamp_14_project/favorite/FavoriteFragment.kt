@@ -25,6 +25,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.PagerSnapHelper
 import coil.load
 import coil.transform.CircleCropTransformation
 import com.google.firebase.auth.FirebaseAuth
@@ -155,7 +156,6 @@ class FavoriteFragment : Fragment() {
         getFavoriteListFromFireStore()
         getFollowingAuthorListFromFireStore()
         Log.d("authorList","$authorNameList")
-        Log.d("authorList", "$authorNameList")
         Log.d("authorquery", "$queryAuthorList")
         Log.d("viewmodel", "${viewModel.authorList.value}")
         Log.e("onResume", "#hyunsik")
@@ -313,6 +313,7 @@ class FavoriteFragment : Fragment() {
         }
 
 
+
         // RecyclerView 어댑터 초기화
         adapter = FavoriteListAdapter { item ->
             val detailInfo = item
@@ -322,6 +323,8 @@ class FavoriteFragment : Fragment() {
         }
 
         //RecyclerView 설정 - 가로 방향
+        val snapHelperForFavorite = PagerSnapHelper()//아이템 한 개씩 움직이게 도와주는 헬퍼
+        snapHelperForFavorite.attachToRecyclerView(binding.favoriteList)// 리사이클러뷰 지정
         binding.favoriteList.layoutManager =
             LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         binding.favoriteList.adapter = adapter
@@ -335,6 +338,8 @@ class FavoriteFragment : Fragment() {
         binding.tvLogin.setOnClickListener {
             openLoginActivity(view)
         }
+        val snapHelperForFollowing =PagerSnapHelper()
+        snapHelperForFollowing.attachToRecyclerView(binding.favoriteFollowList)// 리사이클러뷰 지정
         binding.favoriteFollowList.layoutManager =
             LinearLayoutManagerWrapper(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         binding.favoriteFollowList.itemAnimator = null
@@ -485,6 +490,7 @@ class FavoriteFragment : Fragment() {
                     val fieldValue = documentSnapshot.getString("author")
                     if (fieldValue != null) {
                         Log.d("authorName", "$fieldValue")
+                        authorNameList.clear()
                         authorNameList.add(fieldValue)
                         val removeDuplicatedStrings = HashSet<String>()
                         for (value in authorNameList) {
