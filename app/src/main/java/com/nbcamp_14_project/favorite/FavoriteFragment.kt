@@ -49,6 +49,7 @@ import com.nbcamp_14_project.ui.login.CategoryFragment
 import com.nbcamp_14_project.ui.login.LoginActivity
 import com.nbcamp_14_project.ui.login.LoginViewModel
 import java.util.Random
+import kotlin.concurrent.timer
 
 
 class FavoriteFragment : Fragment() {
@@ -153,8 +154,8 @@ class FavoriteFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         // 즐겨찾기 목록 업데이트
-        getFavoriteListFromFireStore()
         getFollowingAuthorListFromFireStore()
+        getFavoriteListFromFireStore()
         Log.d("authorList","$authorNameList")
         Log.d("authorquery", "$queryAuthorList")
         Log.d("viewmodel", "${viewModel.authorList.value}")
@@ -270,7 +271,7 @@ class FavoriteFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        getFollowingAuthorListFromFireStore()
         getFavoriteListFromFireStore()
         initViewModel()
 
@@ -418,14 +419,24 @@ class FavoriteFragment : Fragment() {
 
     fun initViewModel() {
         with(viewModel) {
-            authorList.observe(viewLifecycleOwner) {
-                followingAdapter.submitList(list.value?.toList())
-            }
+//            authorList.observe(viewLifecycleOwner) {
+//                followingAdapter.submitList(list.value?.toList())
+//            }
             list.observe(viewLifecycleOwner) {
                 followingAdapter.submitList(it)
             }
         }
     }
+//    fun initViewModel() {
+//        with(viewModel) {
+//            authorList.observe(viewLifecycleOwner) {
+//                getFollowingAuthorListFromFireStore()
+//            }
+//            list.observe(viewLifecycleOwner) {
+//                followingAdapter.submitList(it)
+//            }
+//        }
+//    }
 
 
     //카테고리 보여주기
