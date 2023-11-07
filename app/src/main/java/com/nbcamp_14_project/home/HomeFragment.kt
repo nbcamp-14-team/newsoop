@@ -207,7 +207,7 @@ class HomeFragment(query: String) : Fragment() {
     private fun recommendTab(query: String?) {
 
         if (query == "추천") { //추천 프래그먼트일 시 ,
-            Log.d("isWork", "run")
+            Log.d("isWork", "$isUserHaveCategory")
             /**
              * 파이어베이스에서 카테고리 가져오기
              */
@@ -227,6 +227,18 @@ class HomeFragment(query: String) : Fragment() {
                         if (secondCategory.isNullOrBlank()) secondCategory = null
                         if (thirdCategory.isNullOrBlank()) thirdCategory = null
 
+                        if (firstHomeCategory == firstCategory
+                            && secondHomeCategory == secondCategory
+                            && thirdHomeCategory == thirdCategory
+                            && !isUserHaveCategory
+                        ) {
+                            Log.d("iswork","7")
+                            firstHomeCategory = null
+                            viewPagerViewModel.clearAllItems()
+                            viewPagerViewModel.headLineNews("정치")//메인 ViewPager에 헤드라인 뉴스 출력
+                            viewPagerViewModel.detailNews("정치", 1)//하단 리사이클러뷰에 뉴스 출력
+                            isUserHaveCategory = true
+                        }
                         if (firstHomeCategory == firstCategory
                             && secondHomeCategory == secondCategory
                             && thirdHomeCategory == thirdCategory
@@ -298,14 +310,6 @@ class HomeFragment(query: String) : Fragment() {
                 } else {
                     Log.d("iswork", "fail")
                 }
-            }
-            if (!isUserHaveCategory) {
-                Log.d("isWork?", "4")
-                firstHomeCategory = null
-                viewPagerViewModel.clearAllItems()
-                viewPagerViewModel.headLineNews("정치")//메인 ViewPager에 헤드라인 뉴스 출력
-                viewPagerViewModel.detailNews("정치", 1)//하단 리사이클러뷰에 뉴스 출력
-                isUserHaveCategory = true
             }
         }
     }
