@@ -88,7 +88,12 @@ class HomeNewsAdapter(
             title.text = item.title
             ivThumbnail.load(item.thumbnail)
             val value = item.pubDate?.time?.let { Utils.calculationTime(it) } ?: return
-            pubDate.text = item.author + " 기자" + " · " + value + " 작성"
+            if(item.author =="기자 정보가 없습니다."){
+                pubDate.text = item.author + " · " + value + " 작성"
+            }else{
+                pubDate.text = item.author + " 기자" + " · " + value + " 작성"
+            }
+
 
 
             container.setOnClickListener {
