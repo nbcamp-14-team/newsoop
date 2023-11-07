@@ -27,6 +27,7 @@ interface MainFragmentRepository {
     fun modifyNewsItemIsLikeToLink(item: HomeModel?):List<HomeModel>
     fun clearNewsItems():List<HomeModel>
     fun clearHeadLineItems():List<HomeModel>
+    fun checkLastItem():Boolean
 
 }
 
@@ -163,9 +164,9 @@ class MainFragmentRepositoryImpl(
 
     override fun removeLastNewsItem(): List<HomeModel> {
         if(newsList.isNotEmpty()){
+            Log.d("removeLoading","${newsList[newsList.lastIndex].viewType}")
             newsList.removeAt(newsList.lastIndex)
         }
-
         return ArrayList<HomeModel>(newsList)
     }
 
@@ -180,6 +181,10 @@ class MainFragmentRepositoryImpl(
         return ArrayList<HomeModel>(list)
     }
 
+    override fun checkLastItem(): Boolean {
+        if(list.lastIndex<=0) return false
+        if(list[list.lastIndex].viewType == 0) return false else return true
+    }
 
 
 }
