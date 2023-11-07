@@ -34,8 +34,8 @@ class FavoriteViewModel(
     private val _list: MutableLiveData<List<HomeModel>> = MutableLiveData()
     val list: LiveData<List<HomeModel>> get() = _list
 
-    private val _authorList: MutableLiveData<List<String>> = MutableLiveData()
-    val authorList: LiveData<List<String>> get() = _authorList
+    private val _authorList: MutableLiveData<MutableList<String>> = MutableLiveData()
+    val authorList: MutableLiveData<MutableList<String>> get() = _authorList
     private val _favoriteList: MutableLiveData<List<DetailInfo>> = MutableLiveData()
     val favoriteList: LiveData<List<DetailInfo>> get() = _favoriteList
 
@@ -52,6 +52,11 @@ class FavoriteViewModel(
         _favoriteList.value = currentList // 변경된 목록을 LiveData에 설정
     }
 
+
+
+    fun addAuthorList(data: MutableList<String>){
+        _authorList.value = data
+    }
 
 
     // 즐겨찾기 아이템 삭제

@@ -1,6 +1,5 @@
 package com.nbcamp_14_project.favorite
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil

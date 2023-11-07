@@ -33,7 +33,7 @@ class LoginRepository() {
                 collectionRef.get().addOnCompleteListener { task ->
                     if (task.isSuccessful) {
                         val document = task.result
-                        if (document.exists()) {
+
                             val category = document.getString("category") ?:""
                             val secondcategory = document.getString("secondCategory") ?:""
                             val thirdcategory = document.getString("thirdCategory") ?:""
@@ -44,9 +44,7 @@ class LoginRepository() {
                             user.secondCategory = secondcategory
                             user.thirdCategory = thirdcategory
                             fbFireStore.collection("User")?.document(auth!!.currentUser!!.uid)?.set(user)
-                        } else {
-                            Log.d("data", "no data")
-                        }
+
                     } else {
                         Log.d("data", "no data")
                     }
