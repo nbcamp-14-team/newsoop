@@ -127,7 +127,7 @@
                 android:id="@+id/tv_first_category"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="선호 카테고리 : "
+                android:text="선호 카테고리 : 없음"
                 android:textColor="#5E5959"
                 android:textSize="16sp"/>
 
