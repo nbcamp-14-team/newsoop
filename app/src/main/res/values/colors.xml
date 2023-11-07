@@ -12,6 +12,8 @@
     <color name="strokeGray">#a9a9a9</color>
     <color name="blue">#0228FB</color>
     <color name="red">#FF0000</color>
+    <color name="disagree_red">#F44336</color>
+    <color name="agree_blue">#2196F3</color>
 
     <color name="categoryBackBlur">#D0383B3D</color>
 

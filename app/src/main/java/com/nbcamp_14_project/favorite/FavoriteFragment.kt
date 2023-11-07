@@ -17,9 +17,12 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import coil.load
 import coil.transform.CircleCropTransformation
@@ -30,16 +33,24 @@ import com.google.firebase.firestore.Query
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import com.nbcamp_14_project.R
+import com.nbcamp_14_project.api.NewsCollector
 import com.nbcamp_14_project.data.model.User
 import com.nbcamp_14_project.databinding.FragmentFavoriteBinding
 import com.nbcamp_14_project.detail.DetailInfo
 import com.nbcamp_14_project.detail.DetailViewModel
+import com.nbcamp_14_project.home.HomeModel
+import com.nbcamp_14_project.home.HomeModelFactory
+import com.nbcamp_14_project.home.HomeViewModel
 import com.nbcamp_14_project.home.HomeViewPagerViewModel
+import com.nbcamp_14_project.home.toDetailInfo
 import com.nbcamp_14_project.mainpage.MainActivity
+import com.nbcamp_14_project.search.SearchViewModel
+import com.nbcamp_14_project.search.SearchViewModelFactory
 import com.nbcamp_14_project.setting.SettingActivity
 import com.nbcamp_14_project.ui.login.CategoryFragment
 import com.nbcamp_14_project.ui.login.LoginActivity
 import com.nbcamp_14_project.ui.login.LoginViewModel
+
 
 class FavoriteFragment : Fragment() {
     companion object {
@@ -48,14 +59,36 @@ class FavoriteFragment : Fragment() {
 
     private var _binding: FragmentFavoriteBinding? = null
     private val binding get() = _binding!!
+    private val authorData: ArrayList<HomeModel> = ArrayList()
     private lateinit var adapter: FavoriteListAdapter
-    private val viewModel: FavoriteViewModel by activityViewModels()
+    private val viewModel: FavoriteViewModel by lazy{
+        ViewModelProvider(
+            requireActivity(), FavoriteViewModel.FavoriteViewModelFactory()
+        )[FavoriteViewModel::class.java]
+    }
     private val detailViewModel: DetailViewModel by activityViewModels()
     private val loginViewModel: LoginViewModel by activityViewModels()
     private val homeViewPagerViewModel: HomeViewPagerViewModel by activityViewModels()
+    private val homeViewModel : HomeViewModel by activityViewModels()
     private val firestore = FirebaseFirestore.getInstance()
     private var isLogin = false
     private var auth = FirebaseAuth.getInstance()
+    private val authorNameList = mutableListOf<String>()
+    private val queryAuthorList = mutableListOf<String>()
+    private val query = "임지원"
+
+    private val followingAdapter by lazy {
+        FollowingListAdapter(//recyclerView에서 클릭이 일어났을 때, Detail에 데이터값을 보냄
+            onItemClick = { item ->
+                val detailInfo =
+                    item
+                detailViewModel.setDetailInfo(item.toDetailInfo())//뷰모델로 전송
+                val mainActivity = (activity as MainActivity)
+                mainActivity.runDetailFragment()//DetailFragment 실행
+            }
+        )
+    }
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -65,6 +98,7 @@ class FavoriteFragment : Fragment() {
         _binding = FragmentFavoriteBinding.inflate(inflater, container, false)
         return binding.root
     }
+
 
     private val checkLoginLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -121,6 +155,9 @@ class FavoriteFragment : Fragment() {
 
         // 즐겨찾기 목록 업데이트
         getFavoriteListFromFireStore()
+        getFollowingAuthorListFromFireStore()
+        Log.d("authorList","$authorNameList")
+        Log.d("authorquery", "$queryAuthorList")
         Log.e("onResume", "#hyunsik")
 
         // 로그인 상태에 따른 화면 처리
@@ -229,8 +266,16 @@ class FavoriteFragment : Fragment() {
         }
     }
 
+
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        getFollowingAuthorListFromFireStore()
+        getFavoriteListFromFireStore()
+        initViewModel()
+
+
+        Log.d("nameList","${authorNameList}")
         loginViewModel.category.observe(requireActivity()) { text ->
             binding.tvFirstCategory.text = "선호 카테고리: $text"
         }
@@ -281,6 +326,7 @@ class FavoriteFragment : Fragment() {
             LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         binding.favoriteList.adapter = adapter
 
+
         // 즐겨찾기 목록 갱신
         viewModel.favoriteList.observe(viewLifecycleOwner) {
             adapter.submitList(it)
@@ -289,6 +335,13 @@ class FavoriteFragment : Fragment() {
         binding.tvLogin.setOnClickListener {
             openLoginActivity(view)
         }
+        binding.favoriteFollowList.layoutManager =
+            LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        binding.favoriteFollowList.adapter = followingAdapter
+        viewModel.detailNews("임지원")
+
+
+
 
         //setting 페이지로 이동
         binding.settingBtn.setOnClickListener {
@@ -322,6 +375,7 @@ class FavoriteFragment : Fragment() {
 
         binding.ivFixCategory.setOnClickListener {
             showCategory()
+            getFollowingAuthorListFromFireStore()
             //주변 그림자
             loginViewModel.isCategoryBooleanValue.observe(requireActivity(), Observer { isTrue ->
                 // 불린 값이 변경될 때 수행할 동작을 여기에 추가
@@ -337,6 +391,17 @@ class FavoriteFragment : Fragment() {
             }
         }
     }
+    fun initViewModel(){
+        with(viewModel) {
+            authorList.observe(viewLifecycleOwner){
+                followingAdapter.submitList(list.value?.toList())
+            }
+            list.observe(viewLifecycleOwner){
+                followingAdapter.submitList(it)
+            }
+        }
+    }
+
 
     //카테고리 보여주기
     private fun showCategory() {
@@ -389,6 +454,34 @@ class FavoriteFragment : Fragment() {
             }
     }
 
+    private fun getFollowingAuthorListFromFireStore() {
+        val user = FirebaseAuth.getInstance().currentUser
+        val userUID = user?.uid
+        if (userUID != null){
+            val collectionRef = firestore.collection("User").document(userUID).collection("author")
+
+            collectionRef.get().addOnSuccessListener { querySnapshot ->
+                for (documentSnapshot in querySnapshot.documents) {
+                    val fieldValue = documentSnapshot.getString("author")
+                    if (fieldValue != null) {
+                        Log.d("authorName","$fieldValue")
+                        authorNameList.add(fieldValue)
+                        val removeDuplicatedStrings = HashSet<String>()
+                        for (value in authorNameList){
+                            removeDuplicatedStrings.add(value)
+                        }
+                        val queryList = removeDuplicatedStrings.toList()
+                        queryAuthorList.add(queryList.toString())
+
+                    }
+                }
+
+            }.addOnFailureListener { exception ->
+                // 접근에 실패했을 때 수행할 작업
+            }
+        }
+    }
+
     // 로그인 화면으로 이동하는 함수
     fun openLoginActivity(view: View) {
         val intent = Intent(requireContext(), LoginActivity::class.java)
@@ -411,5 +504,7 @@ class FavoriteFragment : Fragment() {
             // 업데이트 실패 시
         }
     }
+
+
 
 }

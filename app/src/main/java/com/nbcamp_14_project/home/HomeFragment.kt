@@ -166,6 +166,7 @@ class HomeFragment(query: String) : Fragment() {
                 newsAdapter.submitList(it.toList())
             }
         }
+
         with(homeViewPagerViewModel) {
             resumed.observe(viewLifecycleOwner) {
                 Log.d("queryInbox", "$queryInbox")
@@ -232,7 +233,7 @@ class HomeFragment(query: String) : Fragment() {
                         ) {
                             return@addOnCompleteListener
                         } else {
-                            isUserHaveCategory = true
+
                             viewPagerViewModel.clearAllItems()
                             Log.d("testCategory", "${document.getString("category")}")
                             firstHomeCategory = document.getString("category")
@@ -243,6 +244,7 @@ class HomeFragment(query: String) : Fragment() {
 
                             if (secondHomeCategory.isNullOrBlank()) {
                                 Log.d("isWork?", "3")
+                                isUserHaveCategory = true
                                 secondHomeCategory = null
                                 viewPagerViewModel.headLineNews(firstHomeCategory ?: "생활", 5)
                                 viewPagerViewModel.detailNews(firstHomeCategory ?: "생활", 1)
@@ -301,18 +303,20 @@ class HomeFragment(query: String) : Fragment() {
                                     }
                                 }, 1500)
 
+                            }else if (!isUserHaveCategory) {
+                                Log.d("isWork?", "4")
+                                firstHomeCategory = null
+                                viewPagerViewModel.clearAllItems()
+                                viewPagerViewModel.headLineNews("정치")//메인 ViewPager에 헤드라인 뉴스 출력
+                                viewPagerViewModel.detailNews("정치", 1)//하단 리사이클러뷰에 뉴스 출력
+                                isUserHaveCategory = true
                             }
                         }
                     }
+                }else{
+                    Log.d("fail","fail")
                 }
-            }
-            if (!isUserHaveCategory) {
-                Log.d("isWork?", "4")
-                firstHomeCategory = null
-                viewPagerViewModel.clearAllItems()
-                viewPagerViewModel.headLineNews("정치")//메인 ViewPager에 헤드라인 뉴스 출력
-                viewPagerViewModel.detailNews("정치", 1)//하단 리사이클러뷰에 뉴스 출력
-                isUserHaveCategory = true
+
             }
         }
     }
