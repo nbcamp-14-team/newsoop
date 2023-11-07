@@ -136,7 +136,9 @@
                 android:id="@+id/tv_second_category"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text=""/>
+                android:text=""
+                android:textColor="#5E5959"
+                android:textSize="16sp"/>
 
             <TextView
                 android:id="@+id/tv_third_category"
