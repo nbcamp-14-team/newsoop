@@ -198,13 +198,6 @@
                     app:layout_constraintEnd_toEndOf="@id/et_check_pw"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <View
-                    android:id="@+id/view_empty"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:background="@color/categoryBackBlur"
-                    android:visibility="invisible" />
-
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -307,11 +300,6 @@
 
             </LinearLayout>
 
-            <androidx.fragment.app.FragmentContainerView
-                android:id="@+id/frag_category"
-                android:layout_width="match_parent"
-                android:layout_height="480dp" />
-
 
         </androidx.appcompat.widget.LinearLayoutCompat>
     </ScrollView>
@@ -332,6 +320,25 @@
         android:textSize="18sp"
         android:textStyle="bold"
         app:cornerRadius="100dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <View
+        android:id="@+id/view_empty"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:visibility="invisible"
+        android:background="@color/categoryBackBlur"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/frag_category"/>
+
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/frag_category"
+        android:layout_width="match_parent"
+        android:layout_height="480dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
