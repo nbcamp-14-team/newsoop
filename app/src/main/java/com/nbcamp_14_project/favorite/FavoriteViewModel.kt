@@ -38,7 +38,7 @@ class FavoriteViewModel(
     val authorList: MutableLiveData<MutableList<String>> get() = _authorList
     private val _favoriteList: MutableLiveData<List<DetailInfo>> = MutableLiveData()
     val favoriteList: LiveData<List<DetailInfo>> get() = _favoriteList
-
+    var query = MutableLiveData<String>()
 
 
     var isLogin: Boolean = false
@@ -101,7 +101,9 @@ class FavoriteViewModel(
     }
 
     fun detailNews(query: String, startingNum: Int? = null, display: Int? = 5) {
+
         viewModelScope.launch {
+            repository.clearList()
             val docs = repository.getNews(query, display, startingNum?.plus(5), sort = "sim")
             val item = docs.items ?: return@launch
             var currentList = repository.getList()

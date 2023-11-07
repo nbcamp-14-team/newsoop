@@ -2,10 +2,12 @@ package com.nbcamp_14_project.favorite
 
 import android.app.Activity
 import android.app.AlertDialog
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
+import android.util.AttributeSet
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -139,29 +141,14 @@ class FavoriteFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-
         // 즐겨찾기 목록 업데이트
         getFavoriteListFromFireStore()
-        getFollowingAuthorListFromFireStore()
+
         Log.d("authorList","$authorNameList")
         Log.d("authorquery", "$queryAuthorList")
         Log.d("viewmodel", "${viewModel.authorList.value}")
         Log.e("onResume", "#hyunsik")
 
-        val authorList = viewModel.authorList.value.toString()
-        val regex = """\[(.*)\]""".toRegex()
-        val regexResult = regex.find(authorList)
-        if (regexResult != null){
-            val innerListString = regexResult.groupValues[1]
-            val innerList = innerListString.split(",").map { it.trim() }
-            val random = Random()
-
-            if(innerList.isNotEmpty()){
-                val randomIndex = random.nextInt(innerList.size)
-                val query = innerList[randomIndex]
-                Log.d("viewmodel", "$query")
-            }
-        }
 
 
 
@@ -205,9 +192,9 @@ class FavoriteFragment : Fragment() {
                         val secondcategory = document.getString("secondCategory") ?: ""
                         val thirdcategory = document.getString("thirdCategory") ?: ""
                         binding.tvNick.text = "이름 : $nameField"
-                        binding.tvFirstCategory.text = "선호 카데고리: $category"
-                        binding.tvSecondCategory.text = ", $secondcategory"
-                        binding.tvThirdCategory.text = ", $thirdcategory"
+                        binding.tvFirstCategory.text = "선호 카테고리: $category"
+                        binding.tvSecondCategory.text = " $secondcategory"
+                        binding.tvThirdCategory.text = " $thirdcategory"
 
 
                     } else {
@@ -343,9 +330,10 @@ class FavoriteFragment : Fragment() {
             openLoginActivity(view)
         }
         binding.favoriteFollowList.layoutManager =
-            LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+            LinearLayoutManagerWrapper(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        binding.favoriteFollowList.itemAnimator = null
         binding.favoriteFollowList.adapter = followingAdapter
-        viewModel.detailNews("임지원")
+
 
 
 
@@ -496,6 +484,22 @@ class FavoriteFragment : Fragment() {
                 // 접근에 실패했을 때 수행할 작업
             }
         }
+
+        val authorList = viewModel.authorList.value.toString()
+        val regex = """\[(.*)\]""".toRegex()
+        val regexResult = regex.find(authorList)
+        if (regexResult != null){
+            val innerListString = regexResult.groupValues[1]
+            val innerList = innerListString.split(",").map { it.trim() }
+            val random = Random()
+
+            if(innerList.isNotEmpty()){
+                val randomIndex = random.nextInt(innerList.size)
+                val query = innerList[randomIndex]
+                viewModel.detailNews(query+" 기자")
+                Log.d("viewmodel", "$query")
+            }
+        }
     }
 
     // 로그인 화면으로 이동하는 함수
@@ -523,4 +527,17 @@ class FavoriteFragment : Fragment() {
 
 
 
+}
+
+class LinearLayoutManagerWrapper: LinearLayoutManager {
+    constructor(context: Context) : super(context)
+
+    constructor(context: Context, orientation: Int, reverseLayout: Boolean) : super(context, orientation, reverseLayout)
+
+    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int, defStyleRes: Int)
+            : super(context, attrs, defStyleAttr, defStyleRes)
+
+    override fun supportsPredictiveItemAnimations(): Boolean {
+        return false
+    }
 }
