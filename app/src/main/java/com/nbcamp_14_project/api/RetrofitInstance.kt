@@ -3,6 +3,7 @@ package com.nbcamp_14_project.api
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
@@ -16,9 +17,12 @@ object RetrofitInstance {
     private val okHttpClient by lazy{
         OkHttpClient.Builder()
             .addInterceptor(AuthorizationInterceptor())
+//            .addInterceptor(
+//                HttpLoggingInterceptor()
+//                .apply { level = HttpLoggingInterceptor.Level.BODY }
+//            )
             .build()
     }
-
     private val retrofit: Retrofit
         private get(){
             val gson = GsonBuilder().setLenient().create()

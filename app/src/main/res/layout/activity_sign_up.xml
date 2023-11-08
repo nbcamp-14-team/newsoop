@@ -5,8 +5,7 @@
     android:id="@+id/cl_signup"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background_green"
-    android:paddingHorizontal="24dp"
+    android:background="@color/white"
     android:paddingTop="12dp"
     tools:context=".SignUpActivity">
 
@@ -14,12 +13,12 @@
         android:id="@+id/iv_sign_up_back"
         android:layout_width="30dp"
         android:layout_height="20dp"
-        android:src="@drawable/ic_back"
         android:scaleType="centerCrop"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.02"
+        android:src="@drawable/ic_back"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.02" />
 
 
     <TextView
@@ -38,11 +37,20 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_marginTop="5dp"
+        android:background="@color/lightGray"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_title" />
+
     <ScrollView
         android:id="@+id/scrollView2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/signup_scroll_top_outline"
+        android:paddingHorizontal="24dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -76,13 +84,13 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="10dp"
-                    android:background="@drawable/et_round_black"
+                    android:background="@drawable/et_round_white"
                     android:hint="이메일을 입력해주세요"
                     android:imeOptions="actionNext"
                     android:inputType="textEmailAddress"
+                    android:maxLines="1"
                     android:paddingHorizontal="10dp"
                     android:paddingVertical="8dp"
-                    android:maxLines="1"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/btn_check_exist"
                     app:layout_constraintStart_toStartOf="parent"
@@ -136,16 +144,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="6dp"
-                android:layout_marginEnd="10dp"
+
                 android:layout_marginBottom="2dp"
-                android:background="@drawable/et_round_black"
+                android:background="@drawable/et_round_white"
                 android:hint="비밀번호를 입력해주세요"
-                android:maxLines="1"
                 android:imeOptions="actionNext"
                 android:inputType="textPassword"
+                android:maxLines="1"
                 android:paddingHorizontal="10dp"
                 android:paddingVertical="8dp" />
-
 
 
             <TextView
@@ -153,8 +160,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="3dp"
-                android:textColor="@color/green"
-                android:text="6자 이상, 숫자 기호 문자를 각각 하나 이상씩 포함해주세요"/>
+                android:text="6자 이상, 숫자 기호 문자를 각각 하나 이상씩 포함해주세요"
+                android:textColor="@color/green" />
 
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -167,14 +174,13 @@
                     android:id="@+id/et_check_pw"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="10dp"
-                    android:background="@drawable/et_round_black"
+                    android:background="@drawable/et_round_white"
                     android:hint="비밀번호를 확인해주세요"
                     android:imeOptions="actionNext"
                     android:inputType="textPassword"
+                    android:maxLines="1"
                     android:paddingHorizontal="10dp"
                     android:paddingVertical="8dp"
-                    android:maxLines="1"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -196,7 +202,6 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-
             <TextView
                 android:id="@+id/tv_name"
                 android:layout_width="wrap_content"
@@ -211,14 +216,13 @@
                 android:id="@+id/et_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="10dp"
-                android:background="@drawable/et_round_black"
                 android:layout_marginTop="6dp"
+                android:background="@drawable/et_round_white"
                 android:hint="이름을 입력해주세요"
                 android:imeOptions="actionNext"
-                android:paddingHorizontal="10dp"
                 android:inputType="text"
                 android:maxLines="1"
+                android:paddingHorizontal="10dp"
                 android:paddingVertical="8dp"
                 android:textColor="@color/black" />
 
@@ -232,15 +236,69 @@
                 android:textSize="16sp"
                 android:textStyle="bold" />
 
-            <TextView
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/tv_choose_category"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:text=" !! 추가 개발 예정 !! "
+                android:backgroundTint="@color/white"
+                android:letterSpacing="0.1"
+                android:text="> 선택하러가기"
+                android:textColor="@color/signUpBtn"
                 android:textSize="18sp"
-                android:textColor="#ff0000"
-      />
+                android:textStyle="bold"
+                app:strokeColor="@color/signUpBtn"
+                app:strokeWidth="1dp" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text=":"
+                    android:textColor="@color/black"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tv_first_category"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="10dp"
+                    android:text=" "
+                    android:textColor="@color/black"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+
+                <TextView
+                    android:id="@+id/tv_second_category"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="10dp"
+                    android:text=" "
+                    android:textColor="@color/black"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tv_third_category"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="10dp"
+                    android:text=" "
+                    android:textColor="@color/black"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
 
 
         </androidx.appcompat.widget.LinearLayoutCompat>
@@ -248,12 +306,14 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_sign_up"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginHorizontal="15dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
         android:layout_marginBottom="14dp"
         android:backgroundTint="@color/signUpBtn"
+        android:letterSpacing="0.1"
         android:paddingVertical="14dp"
         android:text="가입하기"
         android:textColor="@color/white"
@@ -264,13 +324,23 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
+    <View
+        android:id="@+id/view_empty"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:visibility="invisible"
+        android:background="@color/categoryBackBlur"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/frag_category"/>
+
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/frag_category"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="480dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

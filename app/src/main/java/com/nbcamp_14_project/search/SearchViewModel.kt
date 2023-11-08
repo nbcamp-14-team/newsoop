@@ -32,38 +32,45 @@ class SearchViewModel(
         _searchResultList.value = repository.clearList()
     }
 
-    fun getRecentSearchList() {
-        _recentSearchList.value = repository.getRecentSearchList()
+    fun setRecentSearchItem(searchWord: String) {
+        _recentSearchList.value = repository.setRecentSearchItem(searchWord)
+    }
+
+    fun clearRecentSearch() {
+        _recentSearchList.value = repository.clearRecentSearchList()
     }
 
     fun removeRecentSearchItem(searchWord: String) {
         _recentSearchList.value = repository.removeRecentSearchItem(searchWord)
     }
 
-    fun setRecentSearchItem(query: String) {
+    fun addRecentSearchItem(query: String) {
         _recentSearchList.value = repository.addRecentSearchList(query)
     }
-    fun modifyFavoriteItemToPosition(item: DetailInfo){// DetailInfo 아이템 값 수정
+
+
+    fun modifyFavoriteItemToPosition(item: DetailInfo) {// DetailInfo 아이템 값 수정
         item.isLike = !item.isLike!!
-        Log.d("search","search")
+        Log.d("search", "search")
         val currentList = _searchResultList.value?.toMutableList() ?: return
-        Log.d("searchCurrentList","$currentList")
-        fun findIndex(item: DetailInfo?):Int{
-            if(item == null) return 0
-            val findItem = currentList.find{
+        Log.d("searchCurrentList", "$currentList")
+        fun findIndex(item: DetailInfo?): Int {
+            if (item == null) return 0
+            val findItem = currentList.find {
                 it.thumbnail == item.thumbnail
             }
             return currentList.indexOf(findItem!!)
         }
+
         val findPosition = findIndex(item)
-        Log.d("findPosition","$findPosition")
-        if(findPosition < 0){
+        Log.d("findPosition", "$findPosition")
+        if (findPosition < 0) {
             return
         }
         currentList[findPosition] = currentList[findPosition].copy(
             isLike = item.isLike
         )
-        Log.d("searchList","${currentList[findPosition]}")
+        Log.d("searchList", "${currentList[findPosition]}")
         _searchResultList.value = currentList
 
     }
@@ -136,17 +143,17 @@ class SearchViewModel(
         try {
             withContext(Dispatchers.IO) {
                 val docs = Jsoup.connect(url).get()
-                author = docs.select("meta[name=dable:author]")?.attr("content")
+                author = docs.select("meta[name=dable:author]").attr("content")
                     .toString()//radioKorea에서 가져오는법
                 Log.d("authortest", "$author")
                 author = Utils.getAuthorName(author)
                 if (author == "") {
-                    author = docs.select("em[class=media_end_head_journalist_name]")?.html()
+                    author = docs.select("em[class=media_end_head_journalist_name]").html()
                         .toString()//radioKorea에서 가져오는법
                     Log.d("authortest1", "$author")
                     author = Utils.getAuthorName(author)
                     if (author == "") {
-                        author = docs.select("meta[property=dable:author]")?.attr("content")
+                        author = docs.select("meta[property=dable:author]").attr("content")
                             .toString()//radioKorea에서 가져오는법
                         Log.d("authortest2", "$author")
                         author = Utils.getAuthorName(author)
@@ -162,22 +169,22 @@ class SearchViewModel(
                             if (author == "") {
                                 author =
                                     docs.select("meta[property=og:article:author]")
-                                        ?.attr("content")
+                                        .attr("content")
                                 Log.d("authortest4", "$author")
                                 author = Utils.getAuthorName(author)
                                 if (author == "") {
                                     author =
-                                        docs.select("meta[property=dd:author]")?.attr("content")
+                                        docs.select("meta[property=dd:author]").attr("content")
                                     Log.d("authortest5", "$author")
                                     author = Utils.getAuthorName(author)
                                     if (author == "") {
                                         author =
-                                            docs.select("div[class=journalist_name]")?.html()
+                                            docs.select("div[class=journalist_name]").html()
                                         Log.d("authortest6", "$author")
                                         author = Utils.getAuthorName(author)
                                         if (author == "") {
                                             author = docs.select("meta[property=dd:author]")
-                                                ?.attr("content")
+                                                .attr("content")
                                             Log.d("authortest7", "$author")
                                             author = Utils.getAuthorName(author)
                                             if (author == "") {

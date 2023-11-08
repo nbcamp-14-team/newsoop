@@ -8,7 +8,13 @@
     <color name="wrongColor">#FF5733</color>
     <color name="loginText">#27754A</color>
     <color name="signUpBtn">#569B4A</color>
-    <color name="lightGray">#d3d3d3</color>
+    <color name="lightGray">#adb5bd</color>
     <color name="strokeGray">#a9a9a9</color>
+    <color name="blue">#0228FB</color>
+    <color name="red">#FF0000</color>
+    <color name="disagree_red">#F44336</color>
+    <color name="agree_blue">#2196F3</color>
+
+    <color name="categoryBackBlur">#D0383B3D</color>
 
 </resources>

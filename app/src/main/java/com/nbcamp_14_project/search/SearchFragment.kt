@@ -12,21 +12,19 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import com.nbcamp_14_project.R
 import com.nbcamp_14_project.R.layout.item_loading
 import com.nbcamp_14_project.databinding.FragmentSearchBinding
 import com.nbcamp_14_project.detail.DetailInfo
 import com.nbcamp_14_project.detail.DetailViewModel
 import com.nbcamp_14_project.favorite.FavoriteViewModel
-import com.nbcamp_14_project.home.HomeFragment
 import com.nbcamp_14_project.home.toDetailInfo
 import com.nbcamp_14_project.mainpage.MainActivity
 import com.nbcamp_14_project.ui.login.LoginActivity
@@ -56,13 +54,14 @@ class SearchFragment : Fragment() {
         SearchListAdapter(
             onClick = { item ->
                 val detailInfo = item.toDetailInfo()
+                Log.d("hyunsik", "detailInfo=$detailInfo")
                 detailViewModel.setDetailInfo(detailInfo)
                 val mainActivity = (activity as MainActivity)
                 mainActivity.runDetailFragment()
             },
             onSwitch = { item ->
                 val detailInfo = item.toDetailInfo()
-                Log.d("searchuserFragment","$user")
+                Log.d("searchuserFragment", "$user")
                 if (user != null) {
                     // 사용자가 로그인한 경우
                     if (detailInfo != null) {
@@ -77,7 +76,7 @@ class SearchFragment : Fragment() {
                     }
                 } else {
                     // 사용자가 로그인하지 않은 경우
-                    Toast.makeText(requireContext(), "로그인을 해주세요", Toast.LENGTH_SHORT).show()
+                    showSnackbar("로그인을 해주세요.")
                     val intent = Intent(requireContext(), LoginActivity::class.java)
                     startActivity(intent)
                 }
@@ -86,7 +85,7 @@ class SearchFragment : Fragment() {
     }
     private val tagAdapter by lazy { SearchTagAdapter() }
     private var query = ""
-    private var countStart = 6
+    private var countStart = 11
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -117,8 +116,8 @@ class SearchFragment : Fragment() {
             //최근 검색어에서 같은 단어가 있으면 지우고 새로 넣기
             viewModel.removeRecentSearchItem(query)
             viewModel.clearAllItems()
-            viewModel.setRecentSearchItem(query)
-            viewModel.getSearchNews(query, 5, 1)
+            viewModel.addRecentSearchItem(query)
+            viewModel.getSearchNews(query, 10, 1)
 
             //키보드 내리는 기능
             val imm =
@@ -137,12 +136,20 @@ class SearchFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         user = FirebaseAuth.getInstance().currentUser
+        if (user != null) {
+            viewModel.clearRecentSearch()
+            getRecentSearchListFirebase(userUID = user!!.uid)
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initView()
         initViewModel()
+        val userUID = user?.uid
+        if (userUID != null) {
+            getRecentSearchListFirebase(userUID)
+        }
         binding.searchRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
@@ -151,8 +158,8 @@ class SearchFragment : Fragment() {
                 val itemCount = adapter.itemCount - 1
                 Log.d("VisiblePosition", "$lastVisiblePosition + $itemCount")
                 if (!binding.searchRecyclerView.canScrollHorizontally(1) && lastVisiblePosition == itemCount) {
-                    viewModel.getSearchNews(query, 5, countStart)
-                    countStart += 6
+                    viewModel.getSearchNews(query, 10, countStart)
+                    countStart += 10
                     //검색 로딩 딜레이 주기 : 3초
                     CoroutineScope(Dispatchers.Main).launch {
                         dialog.show()
@@ -170,6 +177,12 @@ class SearchFragment : Fragment() {
                 Log.d("search", "$position : $searchWord")
                 binding.searchBtn.performClick()
             }
+
+            override fun onCancelClick(v: View, position: Int, searchWord: String) {
+                viewModel.removeRecentSearchItem(searchWord)
+                Log.d("search", "$position : $searchWord")
+            }
+
         })
     }
 
@@ -185,7 +198,6 @@ class SearchFragment : Fragment() {
                 adapter.submitList(it.toMutableList())
             }
             recentSearchList.observe(viewLifecycleOwner) {
-                // 최근 검색어가 없으면 없음 표시, 반대면 비표시
                 if (it.isNotEmpty()) {
                     binding.recentSearchNot.visibility = View.GONE
                 } else {
@@ -195,6 +207,26 @@ class SearchFragment : Fragment() {
             }
         }
     }
+
+    private fun getRecentSearchListFirebase(userUID: String) {
+        val db = FirebaseFirestore.getInstance()
+        val recentSearchCollection =
+            db.collection("User").document(userUID).collection("recentSearch")
+        recentSearchCollection.orderBy("inputTime").get()
+            .addOnSuccessListener { querySnapshot ->
+                for (document in querySnapshot) {
+                    val searchWord = document.getString("searchWord")
+                    if (searchWord != null) {
+                        viewModel.setRecentSearchItem(searchWord)
+                    }
+                }
+                Log.d("recentSearchFirebase", "is success")
+            }
+            .addOnFailureListener { e ->
+                Log.d("recentSearchFirebase", "is fail")
+            }
+    }
+
     private fun addFavoriteToFireStore(detailInfo: DetailInfo) {
 //        val db = FirebaseFirestore.getInstance()
 //        val favoriteRef = db.collection("favorites")
@@ -246,6 +278,10 @@ class SearchFragment : Fragment() {
                 document.reference.delete()
             }
         }
+    }
+
+    private fun showSnackbar(message: String) {
+        Snackbar.make(requireView(), message, Snackbar.LENGTH_SHORT).show()
     }
 
 

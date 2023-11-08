@@ -4,6 +4,7 @@ plugins {
     id("com.google.gms.google-services")
     id("kotlin-parcelize")
     id("kotlin-kapt")
+    id("com.google.android.gms.oss-licenses-plugin")
 }
 
 android {
@@ -52,6 +53,7 @@ dependencies {
     implementation("androidx.annotation:annotation:1.6.0")
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.6.2")
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2")
+    implementation("com.google.firebase:firebase-database-ktx:20.3.0")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
@@ -94,11 +96,14 @@ dependencies {
     //firestore
     implementation("com.google.firebase:firebase-firestore-ktx")
 
-    implementation ("com.google.firebase:firebase-firestore-ktx:24.3.0")
-    implementation ("com.google.firebase:firebase-storage-ktx:20.0.2")
-    implementation ("com.github.bumptech.glide:glide:4.13.2")
-    implementation ("com.firebaseui:firebase-ui-storage:8.0.1")
-    implementation ("com.github.bumptech.glide:compiler:4.13.2")
+    implementation("com.google.firebase:firebase-firestore-ktx:24.3.0")
+    implementation("com.google.firebase:firebase-storage-ktx:20.0.2")
+    implementation("com.github.bumptech.glide:glide:4.13.2")
+    implementation("com.firebaseui:firebase-ui-storage:8.0.1")
+    implementation("com.github.bumptech.glide:compiler:4.13.2")
+    //swipe
+    implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
 
-
+    //오픈소스 라이선스
+    implementation("com.google.android.gms:play-services-oss-licenses:17.0.0")
 }

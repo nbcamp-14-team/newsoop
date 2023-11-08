@@ -1,0 +1,101 @@
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:minHeight="70dp"
+    app:cardCornerRadius="8dp"
+    app:strokeColor="@color/strokeGray"
+    app:strokeWidth="1dp"
+    android:layout_marginTop="10dp"
+    app:cardBackgroundColor="@color/white"
+    android:background="@drawable/iv_home"
+    app:cardElevation="4dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+
+        android:paddingTop="16dp"
+        android:paddingBottom="16dp">
+
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="2"
+            android:textStyle="bold"
+            android:text="Q. 어린이들에게 잔소리를 해야 할까?"
+            android:textSize="18sp"
+            android:paddingStart="16dp"
+            app:layout_constraintEnd_toStartOf="@id/btn_delete"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/tv_agree"/>
+
+        <Button
+            android:id="@+id/btn_delete"
+            style="?attr/materialIconButtonFilledTonalStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:icon="@drawable/ic_cancel_24"
+            android:alpha="0.5"
+            android:backgroundTint="@color/white"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_title"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/tv_title"
+            app:layout_constraintTop_toTopOf="@+id/tv_title" />
+
+        <TextView
+            android:id="@+id/tv_agree"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="A: 찬성합니다."
+            android:paddingStart="16dp"
+            android:layout_marginTop="1dp"
+            android:textSize="16sp"
+            app:layout_constraintStart_toStartOf="@+id/tv_title"
+            app:layout_constraintTop_toBottomOf="@+id/tv_title"
+            app:layout_constraintBottom_toTopOf="@+id/tv_opposite"/>
+
+        <TextView
+            android:id="@+id/tv_opposite"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="B: 반대합니다."
+            android:textSize="16sp"
+            android:paddingStart="16dp"
+            android:layout_marginTop="1dp"
+            app:layout_constraintStart_toStartOf="@+id/tv_agree"
+            app:layout_constraintTop_toBottomOf="@+id/tv_agree"
+            app:layout_constraintBottom_toTopOf="@+id/tv_name"/>
+
+        <TextView
+            android:id="@+id/tv_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="정현식"
+            android:textSize="14sp"
+            android:textColor="#5B5C5E"
+            android:layout_marginTop="2dp"
+            android:layout_marginStart="5dp"
+            app:layout_constraintStart_toEndOf="@+id/ic_person"
+            app:layout_constraintTop_toBottomOf="@+id/tv_opposite"
+            app:layout_constraintBottom_toTopOf="@id/ic_person"/>
+
+        <ImageView
+            android:id="@+id/ic_person"
+            android:layout_width="20dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            app:layout_constraintEnd_toStartOf="@id/tv_name"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_opposite"
+            app:srcCompat="@drawable/baseline_person_outline_24" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.google.android.material.card.MaterialCardView>

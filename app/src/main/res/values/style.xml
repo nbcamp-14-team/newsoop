@@ -1,10 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <style name = "tab_text" parent="TextAppearance.Design.Tab">
+        <item name="android:textSize">13sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">#ff229627</item>
+        <item name="android:fontFamily">@font/nanum_sqaure_bold</item>
+    </style>
+    <style name = "main_tab_text" parent="TextAppearance.Design.Tab">
         <item name="android:textSize">20sp</item>
         <item name="android:textStyle">bold</item>
         <item name="android:textColor">#ff229627</item>
         <item name="android:fontFamily">@font/nanum_sqaure_bold</item>
     </style>
+
+    <style name="ShapeAppearanceOverlay.App.CornerSize10Percent" parent="">
+        <item name="cornerSize">10%</item>
+    </style>
+
+    <style name="RoundedCornersAlertDialog" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="android:windowBackground">@drawable/dialog_background</item>
+        <item name="android:buttonBarPositiveButtonStyle">@style/AlertDialogButton</item>
+        <item name="android:buttonBarNegativeButtonStyle">@style/AlertDialogButton</item>
+    </style>
+
+    <style name="AlertDialogButton" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
+        <item name="android:textColor">@color/signUpBtn</item>
+    </style>
+
+    <style name="MySnackbarStyle" parent="Widget.Design.Snackbar">
+        <item name="android:background">@color/white</item>
+    </style>
+
+
 
 </resources>

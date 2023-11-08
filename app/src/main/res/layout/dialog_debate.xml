@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:orientation="vertical">\
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="제목">
+
+        </TextView>
+
+        <EditText
+            android:id="@+id/tv_debate"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:ems="10"
+            android:paddingStart="12dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/et_round_white2"
+            android:hint="토론 할 주제를 입력해 주세요." />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="10dp"
+            android:text="내용">
+
+        </TextView>
+
+        <EditText
+            android:id="@+id/tv_context"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_marginTop="10dp"
+            android:ems="10"
+            android:paddingStart="12dp"
+            android:background="@drawable/et_round_white2"
+            android:hint="토론 할 내용을 입력해 주세요." />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="10dp"
+            android:text="찬성측 의견">
+
+        </TextView>
+
+        <EditText
+            android:id="@+id/tv_agree"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginTop="10dp"
+            android:ems="10"
+            android:paddingStart="12dp"
+            android:background="@drawable/et_round_white2"
+            android:hint="찬성측 의견을  입력해 주세요." />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="10dp"
+            android:text="반대측 의견">
+
+        </TextView>
+
+        <EditText
+            android:id="@+id/tv_opposite"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginTop="10dp"
+            android:ems="10"
+            android:paddingStart="12dp"
+            android:background="@drawable/et_round_white2"
+            android:hint="반대측 의견을 입력해 주세요." />
+
+
+    </LinearLayout>
+</LinearLayout>

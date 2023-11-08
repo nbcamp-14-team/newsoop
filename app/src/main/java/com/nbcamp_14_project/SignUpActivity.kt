@@ -7,13 +7,14 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.view.View
-import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
+import androidx.lifecycle.Observer
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.nbcamp_14_project.data.model.User
@@ -47,6 +48,15 @@ class SignUpActivity : AppCompatActivity() {
         binding.tvChooseCategory.setOnClickListener {
             showCategory()
         }
+
+        loginViewModel.isCategoryBooleanValue.observe(this, Observer { isTrue ->
+            // 불린 값이 변경될 때 수행할 동작을 여기에 추가
+            if (isTrue) {
+                binding.viewEmpty.visibility = View.VISIBLE
+            } else {
+                binding.viewEmpty.visibility = View.INVISIBLE
+            }
+        })
     }
 
     private fun passSignUp() {
@@ -58,14 +68,14 @@ class SignUpActivity : AppCompatActivity() {
         val signIdWatcher = binding.tvEmailWatcher.text.toString()
         val signPwCheckWatcher = binding.tvCheckPw
         if (signIdText.isEmpty() || signPwText.isEmpty() || signPwCheckText.isEmpty() || nameText.isEmpty()) {
-            Toast.makeText(this, "입력되지 않은 정보가 있습니다.", Toast.LENGTH_SHORT).show()
+            Snackbar.make(binding.root, "입력되지 않은 정보가 있습니다.", Snackbar.LENGTH_SHORT).show()
         } else if (signIdWatcher != "사용가능한 이메일입니다.") {
             when(signIdWatcher){
-                "중복체크를 해주세요." -> {Toast.makeText(this, "중복확인을 완료해주세요.", Toast.LENGTH_SHORT).show()}
-                else ->{Toast.makeText(this, "이메일을 확인해주세요.", Toast.LENGTH_SHORT).show()}
+                "중복체크를 해주세요." -> {Snackbar.make(binding.root, "중복확인을 완료해주세요.", Snackbar.LENGTH_SHORT).show()}
+                else ->{Snackbar.make(binding.root, "이메일을 확인해주세요.", Snackbar.LENGTH_SHORT).show()}
             }
         }else if (!signPwCheckWatcher.isVisible){
-            Toast.makeText(this, "비밀번호를 확인해주세요.", Toast.LENGTH_SHORT).show()
+            Snackbar.make(binding.root, "비밀번호를 확인해주세요.", Snackbar.LENGTH_SHORT).show()
         }else {
             signUp()
         }
@@ -82,10 +92,10 @@ class SignUpActivity : AppCompatActivity() {
                     if (querySnapshot != null && !querySnapshot.isEmpty) {
                         // 중복된 이메일이 이미 존재함
                         binding.btnCheckExist.startAnimation(shakeAnimation)
-                        Toast.makeText(this, "중복된 이메일이 존재합니다", Toast.LENGTH_SHORT).show()
+                        Snackbar.make(binding.root, "중복된 이메일이 존재합니다", Snackbar.LENGTH_SHORT).show()
                     } else {
                         // 이메일이 중복되지 않음
-                        Toast.makeText(this, "사용가능 합니다", Toast.LENGTH_SHORT).show()
+                        Snackbar.make(binding.root, "사용가능 합니다", Snackbar.LENGTH_SHORT).show()
                         binding.tvEmailWatcher.text = "사용가능한 이메일입니다."
                         binding.btnCheckExist.visibility = View.INVISIBLE
                         binding.ivCheck.visibility = View.VISIBLE
@@ -93,7 +103,6 @@ class SignUpActivity : AppCompatActivity() {
                 }
             }
     }
-
     private fun showCategory() {
         val detailFragment = CategoryFragment()
         val transaction = supportFragmentManager.beginTransaction()
@@ -102,7 +111,24 @@ class SignUpActivity : AppCompatActivity() {
         transaction.addToBackStack(null)
         transaction.commit()
         loginViewModel.category.observe(this) { text ->
-            binding.tvChooseCategory.text = text
+            binding.tvFirstCategory.text = text
+        }
+
+        loginViewModel.secondCategory.observe(this) { text ->
+            if (text.isNotEmpty()){
+                binding.tvSecondCategory.text = ", $text"
+            }
+            else {
+                binding.tvSecondCategory.text = null
+            }
+        }
+
+        loginViewModel.thirdCategory.observe(this) { text ->
+            if (text.isNotEmpty()){
+                binding.tvThirdCategory.text = ", $text"
+            }else {
+                binding.tvThirdCategory.text = null
+            }
         }
 
     }
@@ -120,6 +146,8 @@ class SignUpActivity : AppCompatActivity() {
                     user.email = curUser?.email
                     user.name = name.toString()
                     user.category = loginViewModel.category.value
+                    user.secondCategory = loginViewModel.secondCategory.value
+                    user.thirdCategory = loginViewModel.thirdCategory.value
                     fbFireStore.collection("User").document(curUser!!.uid).set(user)
                     val intent = Intent(this, LoginActivity::class.java).apply {
                         putExtra("id", email.toString())

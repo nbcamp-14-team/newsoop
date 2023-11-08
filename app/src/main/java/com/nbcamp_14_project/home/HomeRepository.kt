@@ -14,16 +14,20 @@ interface MainFragmentRepository {
         sort: String? = null
     ): SearchEntity
     fun getList():List<HomeModel>
+    fun getNewsList():List<HomeModel>
     //라이브데이터에 아이템 추가하는 기능
     fun addHeadLineItem(item: HomeModel?):List<HomeModel>
     fun addNewsItem(item:HomeModel?):List<HomeModel>
     //라이브데이터에서 아이템 삭제하는 기능
     fun removeHeadLineItem(item: HomeModel?):List<HomeModel>
     fun removeNewsItem(item: HomeModel?):List<HomeModel>
+    fun removeLastNewsItem():List<HomeModel>
     fun modifyHeadLineItem(item: HomeModel?):List<HomeModel>
     fun modifyNewsItem(item: HomeModel?):List<HomeModel>
+    fun modifyNewsItemIsLikeToLink(item: HomeModel?):List<HomeModel>
     fun clearNewsItems():List<HomeModel>
     fun clearHeadLineItems():List<HomeModel>
+    fun checkLastItem():Boolean
 
 }
 
@@ -44,6 +48,10 @@ class MainFragmentRepositoryImpl(
 
     override fun getList(): List<HomeModel> {
         return list
+    }
+
+    override fun getNewsList(): List<HomeModel> {
+        return newsList
     }
 
     override fun addHeadLineItem(item: HomeModel?):List<HomeModel> {
@@ -105,6 +113,23 @@ class MainFragmentRepositoryImpl(
         return ArrayList<HomeModel>(newsList)
 
     }
+    override fun modifyNewsItemIsLikeToLink(item: HomeModel?):List<HomeModel> {
+        fun findIndex(item: HomeModel?):Int{
+            if(item == null) return 0
+            val findItem = newsList.find{
+                it.link == item.link
+            }
+            return newsList.indexOf(findItem)
+        }
+        val findPosition = findIndex(item)
+        if(findPosition < 0){
+            return newsList
+        }
+        if(item == null) return newsList
+        newsList[findPosition].isLike = item.isLike
+        return ArrayList<HomeModel>(newsList)
+
+    }
 
     override fun removeHeadLineItem(item: HomeModel?):List<HomeModel> {
         fun findIndex(item: HomeModel?):Int{
@@ -137,6 +162,15 @@ class MainFragmentRepositoryImpl(
         return ArrayList<HomeModel>(newsList)
     }
 
+    override fun removeLastNewsItem(): List<HomeModel> {
+        if(newsList.isNotEmpty()){
+            Log.d("removeLoading","${newsList[newsList.lastIndex].viewType}")
+            newsList.removeAt(newsList.lastIndex)
+        }
+        return ArrayList<HomeModel>(newsList)
+    }
+
+
     override fun clearNewsItems(): List<HomeModel> {
         newsList.clear()
         return ArrayList<HomeModel>(newsList)
@@ -145,6 +179,11 @@ class MainFragmentRepositoryImpl(
     override fun clearHeadLineItems(): List<HomeModel> {
         list.clear()
         return ArrayList<HomeModel>(list)
+    }
+
+    override fun checkLastItem(): Boolean {
+        if(list.lastIndex<=0) return false
+        if(list[list.lastIndex].viewType == 0) return false else return true
     }
 
 

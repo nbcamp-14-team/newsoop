@@ -1,5 +1,6 @@
 package com.nbcamp_14_project.ui.login
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -8,10 +9,13 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.appcompat.app.AppCompatActivity
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import androidx.fragment.app.activityViewModels
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.common.SignInButton
 import com.google.android.gms.common.api.ApiException
+import com.google.android.material.snackbar.Snackbar
 import com.google.android.recaptcha.RecaptchaAction
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthException
@@ -22,6 +26,7 @@ import com.nbcamp_14_project.databinding.ActivityLoginBinding
 import com.nbcamp_14_project.R
 import com.nbcamp_14_project.SignUpActivity
 import com.nbcamp_14_project.data.model.User
+import com.nbcamp_14_project.home.HomeViewPagerViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -32,23 +37,21 @@ import kotlin.coroutines.CoroutineContext
 
 
 class LoginActivity : AppCompatActivity() {
+    companion object{
+        const val CHECK_LOGIN = "Login"
+    }
     private lateinit var getResult: ActivityResultLauncher<Intent>
     private val loginViewModel: LoginViewModel by viewModels()
     private lateinit var binding: ActivityLoginBinding
     private lateinit var googleSignInClient: GoogleSignInClient
     private lateinit var auth: FirebaseAuth
     private lateinit var fbFireStore: FirebaseFirestore
+    private val homeViewPagerViewModel: HomeViewPagerViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-//        val naverClientId = getString(R.string.social_login_info_naver_client_id)
-//        val naverClientSecret = getString(R.string.social_login_info_naver_client_secret)
-//        val naverClientName = getString(R.string.social_login_info_naver_client_name)
-//        NaverIdLoginSDK.initialize(this, naverClientId, naverClientSecret, naverClientName)
-
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
         auth = FirebaseAuth.getInstance()
         fbFireStore = FirebaseFirestore.getInstance()
 
@@ -66,22 +69,27 @@ class LoginActivity : AppCompatActivity() {
                 try {
                     val account = task.getResult(ApiException::class.java)!!
                     loginViewModel.getCurrentUser(account.idToken!!)
-                    Toast.makeText(this, "로그인 성공", Toast.LENGTH_SHORT)
-                        .show()
+                    Snackbar.make(binding.root, "로그인 성공", Snackbar.LENGTH_SHORT).show()
+
 //                        CategoryDialog(this).show()
+                    val intent = Intent().apply{
+                        putExtra(
+                            CHECK_LOGIN,
+                            "Login"
+                        )
+                    }//로그인 검사 기능 추가구현
 
                     GlobalScope.launch(Dispatchers.IO) {
                         delay(1000) // 1000 milliseconds = 1 second
+                        setResult(Activity.RESULT_OK,intent)//로그인 검사 기능 추가구현
                         finish()
                     }
 
-
-
                 } catch (e: ApiException) {
-                    Toast.makeText(this, e.localizedMessage, Toast.LENGTH_SHORT).show()
+                    Snackbar.make(binding.root, e.localizedMessage, Snackbar.LENGTH_SHORT).show()
                 }
             } else {
-                Toast.makeText(this, "로그인 실패", Toast.LENGTH_SHORT).show()
+                Snackbar.make(binding.root, "로그인 실패", Snackbar.LENGTH_SHORT).show()
             }
         }
 
@@ -92,7 +100,10 @@ class LoginActivity : AppCompatActivity() {
 
         binding.btnLogin.setOnClickListener {
             passLogin()
+        }
 
+        binding.tvFixPw.setOnClickListener {
+            goFixFragment()
         }
 
         binding.ivGoogleLogin.setOnClickListener {
@@ -102,15 +113,17 @@ class LoginActivity : AppCompatActivity() {
 
         }
 
-        binding.ivNaver.setOnClickListener {
-//            naverLogin()
-            Toast.makeText(this, "구현 중입니다..!", Toast.LENGTH_SHORT).show()
-        }
-
-        binding.ivKakao.setOnClickListener {
-            Toast.makeText(this, "구현 중입니다..!", Toast.LENGTH_SHORT).show()
-        }
     }
+
+    private fun goFixFragment() {
+        val fixFragment = FixPwFragment()
+        val transaction = supportFragmentManager.beginTransaction()
+        transaction.add(R.id.frag_fix, fixFragment)
+        transaction.setReorderingAllowed(true)
+        transaction.addToBackStack(null)
+        transaction.commit()
+    }
+
 
     private fun setGoogleLogin() {
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -130,14 +143,13 @@ class LoginActivity : AppCompatActivity() {
         val loginId = binding.etUsername.text.toString()
         val loginPw = binding.etPassword.text.toString()
         if (loginId.isNotEmpty() && loginPw.isNotEmpty()) {
-
-                logIn()
-
-
-        }else {
-            Toast.makeText(this, "빈칸을 확인해주세요", Toast.LENGTH_SHORT).show()
+            logIn()
+        } else {
+            Snackbar.make(binding.root, "빈칸을 확인해주세요", Snackbar.LENGTH_SHORT).show()
         }
     }
+
+
 
     private fun logIn() {
         val email = binding.etUsername.text
@@ -147,69 +159,23 @@ class LoginActivity : AppCompatActivity() {
         auth.signInWithEmailAndPassword(email.toString(), pw.toString())
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
-                    Toast.makeText(this, "환영합니다", Toast.LENGTH_SHORT).show()
+                    val intent = Intent().apply{
+                        putExtra(
+                            CHECK_LOGIN,
+                            "Login"
+                        )
+                    }
+                    setResult(Activity.RESULT_OK,intent)//로그인 검사 기능 추가구현
                     finish()
                 } else {
-                    if(!pattern){
-                        Toast.makeText(this, "이메일 형식이 아닙니다.", Toast.LENGTH_SHORT).show()
-                    }else{
-                        Toast.makeText(this, "아이디, 비밀번호를 확인해주세요.", Toast.LENGTH_SHORT).show()
+                    if (!pattern) {
+                        Snackbar.make(binding.root, "이메일 형식이 아닙니다.", Snackbar.LENGTH_SHORT).show()
+                    } else {
+                        Snackbar.make(binding.root, "아이디, 비밀번호를 확인해주세요.", Snackbar.LENGTH_SHORT).show()
                     }
 
                 }
             }
-
-        //    private fun naverLogin() {
-//        var naverToken: String? = ""
-//
-//        val profileCallback = object : NidProfileCallback<NidProfileResponse> {
-//            override fun onSuccess(response: NidProfileResponse) {
-//                val userId = response.profile?.id
-////                binding.tvResult.text = "id: ${userId} \ntoken: ${naverToken}"
-//                Toast.makeText(this@LoginActivity, "네이버 아이디 로그인 성공!", Toast.LENGTH_SHORT).show()
-//            }
-//
-//            override fun onFailure(httpStatus: Int, message: String) {
-//                val errorCode = NaverIdLoginSDK.getLastErrorCode().code
-//                val errorDescription = NaverIdLoginSDK.getLastErrorDescription()
-//                Toast.makeText(
-//                    this@LoginActivity, "errorCode: ${errorCode}\n" +
-//                            "errorDescription: ${errorDescription}", Toast.LENGTH_SHORT
-//                ).show()
-//            }
-//
-//            override fun onError(errorCode: Int, message: String) {
-//                onFailure(errorCode, message)
-//            }
-//        }
-//        val oauthLoginCallback = object : OAuthLoginCallback {
-//            override fun onSuccess() {
-//                // 네이버 로그인 인증이 성공했을 때 수행할 코드 추가
-//                naverToken = NaverIdLoginSDK.getAccessToken()
-////                var naverRefreshToken = NaverIdLoginSDK.getRefreshToken()
-////                var naverExpiresAt = NaverIdLoginSDK.getExpiresAt().toString()
-////                var naverTokenType = NaverIdLoginSDK.getTokenType()
-////                var naverState = NaverIdLoginSDK.getState().toString()
-//                //로그인 유저 정보 가져오기
-//                NidOAuthLogin().callProfileApi(profileCallback)
-//            }
-//
-//            override fun onFailure(httpStatus: Int, message: String) {
-//                val errorCode = NaverIdLoginSDK.getLastErrorCode().code
-//                val errorDescription = NaverIdLoginSDK.getLastErrorDescription()
-//                Toast.makeText(
-//                    this@LoginActivity, "errorCode: ${errorCode}\n" +
-//                            "errorDescription: ${errorDescription}", Toast.LENGTH_SHORT
-//                ).show()
-//            }
-//
-//            override fun onError(errorCode: Int, message: String) {
-//                onFailure(errorCode, message)
-//            }
-//        }
-//        NaverIdLoginSDK.authenticate(this, oauthLoginCallback)
-//    }
-
 
     }
 }
