@@ -3,6 +3,15 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="list_card_view_padding">16dp</dimen>
+    <dimen name="news_frag_btn_height_size">30dp</dimen>
+    <dimen name="news_frag_card_view_width_size">170dp</dimen>
+    <dimen name="news_frag_card_view_height_size">90dp</dimen>
+    <dimen name="news_frag_item_width_size">200dp</dimen>
+    <dimen name="news_frag_item_height_size">120dp</dimen>
+    <dimen name="news_frag_item_padding">10dp</dimen>
+    <dimen name="news_frag_text_size">20sp</dimen>
+    <dimen name="news_frag_elevation">15dp</dimen>
+    <dimen name="news_tab_padding">10dp</dimen>
     <dimen name="btn_size">30dp</dimen>
     <dimen name="text_size">20sp</dimen>
     <dimen name="photo_size">230dp</dimen>
