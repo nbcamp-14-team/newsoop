@@ -67,6 +67,7 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
     }
     private val fireStore = FirebaseFirestore.getInstance()
     var isLike:Boolean? = false
+    var isFollow:Boolean? = false
 
 
 
@@ -107,6 +108,29 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
                 return@addOnCompleteListener
             }
         }
+        val collectionRefToAuthor = fireStore.collection("User")
+            .document(FirebaseAuth.getInstance().currentUser?.uid ?: return)
+            .collection("author")
+            .document(detailInfo?.author.toString())
+        Log.d("test","${detailInfo!!.author.toString()}")
+        collectionRefToAuthor.get().addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                val document = task.result
+                if (document.exists()) {
+                    isFollow = document.getBoolean("isFollow")
+                    Log.d("isFollow??","$isFollow")
+                    if (isFollow == true) {
+                        binding.tvFollowing.text = "구독중"
+                    } else {
+                        binding.tvFollowing.text = "구독하기"
+                    }
+                }
+            }
+            else{
+                Log.d("isFollow?","false")
+                return@addOnCompleteListener
+            }
+        }
 
         // 즐겨찾기 버튼 클릭 리스너
         binding.imgLike.setOnClickListener {
@@ -137,8 +161,16 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
         }
 
         binding.tvFollowing.setOnClickListener {
-            if (detailInfo != null) {
+            if (detailInfo != null && isFollow == false) {
                 storeAuthorInFireStore(detailInfo)
+                binding.tvFollowing.text = "구독중"
+                Log.d("isFollowbtn1","$isFollow")
+                isFollow = true
+            }else if(isFollow == true){
+                Log.d("isFollowbtn2","$isFollow")
+                removeFollowingFromFireStore(detailInfo)
+                binding.tvFollowing.text = "구독하기"
+                isFollow = false
             }
         }
 
@@ -246,12 +278,27 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
             val favoriteCollection = db.collection("User").document(userUID).collection("author")
             val favoriteData = hashMapOf(
                 "author" to detailInfo.author,
+                "isFollow" to true
             )
 
-            favoriteCollection.add(favoriteData)
+            favoriteCollection.document(detailInfo.author.toString()).set(favoriteData)
         }
     }
+    private fun removeFollowingFromFireStore(detailInfo: DetailInfo) {
+        // Firestore에서 즐겨찾기 삭제
+        val user = FirebaseAuth.getInstance().currentUser
+        val userUID = user?.uid ?: return
 
+        val db = FirebaseFirestore.getInstance()
+        val authorCollection = db.collection("User").document(userUID).collection("author")
+        val query = authorCollection.whereEqualTo("author", detailInfo.author)
+
+        query.get().addOnSuccessListener { documents ->
+            for (document in documents) {
+                document.reference.delete()
+            }
+        }
+    }
     private fun removeFavoriteFromFireStore(detailInfo: DetailInfo) {
         // Firestore에서 즐겨찾기 삭제
         val user = FirebaseAuth.getInstance().currentUser
@@ -267,6 +314,7 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
             }
         }
     }
+
 
     fun restoreFavoriteFromFireStore() {
         // Firestore에서 즐겨찾기 복원 (구현 필요)
