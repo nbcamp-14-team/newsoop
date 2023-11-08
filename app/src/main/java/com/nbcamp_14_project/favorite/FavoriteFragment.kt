@@ -5,9 +5,11 @@ import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.provider.MediaStore
 import android.util.AttributeSet
 import android.util.Log
 import android.view.LayoutInflater
@@ -50,6 +52,9 @@ import com.nbcamp_14_project.setting.SettingActivity
 import com.nbcamp_14_project.ui.login.CategoryFragment
 import com.nbcamp_14_project.ui.login.LoginActivity
 import com.nbcamp_14_project.ui.login.LoginViewModel
+import java.io.ByteArrayOutputStream
+import java.io.File
+import java.io.FileOutputStream
 import kotlinx.coroutines.async
 import kotlinx.coroutines.runBlocking
 import java.util.Random
@@ -222,56 +227,24 @@ class FavoriteFragment : Fragment() {
             profileBox.visibility = View.INVISIBLE
             logoutButton.visibility = View.INVISIBLE
             binding.textView2.visibility = View.VISIBLE
+        }
 
+        // firebase에서 이미지 가져오기
+        if (userUID != null) {
+            val storage = FirebaseStorage.getInstance()
+            var imgFileName = "IMAGE_$userUID.jpg"
+            storage.reference.child("profiles")
+                .child(imgFileName).downloadUrl.addOnSuccessListener {
+                    selectedImageUri = it
+                    binding.imgProfile.load(selectedImageUri) {
+                        transformations(CircleCropTransformation())
+                    }
+                    Log.d("img", "이미지 가져오기 성공")
+                }.addOnFailureListener {
+                    Log.d("img", it.message.toString())
+                }
         }
     }
-
-
-    // 갤러리에서 사진 보는 함수
-    private fun navigateGallery() {
-        val intent = Intent(Intent.ACTION_PICK)
-        intent.type = "image/*"
-        pickImageActivityResult.launch(intent)
-    }
-
-    // 권한부여 Dialog 생성
-    private fun showPermissionContextPopup(permission: String) {
-        AlertDialog.Builder(activity)
-            .setTitle("권한을 부여해주세요")
-            .setMessage("프로필 업로드를 위해 갤러리에 접근할 권한을 허용해주세요.")
-            .setPositiveButton("권한 부여") { _, _ ->
-                requestPermission.launch(permission)
-            }
-            .setNegativeButton("취소") { _, _ -> }
-            .create()
-            .show()
-    }
-
-    // firebase profile image upload
-    private fun setFirebaseImage() {
-        Log.d("img", "get user : $userUID")
-        val storage = FirebaseStorage.getInstance()
-        var imgFileName = "IMAGE_$userUID.jpg"
-        var storageRef = storage.reference.child("profiles").child(imgFileName)
-        storageRef.putFile(selectedImageUri!!).addOnSuccessListener {
-            Log.d("img", "이미지 업로드 성공")
-        }.addOnFailureListener {
-            Toast.makeText(requireContext(), "이미지 업로드에 실패했습니다.", Toast.LENGTH_SHORT).show()
-        }
-    }
-
-    //firebase profile image 지우기
-    private fun deleteFirebaseImage(userUID: String) {
-        val storage = FirebaseStorage.getInstance()
-        var imgFileName = "IMAGE_$userUID.jpg"
-        var storageRef = storage.reference.child("profiles").child(imgFileName)
-        storageRef.delete().addOnSuccessListener {
-            Log.d("img", "이미지 삭제 성공")
-        }.addOnFailureListener {
-            Toast.makeText(requireContext(), "이미지 삭제를 실패했습니다.", Toast.LENGTH_SHORT).show()
-        }
-    }
-
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -300,23 +273,6 @@ class FavoriteFragment : Fragment() {
                 binding.tvThirdCategory.text = null
             }
         }
-
-        // firebase에서 이미지 가져오기
-        if (userUID != null) {
-            val storage = FirebaseStorage.getInstance()
-            var imgFileName = "IMAGE_$userUID.jpg"
-            storage.reference.child("profiles")
-                .child(imgFileName).downloadUrl.addOnSuccessListener {
-                    selectedImageUri = it
-                    binding.imgProfile.load(selectedImageUri) {
-                        transformations(CircleCropTransformation())
-                    }
-                    Log.d("img", "이미지 가져오기 성공")
-                }.addOnFailureListener {
-                    Log.d("img", it.message.toString())
-                }
-        }
-
 
 
         // RecyclerView 어댑터 초기화
@@ -421,7 +377,7 @@ class FavoriteFragment : Fragment() {
         }
     }
 
-    fun initViewModel() {
+    private fun initViewModel() {
         with(viewModel) {
 
             list.observe(viewLifecycleOwner) {
@@ -524,12 +480,12 @@ class FavoriteFragment : Fragment() {
     }
 
     // 로그인 화면으로 이동하는 함수
-    fun openLoginActivity(view: View) {
+    private fun openLoginActivity(view: View) {
         val intent = Intent(requireContext(), LoginActivity::class.java)
         checkLoginLauncher.launch(intent)
     }
 
-    fun updateCategory() {
+    private fun updateCategory() {
         val curUser = auth.currentUser
         val user = User()
         val fbUser = firestore.collection("User").document(curUser?.uid ?: return)
@@ -544,6 +500,73 @@ class FavoriteFragment : Fragment() {
         }.addOnFailureListener { e ->
             // 업데이트 실패 시
         }
+    }
+
+
+    // 갤러리에서 사진 보는 함수
+    private fun navigateGallery() {
+        val intent = Intent(Intent.ACTION_PICK)
+        intent.type = "image/*"
+        pickImageActivityResult.launch(intent)
+    }
+
+    // 권한부여 Dialog 생성
+    private fun showPermissionContextPopup(permission: String) {
+        AlertDialog.Builder(activity)
+            .setTitle("권한을 부여해주세요")
+            .setMessage("프로필 업로드를 위해 갤러리에 접근할 권한을 허용해주세요.")
+            .setPositiveButton("권한 부여") { _, _ ->
+                requestPermission.launch(permission)
+            }
+            .setNegativeButton("취소") { _, _ -> }
+            .create()
+            .show()
+    }
+
+    // firebase profile image upload
+    private fun setFirebaseImage() {
+        Log.d("img", "get user : $userUID")
+        val storage = FirebaseStorage.getInstance()
+        var imgFileName = "IMAGE_$userUID.jpg"
+        var storageRef = storage.reference.child("profiles").child(imgFileName)
+        //이미지 사이즈 줄이기
+        val resizeImage = selectedImageUri?.let { convertResizeImage(it) }
+        storageRef.putFile(resizeImage!!).addOnSuccessListener {
+            Log.d("img", "이미지 업로드 성공")
+        }.addOnFailureListener {
+            Log.d("img", "이미지 업로드 실패")
+            Toast.makeText(requireContext(), "이미지 업로드에 실패했습니다.", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    //firebase profile image 지우기
+    private fun deleteFirebaseImage(userUID: String) {
+        val storage = FirebaseStorage.getInstance()
+        var imgFileName = "IMAGE_$userUID.jpg"
+        var storageRef = storage.reference.child("profiles").child(imgFileName)
+        storageRef.delete().addOnSuccessListener {
+            Log.d("img", "이미지 삭제 성공")
+        }.addOnFailureListener {
+            Log.d("img", "이미지 삭제 실패")
+            Toast.makeText(requireContext(), "이미지 삭제를 실패했습니다.", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    //이미지 사이즈 줄이기
+    private fun convertResizeImage(imageUri: Uri): Uri {
+        val bitmap = MediaStore.Images.Media.getBitmap(requireContext().contentResolver, imageUri)
+        val resizedBitmap =
+            Bitmap.createScaledBitmap(bitmap, 80, 80, true)
+
+        val byteArrayOutputStream = ByteArrayOutputStream()
+        resizedBitmap.compress(Bitmap.CompressFormat.JPEG, 90, byteArrayOutputStream)
+
+        val tempFile = File.createTempFile("resized_image", ".jpg", requireContext().cacheDir)
+        val fileOutputStream = FileOutputStream(tempFile)
+        fileOutputStream.write(byteArrayOutputStream.toByteArray())
+        fileOutputStream.close()
+
+        return Uri.fromFile(tempFile)
     }
 
 
