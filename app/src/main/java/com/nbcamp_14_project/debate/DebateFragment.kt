@@ -14,6 +14,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.nbcamp_14_project.R
@@ -116,12 +117,12 @@ class DebateFragment : Fragment() {
                             }
                     } else {
                         // 본인이 추가한 아이템이 아닌 경우
-                        Toast.makeText(requireContext(), "삭제 할 수 없습니다.", Toast.LENGTH_SHORT).show()
+                        showSnackbar("삭제 할 수 없습니다.")
                     }
                 } else {
                     // 사용자가 로그아웃된 경우
-                    Toast.makeText(requireContext(), "삭제 할 수 없습니다. 로그인이 필요합니다.", Toast.LENGTH_SHORT)
-                        .show()
+                    showSnackbar("삭제 할 수 없습니다. 로그인이 필요합니다.")
+
                 }
             }
 
@@ -133,7 +134,8 @@ class DebateFragment : Fragment() {
                 showAddDebateDialog()
                 Log.d("#hyunsik", "plus")
             } else {
-                Toast.makeText(requireContext(), "로그인을 해주세요", Toast.LENGTH_SHORT).show()
+                showSnackbar("로그인을 해주세요.")
+
 
                 navigateToLoginActivity()
             }
@@ -177,10 +179,11 @@ class DebateFragment : Fragment() {
 
             if (debateTitle.isEmpty()) {
                 // 토론 주제가 입력되지 않은 경우 오류 메시지 표시
-                Toast.makeText(requireContext(), "토론할 주제를 입력해 주세요.", Toast.LENGTH_SHORT).show()
+                showSnackbar("토론할 주제를 입력해 주세요.")
             } else if (originalcontext.isEmpty() || agreecontext.isEmpty() || oppositecontext.isEmpty()) {
                 // 토론 내용, 찬성 의견, 반대 의견 중 하나라도 비어있는 경우 오류 메시지 표시
-                Toast.makeText(requireContext(), "빈칸의 내용을 모두 입력해 주세요.", Toast.LENGTH_SHORT).show()
+                showSnackbar("빈칸의 내용을 모두 입력해 주세요.")
+
             } else {
                 val firestore = FirebaseFirestore.getInstance()
                 val user = FirebaseAuth.getInstance().currentUser
@@ -284,6 +287,10 @@ class DebateFragment : Fragment() {
             .addOnFailureListener { e ->
 
             }
+    }
+
+    private fun showSnackbar(message: String) {
+        Snackbar.make(requireView(), message, Snackbar.LENGTH_SHORT).show()
     }
 
     override fun onDestroyView() {

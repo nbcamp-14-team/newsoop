@@ -30,6 +30,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import coil.load
 import coil.transform.CircleCropTransformation
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -132,7 +133,7 @@ class FavoriteFragment : Fragment() {
                                 }
                             }
                         } else {
-                            Toast.makeText(activity, "사진을 가져오는데 실패했습니다.", Toast.LENGTH_SHORT).show()
+                            showSnackbar("사진을 가져오는데 실패했습니다.")
                         }
                     }
                 }
@@ -145,11 +146,11 @@ class FavoriteFragment : Fragment() {
     ) {
         when (it) {
             true -> {
-                Toast.makeText(requireContext(), "권한 허가", Toast.LENGTH_SHORT).show()
+                showSnackbar("권한 허가.")
             }
 
             false -> {
-                Toast.makeText(requireContext(), "권한 거부 하셨습니다.", Toast.LENGTH_SHORT).show()
+                showSnackbar("권한 거부 하셨습니다.")
             }
         }
     }
@@ -267,6 +268,23 @@ class FavoriteFragment : Fragment() {
                 binding.tvThirdCategory.text = null
             }
         }
+
+        // firebase에서 이미지 가져오기
+        if (userUID != null) {
+            val storage = FirebaseStorage.getInstance()
+            var imgFileName = "IMAGE_$userUID.jpg"
+            storage.reference.child("profiles")
+                .child(imgFileName).downloadUrl.addOnSuccessListener {
+                    selectedImageUri = it
+                    binding.imgProfile.load(selectedImageUri) {
+                        transformations(CircleCropTransformation())
+                    }
+                    Log.d("img", "이미지 가져오기 성공")
+                }.addOnFailureListener {
+                    Log.d("img", it.message.toString())
+                }
+        }
+
 
 
         // RecyclerView 어댑터 초기화
@@ -458,6 +476,11 @@ class FavoriteFragment : Fragment() {
         }
     }
 
+    private fun showSnackbar(message: String) {
+        Snackbar.make(requireView(), message, Snackbar.LENGTH_SHORT).show()
+    }
+
+
     // 로그인 화면으로 이동하는 함수
     private fun openLoginActivity(view: View) {
         val intent = Intent(requireContext(), LoginActivity::class.java)
@@ -514,7 +537,7 @@ class FavoriteFragment : Fragment() {
             Log.d("img", "이미지 업로드 성공")
         }.addOnFailureListener {
             Log.d("img", "이미지 업로드 실패")
-            Toast.makeText(requireContext(), "이미지 업로드에 실패했습니다.", Toast.LENGTH_SHORT).show()
+            showSnackbar("이미지 업로드에 실패했습니다.")
         }
     }
 
@@ -527,7 +550,7 @@ class FavoriteFragment : Fragment() {
             Log.d("img", "이미지 삭제 성공")
         }.addOnFailureListener {
             Log.d("img", "이미지 삭제 실패")
-            Toast.makeText(requireContext(), "이미지 삭제를 실패했습니다.", Toast.LENGTH_SHORT).show()
+            showSnackbar("이미지 삭제를 실패했습니다.")
         }
     }
 

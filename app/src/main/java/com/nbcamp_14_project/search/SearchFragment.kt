@@ -18,6 +18,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.nbcamp_14_project.R.layout.item_loading
@@ -76,7 +77,7 @@ class SearchFragment : Fragment() {
                     }
                 } else {
                     // 사용자가 로그인하지 않은 경우
-                    Toast.makeText(requireContext(), "로그인을 해주세요", Toast.LENGTH_SHORT).show()
+                    showSnackbar("로그인을 해주세요.")
                     val intent = Intent(requireContext(), LoginActivity::class.java)
                     startActivity(intent)
                 }
@@ -278,6 +279,10 @@ class SearchFragment : Fragment() {
                 document.reference.delete()
             }
         }
+    }
+
+    private fun showSnackbar(message: String) {
+        Snackbar.make(requireView(), message, Snackbar.LENGTH_SHORT).show()
     }
 
 

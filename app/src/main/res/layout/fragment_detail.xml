@@ -71,17 +71,15 @@
 
     <TextView
         android:id="@+id/tv_title"
-        android:layout_width="333dp"
+        android:layout_width="wrap_content"
         android:layout_height="52dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="50dp"
-        android:text="Title: Unmasking the Truth\nInvestigative Report expo"
+        android:layout_marginTop="16dp"
+        android:paddingEnd="25dp"
+        android:text="Title: Unmasking the Truthe "
         android:textColor="@color/black"
         android:textSize="20dp"
         android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="@id/cardView"
         app:layout_constraintTop_toBottomOf="@+id/cardView" />
 
     <TextView
@@ -118,29 +116,21 @@
         app:layout_constraintBottom_toBottomOf="@+id/tv_name"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <ScrollView
-        android:id="@+id/sv_description"
-        android:layout_width="409dp"
-        android:layout_height="160dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_name"
-        app:layout_constraintVertical_bias="0.0">
 
         <TextView
             android:id="@+id/tv_description"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="16dp"
-            android:layout_marginTop="20dp"
-            android:text="The nuclear-powered USS Ronald Reagan aircraft carrier arrived at the southeastern port of Busan following trilateral naval drills involving the United States, South Korea and Japan in a show of force against North Korea."
+            android:paddingEnd="25dp"
+            android:layout_marginTop="16dp"
+            android:text="본문 내용"
+            app:layout_constraintStart_toStartOf="@id/tv_name"
+            app:layout_constraintTop_toBottomOf="@id/tv_name"
             android:textColor="@color/black"
             android:textColorHint="@color/black"
             android:textSize="17dp" />
 
-    </ScrollView>
+
 
     <Button
         android:id="@+id/btn_text"
@@ -149,7 +139,7 @@
         style="@style/Widget.Material3.Button.TextButton"
         android:padding="0dp"
         android:text="원문 보기"
-        android:layout_marginTop="4dp"
+        android:layout_marginTop="30dp"
         android:textColor="@color/black"
         android:gravity="center"
         android:textSize="20dp"
@@ -160,7 +150,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/sv_description" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_description" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
