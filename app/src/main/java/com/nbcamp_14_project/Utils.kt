@@ -1,6 +1,8 @@
 package com.nbcamp_14_project
 
 import android.util.Log
+import android.view.View
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.jsoup.Jsoup
@@ -11,6 +13,8 @@ import java.util.concurrent.TimeUnit
 import java.util.zip.ZipException
 
 object Utils {
+
+
     fun checkKor(string: String): String? {
         val check = "/[ㄱ-ㅎㅏ-ㅣ가-힣]/g".toRegex()
         if (string.matches(check)) {
