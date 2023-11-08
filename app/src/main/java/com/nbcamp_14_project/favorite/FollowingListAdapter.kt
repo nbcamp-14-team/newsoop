@@ -39,6 +39,7 @@ class FollowingListAdapter(private val onItemClick: (HomeModel) -> Unit) : ListA
         // 뷰홀더에 아이템 데이터 바인딩 및 아이템 클릭 핸들링
         val item = getItem(position)
         holder.bind(item)
+        var position = holder.adapterPosition
         holder.itemView.setOnClickListener {
             // 아이템 클릭 시 onItemClick 함수 호출
             onItemClick(item)
