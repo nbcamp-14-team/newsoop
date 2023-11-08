@@ -15,12 +15,14 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -53,7 +55,10 @@ import com.nbcamp_14_project.ui.login.LoginViewModel
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
+import kotlinx.coroutines.async
+import kotlinx.coroutines.runBlocking
 import java.util.Random
+import kotlin.concurrent.timer
 
 
 class FavoriteFragment : Fragment() {
@@ -158,9 +163,9 @@ class FavoriteFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         // 즐겨찾기 목록 업데이트
-        getFavoriteListFromFireStore()
         getFollowingAuthorListFromFireStore()
-        Log.d("authorList", "$authorNameList")
+        getFavoriteListFromFireStore()
+        Log.d("authorList","$authorNameList")
         Log.d("authorquery", "$queryAuthorList")
         Log.d("viewmodel", "${viewModel.authorList.value}")
         Log.e("onResume", "#hyunsik")
@@ -243,7 +248,7 @@ class FavoriteFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        getFollowingAuthorListFromFireStore()
         getFavoriteListFromFireStore()
         initViewModel()
 
@@ -294,7 +299,7 @@ class FavoriteFragment : Fragment() {
         binding.tvLogin.setOnClickListener {
             openLoginActivity(view)
         }
-        val snapHelperForFollowing = PagerSnapHelper()
+        val snapHelperForFollowing =PagerSnapHelper()
         snapHelperForFollowing.attachToRecyclerView(binding.favoriteFollowList)// 리사이클러뷰 지정
         binding.favoriteFollowList.layoutManager =
             LinearLayoutManagerWrapper(requireContext(), LinearLayoutManager.HORIZONTAL, false)
@@ -374,14 +379,27 @@ class FavoriteFragment : Fragment() {
 
     private fun initViewModel() {
         with(viewModel) {
-            authorList.observe(viewLifecycleOwner) {
-                followingAdapter.submitList(list.value?.toList())
-            }
+
             list.observe(viewLifecycleOwner) {
-                followingAdapter.submitList(it)
+                followingAdapter.submitList(it.toList())
             }
         }
+
     }
+
+
+
+
+//    fun initViewModel() {
+//        with(viewModel) {
+//            authorList.observe(viewLifecycleOwner) {
+//                getFollowingAuthorListFromFireStore()
+//            }
+//            list.observe(viewLifecycleOwner) {
+//                followingAdapter.submitList(it)
+//            }
+//        }
+//    }
 
 
     //카테고리 보여주기
@@ -445,44 +463,18 @@ class FavoriteFragment : Fragment() {
                 for (documentSnapshot in querySnapshot.documents) {
                     val fieldValue = documentSnapshot.getString("author")
                     if (fieldValue != null) {
-                        Log.d("authorName", "$fieldValue")
-                        authorNameList.clear()
-                        authorNameList.add(fieldValue)
-                        val removeDuplicatedStrings = HashSet<String>()
-                        for (value in authorNameList) {
-                            removeDuplicatedStrings.add(value)
+                        //authorNameList.clear()
+                        if (!authorNameList.contains(fieldValue)) {
+                            authorNameList.add(fieldValue)
                         }
-                        val queryList = removeDuplicatedStrings.toString()
-                        queryAuthorList.add(queryList)
-                        if (queryAuthorList.size > 1) {
-                            for (i in 0 until queryAuthorList.size - 1) {
-
-                                queryAuthorList.removeAt(0)
-                            }
-                        }
-
                     }
-                    viewModel.addAuthorList(queryAuthorList)
                 }
-
+                if (authorNameList.isEmpty()) return@addOnSuccessListener
+                val randomAuthorName = authorNameList.random()
+                viewModel.detailNews("$randomAuthorName 기자")
             }.addOnFailureListener { exception ->
                 // 접근에 실패했을 때 수행할 작업
-            }
-        }
-
-        val authorList = viewModel.authorList.value.toString()
-        val regex = """\[(.*)\]""".toRegex()
-        val regexResult = regex.find(authorList)
-        if (regexResult != null) {
-            val innerListString = regexResult.groupValues[1]
-            val innerList = innerListString.split(",").map { it.trim() }
-            val random = Random()
-
-            if (innerList.isNotEmpty()) {
-                val randomIndex = random.nextInt(innerList.size)
-                val query = innerList[randomIndex]
-                viewModel.detailNews(query + " 기자")
-                Log.d("viewmodel", "$query")
+                authorNameList.clear()
             }
         }
     }
