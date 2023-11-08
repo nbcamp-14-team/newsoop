@@ -513,12 +513,9 @@ class FavoriteFragment : Fragment() {
                         }
                     }
                 }
-                Log.d("authorNameList", "$authorNameList")
                 if (authorNameList.isEmpty()) return@addOnSuccessListener
                 val randomAuthorName = authorNameList.random()
-                Log.d("AuthorClick", "list change requested")
                 viewModel.detailNews("$randomAuthorName 기자")
-                Log.d("authorNameList", "random: $randomAuthorName")
             }.addOnFailureListener { exception ->
                 // 접근에 실패했을 때 수행할 작업
                 authorNameList.clear()
