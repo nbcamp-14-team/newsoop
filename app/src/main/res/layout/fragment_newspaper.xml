@@ -1,45 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_height="match_parent">
+
     <HorizontalScrollView
         android:id="@+id/btn_box"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:scrollbars="none"
-        android:elevation="3dp"
         android:background="@color/white"
-        app:layout_constraintTop_toTopOf="parent"
+        android:elevation="3dp"
+        android:scrollbars="none"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintTop_toTopOf="parent">
+
         <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/btn_size">
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="horizontal">
+
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btn_politics"
-                android:fontFamily="@font/nanum_sqaure_bold"
-                android:textSize="@dimen/text_size"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@drawable/iv_newspaper"
-                android:text="정치"/>
+                android:fontFamily="@font/nanum_sqaure_bold"
+                android:padding="@dimen/news_tab_padding"
+                android:text="정치"
+                android:textSize="@dimen/news_frag_text_size" />
+
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btn_economy"
-                android:fontFamily="@font/nanum_sqaure_bold"
-                android:textSize="@dimen/text_size"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@drawable/iv_newspaper"
-                android:text="경제"/>
+                android:fontFamily="@font/nanum_sqaure_bold"
+                android:padding="@dimen/news_tab_padding"
+                android:text="경제"
+                android:textSize="@dimen/news_frag_text_size" />
+
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btn_society"
-                android:fontFamily="@font/nanum_sqaure_bold"
-                android:textSize="@dimen/text_size"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@drawable/iv_newspaper"
-                android:text="사회"/>
+                android:fontFamily="@font/nanum_sqaure_bold"
+                android:padding="@dimen/news_tab_padding"
+                android:text="사회"
+                android:textSize="@dimen/news_frag_text_size" />
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btn_life"
@@ -47,52 +57,62 @@
                 android:layout_height="match_parent"
                 android:background="@drawable/iv_newspaper"
                 android:fontFamily="@font/nanum_sqaure_bold"
+                android:padding="@dimen/news_tab_padding"
                 android:text="생활"
-                android:textSize="@dimen/text_size" />
+                android:textSize="@dimen/news_frag_text_size" />
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btn_culture"
-                android:fontFamily="@font/nanum_sqaure_bold"
-                android:textSize="@dimen/text_size"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@drawable/iv_newspaper"
-                android:text="문화"/>
+                android:fontFamily="@font/nanum_sqaure_bold"
+                android:padding="@dimen/news_tab_padding"
+                android:text="문화"
+                android:textSize="@dimen/news_frag_text_size" />
+
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btn_it"
-                android:fontFamily="@font/nanum_sqaure_bold"
-                android:textSize="@dimen/text_size"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@drawable/iv_newspaper"
-                android:text="IT"/>
+                android:fontFamily="@font/nanum_sqaure_bold"
+                android:padding="@dimen/news_tab_padding"
+                android:text="IT"
+                android:textSize="@dimen/news_frag_text_size" />
+
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btn_science"
-                android:fontFamily="@font/nanum_sqaure_bold"
-                android:textSize="@dimen/text_size"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@drawable/iv_newspaper"
-                android:text="과학"/>
+                android:fontFamily="@font/nanum_sqaure_bold"
+                android:padding="@dimen/news_tab_padding"
+                android:text="과학"
+                android:textSize="@dimen/news_frag_text_size" />
+
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btn_world"
-                android:fontFamily="@font/nanum_sqaure_bold"
-                android:textSize="@dimen/text_size"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@drawable/iv_newspaper"
-                android:text="세계"/>
+                android:fontFamily="@font/nanum_sqaure_bold"
+                android:padding="@dimen/news_tab_padding"
+                android:text="세계"
+                android:textSize="@dimen/news_frag_text_size" />
 
         </LinearLayout>
+
+
     </HorizontalScrollView>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_newspaper"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/btn_box"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btn_box" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
