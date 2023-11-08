@@ -14,72 +14,72 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/btn_size">
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btn_politics"
                 android:fontFamily="@font/nanum_sqaure_bold"
-                android:textSize="20sp"
-                android:layout_width="60dp"
-                android:layout_height="wrap_content"
+                android:textSize="@dimen/text_size"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:background="@drawable/iv_newspaper"
                 android:text="정치"/>
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btn_economy"
                 android:fontFamily="@font/nanum_sqaure_bold"
-                android:textSize="20sp"
-                android:layout_width="60dp"
-                android:layout_height="wrap_content"
+                android:textSize="@dimen/text_size"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:background="@drawable/iv_newspaper"
                 android:text="경제"/>
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btn_society"
                 android:fontFamily="@font/nanum_sqaure_bold"
-                android:textSize="20sp"
-                android:layout_width="60dp"
-                android:layout_height="wrap_content"
+                android:textSize="@dimen/text_size"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:background="@drawable/iv_newspaper"
                 android:text="사회"/>
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btn_life"
-                android:layout_width="60dp"
-                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:background="@drawable/iv_newspaper"
                 android:fontFamily="@font/nanum_sqaure_bold"
                 android:text="생활"
-                android:textSize="20sp" />
+                android:textSize="@dimen/text_size" />
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btn_culture"
                 android:fontFamily="@font/nanum_sqaure_bold"
-                android:textSize="20sp"
-                android:layout_width="60dp"
-                android:layout_height="wrap_content"
+                android:textSize="@dimen/text_size"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:background="@drawable/iv_newspaper"
                 android:text="문화"/>
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btn_it"
                 android:fontFamily="@font/nanum_sqaure_bold"
-                android:textSize="20sp"
-                android:layout_width="60dp"
-                android:layout_height="wrap_content"
+                android:textSize="@dimen/text_size"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:background="@drawable/iv_newspaper"
                 android:text="IT"/>
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btn_science"
                 android:fontFamily="@font/nanum_sqaure_bold"
-                android:textSize="20sp"
-                android:layout_width="60dp"
-                android:layout_height="wrap_content"
+                android:textSize="@dimen/text_size"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:background="@drawable/iv_newspaper"
                 android:text="과학"/>
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btn_world"
                 android:fontFamily="@font/nanum_sqaure_bold"
-                android:textSize="20sp"
-                android:layout_width="60dp"
-                android:layout_height="wrap_content"
+                android:textSize="@dimen/text_size"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:background="@drawable/iv_newspaper"
                 android:text="세계"/>
 
