@@ -13,6 +13,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
@@ -48,6 +49,8 @@ import com.nbcamp_14_project.setting.SettingActivity
 import com.nbcamp_14_project.ui.login.CategoryFragment
 import com.nbcamp_14_project.ui.login.LoginActivity
 import com.nbcamp_14_project.ui.login.LoginViewModel
+import kotlinx.coroutines.async
+import kotlinx.coroutines.runBlocking
 import java.util.Random
 import kotlin.concurrent.timer
 
@@ -418,14 +421,22 @@ class FavoriteFragment : Fragment() {
     }
 
     fun initViewModel() {
-        with(viewModel) {
-//            authorList.observe(viewLifecycleOwner) {
-//                followingAdapter.submitList(list.value?.toList())
-//            }
-            list.observe(viewLifecycleOwner) {
-                followingAdapter.submitList(it)
+        runBlocking {
+            val waitRecyclerView =
+                async { with(viewModel) {
+                authorList.observe(viewLifecycleOwner) {
+                    followingAdapter.submitList(list.value?.toList())
+                }
+                list.observe(viewLifecycleOwner) {
+                    followingAdapter.submitList(it)
+                }
             }
+            }
+            waitRecyclerView.await()
+            requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+
         }
+
     }
 //    fun initViewModel() {
 //        with(viewModel) {
@@ -501,14 +512,18 @@ class FavoriteFragment : Fragment() {
                     val fieldValue = documentSnapshot.getString("author")
                     if (fieldValue != null) {
                         Log.d("authorName", "$fieldValue")
-                        authorNameList.clear()
+
                         authorNameList.add(fieldValue)
+                        Log.d("authorNameList","$authorNameList")
                         val removeDuplicatedStrings = HashSet<String>()
                         for (value in authorNameList) {
                             removeDuplicatedStrings.add(value)
                         }
+
                         val queryList = removeDuplicatedStrings.toString()
+                        Log.d("queryAuthor1","$queryList")
                         queryAuthorList.add(queryList)
+                        Log.d("queryAuthor","$queryAuthorList")
                         if (queryAuthorList.size > 1) {
                             for (i in 0 until queryAuthorList.size - 1) {
 
@@ -518,6 +533,7 @@ class FavoriteFragment : Fragment() {
 
                     }
                     viewModel.addAuthorList(queryAuthorList)
+
                 }
 
             }.addOnFailureListener { exception ->
@@ -531,13 +547,16 @@ class FavoriteFragment : Fragment() {
         if (regexResult != null) {
             val innerListString = regexResult.groupValues[1]
             val innerList = innerListString.split(",").map { it.trim() }
+            Log.d("inner","$innerList")
             val random = Random()
 
             if (innerList.isNotEmpty()) {
                 val randomIndex = random.nextInt(innerList.size)
-                val query = innerList[randomIndex]
+                val randomQuery = innerList[randomIndex]
+                val query = randomQuery.replace(Regex("[\\[\\]]"), "")
+
                 viewModel.detailNews(query + " 기자")
-                Log.d("viewmodel", "$query")
+                Log.d("finalQuery", "${query}")
             }
         }
     }
