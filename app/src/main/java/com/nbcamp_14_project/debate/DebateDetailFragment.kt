@@ -21,6 +21,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.button.MaterialButton
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
@@ -131,7 +132,7 @@ class DebateDetailFragment : Fragment() {
 
 
             } else {
-                Toast.makeText(requireContext(), "로그인을 해주세요", Toast.LENGTH_SHORT).show()
+                showSnackbar("로그인을 해주세요.")
                 navigateToLoginActivity()
             }
         }
@@ -285,24 +286,19 @@ class DebateDetailFragment : Fragment() {
                                 adapter.notifyItemRemoved(position)
                             }
                             .addOnFailureListener { e ->
-                                Toast.makeText(requireContext(), "삭제 실패!!.", Toast.LENGTH_SHORT)
-                                    .show()
+                                showSnackbar("삭제 실패!!")
+
 
                             }
                     } else {
                         Log.d("hyunsik", "userUID=$userUID")
                         Log.d("hyunsik", "commentUserUID=$commentUserUID")
 
-                        Toast.makeText(
-                            requireContext(),
-                            "본인이 작성한 댓글만 삭제 가능합니다.",
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        showSnackbar("본인이 작성한 댓글만 삭제 가능합니다.")
                     }
                 } else {
 
-                    Toast.makeText(requireContext(), "삭제 할 수 없습니다. 로그인이 필요합니다.", Toast.LENGTH_SHORT)
-                        .show()
+                    showSnackbar("삭제 할 수 없습니다. 로그인이 필요합니다.")
                 }
             }
 
@@ -668,9 +664,9 @@ class DebateDetailFragment : Fragment() {
         possitiveButton.setOnClickListener {
             val commentText = editTextComment.text.toString().trim()
             if (commentText.isEmpty()) {
-                Toast.makeText(context, "댓글 내용을 입력해 주세요", Toast.LENGTH_SHORT).show()
+                showSnackbar("댓글 내용을 입력해 주세요.")
             } else if (!isAgreeButtonClicked && !isOppositeButtonClicked) {
-                Toast.makeText(context, "찬성 혹은 반대를 선택해 주세요", Toast.LENGTH_SHORT).show()
+                showSnackbar("찬성 혹은 반대를 선택 해 주세요.")
             } else {
                 val user = auth.currentUser
                 user?.let { currentUser ->
@@ -726,6 +722,10 @@ class DebateDetailFragment : Fragment() {
         }
 
 
+    }
+
+    private fun showSnackbar(message: String) {
+        Snackbar.make(requireView(), message, Snackbar.LENGTH_SHORT).show()
     }
 
 

@@ -27,5 +27,10 @@
         <item name="android:textColor">@color/signUpBtn</item>
     </style>
 
+    <style name="MySnackbarStyle" parent="Widget.Design.Snackbar">
+        <item name="android:background">@color/white</item>
+    </style>
+
+
 
 </resources>
