@@ -32,8 +32,8 @@ class SearchViewModel(
         _searchResultList.value = repository.clearList()
     }
 
-    fun getRecentSearchList() {
-        _recentSearchList.value = repository.getRecentSearchList()
+    fun setRecentSearchItem(searchWord: String) {
+        _recentSearchList.value = repository.setRecentSearchItem(searchWord)
     }
 
     fun clearRecentSearch() {
@@ -44,9 +44,10 @@ class SearchViewModel(
         _recentSearchList.value = repository.removeRecentSearchItem(searchWord)
     }
 
-    fun setRecentSearchItem(query: String) {
+    fun addRecentSearchItem(query: String) {
         _recentSearchList.value = repository.addRecentSearchList(query)
     }
+
 
     fun modifyFavoriteItemToPosition(item: DetailInfo) {// DetailInfo 아이템 값 수정
         item.isLike = !item.isLike!!

@@ -63,7 +63,7 @@
         <ImageView
             android:id="@+id/img_thumbnail"
             android:layout_width="match_parent"
-            android:layout_height="230dp"
+            android:layout_height="@dimen/photo_size"
             android:src="@drawable/img_muhandojeon"
             android:scaleType="centerCrop" />
     </androidx.cardview.widget.CardView>

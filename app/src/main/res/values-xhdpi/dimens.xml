@@ -9,4 +9,7 @@
     <dimen name="news_frag_item_padding">50dp</dimen>
     <dimen name="news_frag_elevation">15dp</dimen>
     <dimen name="news_tab_padding">20dp</dimen>
+    <dimen name="btn_size">100dp</dimen>
+    <dimen name="text_size">60dp</dimen>
+    <dimen name="photo_size">500dp</dimen>
 </resources>
