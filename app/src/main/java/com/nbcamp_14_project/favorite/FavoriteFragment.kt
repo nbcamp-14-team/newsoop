@@ -15,14 +15,12 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.WindowManager
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -56,10 +54,6 @@ import com.nbcamp_14_project.ui.login.LoginViewModel
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
-import kotlinx.coroutines.async
-import kotlinx.coroutines.runBlocking
-import java.util.Random
-import kotlin.concurrent.timer
 
 
 class FavoriteFragment : Fragment() {
@@ -166,7 +160,7 @@ class FavoriteFragment : Fragment() {
         // 즐겨찾기 목록 업데이트
         getFollowingAuthorListFromFireStore()
         getFavoriteListFromFireStore()
-        Log.d("authorList","$authorNameList")
+        Log.d("authorList", "$authorNameList")
         Log.d("authorquery", "$queryAuthorList")
         Log.d("viewmodel", "${viewModel.authorList.value}")
         Log.e("onResume", "#hyunsik")
@@ -317,7 +311,7 @@ class FavoriteFragment : Fragment() {
         binding.tvLogin.setOnClickListener {
             openLoginActivity(view)
         }
-        val snapHelperForFollowing =PagerSnapHelper()
+        val snapHelperForFollowing = PagerSnapHelper()
         snapHelperForFollowing.attachToRecyclerView(binding.favoriteFollowList)// 리사이클러뷰 지정
         binding.favoriteFollowList.layoutManager =
             LinearLayoutManagerWrapper(requireContext(), LinearLayoutManager.HORIZONTAL, false)
@@ -404,21 +398,6 @@ class FavoriteFragment : Fragment() {
         }
 
     }
-
-
-
-
-//    fun initViewModel() {
-//        with(viewModel) {
-//            authorList.observe(viewLifecycleOwner) {
-//                getFollowingAuthorListFromFireStore()
-//            }
-//            list.observe(viewLifecycleOwner) {
-//                followingAdapter.submitList(it)
-//            }
-//        }
-//    }
-
 
     //카테고리 보여주기
     private fun showCategory() {

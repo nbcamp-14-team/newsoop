@@ -12,7 +12,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
@@ -86,7 +85,7 @@ class SearchFragment : Fragment() {
     }
     private val tagAdapter by lazy { SearchTagAdapter() }
     private var query = ""
-    private var countStart = 6
+    private var countStart = 11
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -117,8 +116,8 @@ class SearchFragment : Fragment() {
             //최근 검색어에서 같은 단어가 있으면 지우고 새로 넣기
             viewModel.removeRecentSearchItem(query)
             viewModel.clearAllItems()
-            viewModel.setRecentSearchItem(query)
-            viewModel.getSearchNews(query, 5, 1)
+            viewModel.addRecentSearchItem(query)
+            viewModel.getSearchNews(query, 10, 1)
 
             //키보드 내리는 기능
             val imm =
@@ -159,8 +158,8 @@ class SearchFragment : Fragment() {
                 val itemCount = adapter.itemCount - 1
                 Log.d("VisiblePosition", "$lastVisiblePosition + $itemCount")
                 if (!binding.searchRecyclerView.canScrollHorizontally(1) && lastVisiblePosition == itemCount) {
-                    viewModel.getSearchNews(query, 5, countStart)
-                    countStart += 6
+                    viewModel.getSearchNews(query, 10, countStart)
+                    countStart += 10
                     //검색 로딩 딜레이 주기 : 3초
                     CoroutineScope(Dispatchers.Main).launch {
                         dialog.show()
