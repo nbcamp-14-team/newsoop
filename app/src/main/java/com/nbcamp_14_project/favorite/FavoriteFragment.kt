@@ -20,6 +20,7 @@ import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -421,23 +422,18 @@ class FavoriteFragment : Fragment() {
     }
 
     fun initViewModel() {
-        runBlocking {
-            val waitRecyclerView =
-                async { with(viewModel) {
-                authorList.observe(viewLifecycleOwner) {
-                    followingAdapter.submitList(list.value?.toList())
-                }
-                list.observe(viewLifecycleOwner) {
-                    followingAdapter.submitList(it)
-                }
-            }
-            }
-            waitRecyclerView.await()
-            requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+        with(viewModel) {
 
+            list.observe(viewLifecycleOwner) {
+                followingAdapter.submitList(it.toList())
+            }
         }
 
     }
+
+
+
+
 //    fun initViewModel() {
 //        with(viewModel) {
 //            authorList.observe(viewLifecycleOwner) {
@@ -511,52 +507,21 @@ class FavoriteFragment : Fragment() {
                 for (documentSnapshot in querySnapshot.documents) {
                     val fieldValue = documentSnapshot.getString("author")
                     if (fieldValue != null) {
-                        Log.d("authorName", "$fieldValue")
-
-                        authorNameList.add(fieldValue)
-                        Log.d("authorNameList","$authorNameList")
-                        val removeDuplicatedStrings = HashSet<String>()
-                        for (value in authorNameList) {
-                            removeDuplicatedStrings.add(value)
+                        //authorNameList.clear()
+                        if (!authorNameList.contains(fieldValue)) {
+                            authorNameList.add(fieldValue)
                         }
-
-                        val queryList = removeDuplicatedStrings.toString()
-                        Log.d("queryAuthor1","$queryList")
-                        queryAuthorList.add(queryList)
-                        Log.d("queryAuthor","$queryAuthorList")
-                        if (queryAuthorList.size > 1) {
-                            for (i in 0 until queryAuthorList.size - 1) {
-
-                                queryAuthorList.removeAt(0)
-                            }
-                        }
-
                     }
-                    viewModel.addAuthorList(queryAuthorList)
-
                 }
-
+                Log.d("authorNameList", "$authorNameList")
+                if (authorNameList.isEmpty()) return@addOnSuccessListener
+                val randomAuthorName = authorNameList.random()
+                Log.d("AuthorClick", "list change requested")
+                viewModel.detailNews("$randomAuthorName 기자")
+                Log.d("authorNameList", "random: $randomAuthorName")
             }.addOnFailureListener { exception ->
                 // 접근에 실패했을 때 수행할 작업
-            }
-        }
-
-        val authorList = viewModel.authorList.value.toString()
-        val regex = """\[(.*)\]""".toRegex()
-        val regexResult = regex.find(authorList)
-        if (regexResult != null) {
-            val innerListString = regexResult.groupValues[1]
-            val innerList = innerListString.split(",").map { it.trim() }
-            Log.d("inner","$innerList")
-            val random = Random()
-
-            if (innerList.isNotEmpty()) {
-                val randomIndex = random.nextInt(innerList.size)
-                val randomQuery = innerList[randomIndex]
-                val query = randomQuery.replace(Regex("[\\[\\]]"), "")
-
-                viewModel.detailNews(query + " 기자")
-                Log.d("finalQuery", "${query}")
+                authorNameList.clear()
             }
         }
     }
