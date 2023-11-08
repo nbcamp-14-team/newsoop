@@ -558,7 +558,7 @@ class FavoriteFragment : Fragment() {
             Log.d("img", "이미지 업로드 성공")
         }.addOnFailureListener {
             Log.d("img", "이미지 업로드 실패")
-            Toast.makeText(requireContext(), "이미지 업로드에 실패했습니다.", Toast.LENGTH_SHORT).show()
+            showSnackbar("이미지 업로드에 실패했습니다.")
         }
     }
 
@@ -571,7 +571,7 @@ class FavoriteFragment : Fragment() {
             Log.d("img", "이미지 삭제 성공")
         }.addOnFailureListener {
             Log.d("img", "이미지 삭제 실패")
-            Toast.makeText(requireContext(), "이미지 삭제를 실패했습니다.", Toast.LENGTH_SHORT).show()
+            showSnackbar("이미지 삭제를 실패했습니다.")
         }
     }
 
