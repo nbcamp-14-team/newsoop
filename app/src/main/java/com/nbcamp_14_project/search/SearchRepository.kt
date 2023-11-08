@@ -28,6 +28,7 @@ interface SearchRepository {
     fun addRecentSearchList(searchWord: String): List<String>
     fun removeRecentSearchItem(searchWord: String): List<String>
     fun clearRecentSearchList(): List<String>
+    fun setRecentSearchItem(searchWord: String): List<String>
 }
 
 class SearchRepositoryImpl(
@@ -134,5 +135,16 @@ class SearchRepositoryImpl(
         return ArrayList<String>(recentSearchList)
     }
 
-
+    override fun setRecentSearchItem(searchWord: String): List<String> {
+        if (searchWord == "") {
+            return recentSearchList
+        }
+        //최근 검색어가 5개 넘어가면 처음 입력값 지우기
+        if (recentSearchList.size >= 5) {
+            removeRecentSearchItem(recentSearchList[0])
+            Log.d("recentSearchRemove10over", recentSearchList[0])
+        }
+        recentSearchList.add(searchWord)
+        return recentSearchList
+    }
 }
