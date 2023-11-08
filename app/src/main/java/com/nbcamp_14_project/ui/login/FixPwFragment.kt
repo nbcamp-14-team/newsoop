@@ -16,6 +16,7 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.widget.addTextChangedListener
 import com.airbnb.lottie.model.content.Mask
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.nbcamp_14_project.R
@@ -67,19 +68,14 @@ class FixPwFragment : Fragment() {
                             auth.sendPasswordResetEmail(email).addOnCompleteListener { task ->
                                 if (task.isSuccessful) {
                                     Log.d("email", "good")
-                                    Toast.makeText(
-                                        requireContext(),
-                                        "메일이 전송되었습니다.",
-                                        Toast.LENGTH_SHORT
-                                    ).show()
+                                    Snackbar.make(binding.root, "메일이 전송되었습니다.", Snackbar.LENGTH_SHORT).show()
                                     parentFragmentManager.popBackStack()
                                 }
 
                             }
 
                         } else {
-                            Toast.makeText(requireContext(), "가입된 이메일이 아닙니다.", Toast.LENGTH_SHORT)
-                                .show()
+                            Snackbar.make(binding.root, "가입된 이메일이 아닙니다.", Snackbar.LENGTH_SHORT).show()
 
                         }
                     }

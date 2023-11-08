@@ -52,6 +52,7 @@ class HomeFragment(query: String) : Fragment() {
                 val detailInfo =
                     item.toDetailInfo()//클릭된 아이템의 data class를 toDetailInfo data class로 수정
                 detailViewModel.setDetailInfo(detailInfo)//뷰모델로 전송
+                Log.d("hyunsik", "detalInfo = $detailInfo")
                 val mainActivity = (activity as MainActivity)
                 mainActivity.runDetailFragment()//DetailFragment 실행
             }
@@ -63,6 +64,7 @@ class HomeFragment(query: String) : Fragment() {
                 val detailInfo =
                     item.toDetailInfo()//클릭된 아이템의 data class를 toDetailInfo data class로 수정
                 detailViewModel.setDetailInfo(detailInfo)//뷰모델로 전송
+                Log.d("hyunsik", "detalInfo = $detailInfo")
                 val mainActivity = (activity as MainActivity)
                 mainActivity.runDetailFragment()//DetailFragment 실행
             }

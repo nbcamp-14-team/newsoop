@@ -22,6 +22,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import coil.load
 import com.bumptech.glide.Glide
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.nbcamp_14_project.R
@@ -79,6 +80,7 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
 
         // Detail 정보 가져오기
         val detailInfo = viewModel.detailInfo.value
+        Log.d("hyunsik", "detalInfo = $detailInfo")
 
 //         즐겨찾기 여부 확인
         val isFavorite = favoriteViewModel.favoriteList.value?.contains(detailInfo) == true
@@ -87,6 +89,65 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
         } else {
             binding.imgLike.setImageResource(R.drawable.ic_like)
         }
+
+
+        // 즐겨찾기 버튼 클릭 리스너
+        binding.imgLike.setOnClickListener {
+            val user = FirebaseAuth.getInstance().currentUser
+            if (user != null) {
+                // 사용자가 로그인한 경우
+                if (detailInfo != null) {
+                    val isFavorite =
+                        favoriteViewModel.favoriteList.value?.contains(detailInfo) == true
+                    if (isFavorite || isLike == true ) {
+                        favoriteViewModel.removeFavoriteItem(detailInfo)
+                        searchViewModel.modifyFavoriteItemToPosition(detailInfo)
+                        binding.imgLike.setImageResource(R.drawable.ic_like)
+                        removeFavoriteFromFireStore(detailInfo)  // Firestore에서도 제거
+                    } else {
+                        favoriteViewModel.addFavoriteItem(detailInfo)
+                        searchViewModel.modifyFavoriteItemToPosition(detailInfo)
+                        binding.imgLike.setImageResource(R.drawable.ic_check)
+                        addFavoriteToFireStore(detailInfo)  // Firestore에도 추가
+                    }
+                }
+            } else {
+                // 사용자가 로그인하지 않은 경우
+                showSnackbar("로그인을 해주세요.")
+                val intent = Intent(requireContext(), LoginActivity::class.java)
+                startActivity(intent)
+            }
+        }
+
+
+
+        // 텍스트 음성 출력 설정
+        textToSpeech = TextToSpeech(requireContext()) { status ->
+            if (status == TextToSpeech.SUCCESS) {
+                val result = textToSpeech.setLanguage(Locale.KOREA)
+                if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
+                    // 언어 지원되지 않는 경우 처리
+                }
+            }
+        }
+
+        // Detail 정보 변경 시 UI 업데이트
+        viewModel.detailInfo.observe(viewLifecycleOwner) { info ->
+            Log.d("hyunsik", "detailInfo222 = $detailInfo")
+            binding.tvTitle.text = info.title
+            var date = Date(info.pubDate)// 날짜로 변환
+            val value = date.time?.let { Utils.calculationTime(it) }
+            binding.tvDate.text = value
+            Glide.with(this)
+                .load(info.thumbnail)
+                .centerCrop()
+                .into(binding.imgThumbnail)
+            binding.tvDescription.text = info.description
+            binding.tvName.text = "${info.author} 기자"
+        }
+
+        initView()
+
         val collectionRef = fireStore.collection("User")
             .document(FirebaseAuth.getInstance().currentUser?.uid ?: return)
             .collection("favorites")
@@ -131,35 +192,6 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
                 return@addOnCompleteListener
             }
         }
-
-        // 즐겨찾기 버튼 클릭 리스너
-        binding.imgLike.setOnClickListener {
-            val user = FirebaseAuth.getInstance().currentUser
-            if (user != null) {
-                // 사용자가 로그인한 경우
-                if (detailInfo != null) {
-                    val isFavorite =
-                        favoriteViewModel.favoriteList.value?.contains(detailInfo) == true
-                    if (isFavorite || isLike == true ) {
-                        favoriteViewModel.removeFavoriteItem(detailInfo)
-                        searchViewModel.modifyFavoriteItemToPosition(detailInfo)
-                        binding.imgLike.setImageResource(R.drawable.ic_like)
-                        removeFavoriteFromFireStore(detailInfo)  // Firestore에서도 제거
-                    } else {
-                        favoriteViewModel.addFavoriteItem(detailInfo)
-                        searchViewModel.modifyFavoriteItemToPosition(detailInfo)
-                        binding.imgLike.setImageResource(R.drawable.ic_check)
-                        addFavoriteToFireStore(detailInfo)  // Firestore에도 추가
-                    }
-                }
-            } else {
-                // 사용자가 로그인하지 않은 경우
-                Toast.makeText(requireContext(), "로그인을 해주세요", Toast.LENGTH_SHORT).show()
-                val intent = Intent(requireContext(), LoginActivity::class.java)
-                startActivity(intent)
-            }
-        }
-
         binding.tvFollowing.setOnClickListener {
             if (detailInfo != null && isFollow == false) {
                 storeAuthorInFireStore(detailInfo)
@@ -173,33 +205,6 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
                 isFollow = false
             }
         }
-
-        // 텍스트 음성 출력 설정
-        textToSpeech = TextToSpeech(requireContext()) { status ->
-            if (status == TextToSpeech.SUCCESS) {
-                val result = textToSpeech.setLanguage(Locale.KOREA)
-                if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
-                    // 언어 지원되지 않는 경우 처리
-                }
-            }
-        }
-
-        // Detail 정보 변경 시 UI 업데이트
-        viewModel.detailInfo.observe(viewLifecycleOwner) { info ->
-            Log.d("info", "#hyunsik")
-            binding.tvTitle.text = info.title
-            var date = Date(info.pubDate)// 날짜로 변환
-            val value = date.time?.let { Utils.calculationTime(it) }
-            binding.tvDate.text = value
-            Glide.with(this)
-                .load(info.thumbnail)
-                .centerCrop()
-                .into(binding.imgThumbnail)
-            binding.tvDescription.text = info.description
-            binding.tvName.text = "${info.author} 기자"
-        }
-
-        initView()
     }
 
 
@@ -217,7 +222,8 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
             if (url != null) {
                 startActivity(NewspaperDialog.newInstance(requireContext(), url))
             } else {
-                Toast.makeText(requireContext(), "링크가 없습니다.", Toast.LENGTH_SHORT).show()
+                showSnackbar("링크가 없습니다.")
+
             }
         }
 
@@ -328,4 +334,9 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
         textToSpeech.shutdown()
         super.onDestroy()
     }
+
+    private fun showSnackbar(message: String) {
+        Snackbar.make(requireView(), message, Snackbar.LENGTH_SHORT).show()
+    }
+
 }
