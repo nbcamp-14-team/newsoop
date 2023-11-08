@@ -5,9 +5,11 @@ import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.provider.MediaStore
 import android.util.AttributeSet
 import android.util.Log
 import android.view.LayoutInflater
@@ -48,6 +50,9 @@ import com.nbcamp_14_project.setting.SettingActivity
 import com.nbcamp_14_project.ui.login.CategoryFragment
 import com.nbcamp_14_project.ui.login.LoginActivity
 import com.nbcamp_14_project.ui.login.LoginViewModel
+import java.io.ByteArrayOutputStream
+import java.io.File
+import java.io.FileOutputStream
 import java.util.Random
 
 
@@ -155,7 +160,7 @@ class FavoriteFragment : Fragment() {
         // 즐겨찾기 목록 업데이트
         getFavoriteListFromFireStore()
         getFollowingAuthorListFromFireStore()
-        Log.d("authorList","$authorNameList")
+        Log.d("authorList", "$authorNameList")
         Log.d("authorquery", "$queryAuthorList")
         Log.d("viewmodel", "${viewModel.authorList.value}")
         Log.e("onResume", "#hyunsik")
@@ -248,7 +253,9 @@ class FavoriteFragment : Fragment() {
         val storage = FirebaseStorage.getInstance()
         var imgFileName = "IMAGE_$userUID.jpg"
         var storageRef = storage.reference.child("profiles").child(imgFileName)
-        storageRef.putFile(selectedImageUri!!).addOnSuccessListener {
+        //이미지 사이즈 줄이기
+        val resizeImage = selectedImageUri?.let { convertResizeImage(it) }
+        storageRef.putFile(resizeImage!!).addOnSuccessListener {
             Log.d("img", "이미지 업로드 성공")
         }.addOnFailureListener {
             Toast.makeText(requireContext(), "이미지 업로드에 실패했습니다.", Toast.LENGTH_SHORT).show()
@@ -265,6 +272,23 @@ class FavoriteFragment : Fragment() {
         }.addOnFailureListener {
             Toast.makeText(requireContext(), "이미지 삭제를 실패했습니다.", Toast.LENGTH_SHORT).show()
         }
+    }
+
+    //이미지 사이즈 줄이기
+    private fun convertResizeImage(imageUri: Uri): Uri {
+        val bitmap = MediaStore.Images.Media.getBitmap(requireContext().contentResolver, imageUri)
+        val resizedBitmap =
+            Bitmap.createScaledBitmap(bitmap, 80, 80, true)
+
+        val byteArrayOutputStream = ByteArrayOutputStream()
+        resizedBitmap.compress(Bitmap.CompressFormat.JPEG, 90, byteArrayOutputStream)
+
+        val tempFile = File.createTempFile("resized_image", ".jpg", requireContext().cacheDir)
+        val fileOutputStream = FileOutputStream(tempFile)
+        fileOutputStream.write(byteArrayOutputStream.toByteArray())
+        fileOutputStream.close()
+
+        return Uri.fromFile(tempFile)
     }
 
 
@@ -313,7 +337,6 @@ class FavoriteFragment : Fragment() {
         }
 
 
-
         // RecyclerView 어댑터 초기화
         adapter = FavoriteListAdapter { item ->
             val detailInfo = item
@@ -338,7 +361,7 @@ class FavoriteFragment : Fragment() {
         binding.tvLogin.setOnClickListener {
             openLoginActivity(view)
         }
-        val snapHelperForFollowing =PagerSnapHelper()
+        val snapHelperForFollowing = PagerSnapHelper()
         snapHelperForFollowing.attachToRecyclerView(binding.favoriteFollowList)// 리사이클러뷰 지정
         binding.favoriteFollowList.layoutManager =
             LinearLayoutManagerWrapper(requireContext(), LinearLayoutManager.HORIZONTAL, false)
