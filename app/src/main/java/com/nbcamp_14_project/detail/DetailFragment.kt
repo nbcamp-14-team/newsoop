@@ -55,12 +55,12 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
     private val binding get() = _binding!!
     private val viewModel: DetailViewModel by activityViewModels()
     private var isAnimating = false
-    private val auth = FirebaseAuth.getInstance()
     private val fbFireStore = FirebaseFirestore.getInstance()
     private lateinit var textToSpeech: TextToSpeech
-    private val favoriteViewModel: FavoriteViewModel by activityViewModels()
-    private val loginViewModel: LoginViewModel by activityViewModels()
-    private val homeViewModel: HomeViewModel by viewModels({ requireParentFragment() })
+    private val favoriteViewModel: FavoriteViewModel by activityViewModels{
+        FavoriteViewModel.FavoriteViewModelFactory()
+    }
+
     private val searchViewModel: SearchViewModel by lazy {
         ViewModelProvider(
             requireActivity(), SearchViewModelFactory()
@@ -80,9 +80,8 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
 
         // Detail 정보 가져오기
         val detailInfo = viewModel.detailInfo.value
-        Log.d("hyunsik", "detalInfo = $detailInfo")
-
-//         즐겨찾기 여부 확인
+        Log.d("detailWork","$detailInfo")
+        //즐겨찾기 여부 확인
         val isFavorite = favoriteViewModel.favoriteList.value?.contains(detailInfo) == true
         if (isFavorite) {
             binding.imgLike.setImageResource(R.drawable.ic_check)
@@ -113,7 +112,7 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
                 }
             } else {
                 // 사용자가 로그인하지 않은 경우
-                showSnackbar("로그인을 해주세요.")
+                Toast.makeText(requireContext(), "로그인을 해주세요", Toast.LENGTH_SHORT).show()
                 val intent = Intent(requireContext(), LoginActivity::class.java)
                 startActivity(intent)
             }
@@ -133,7 +132,7 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
 
         // Detail 정보 변경 시 UI 업데이트
         viewModel.detailInfo.observe(viewLifecycleOwner) { info ->
-            Log.d("hyunsik", "detailInfo222 = $detailInfo")
+            Log.d("info", "#hyunsik")
             binding.tvTitle.text = info.title
             var date = Date(info.pubDate)// 날짜로 변환
             val value = date.time?.let { Utils.calculationTime(it) }
@@ -147,7 +146,6 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
         }
 
         initView()
-
         val collectionRef = fireStore.collection("User")
             .document(FirebaseAuth.getInstance().currentUser?.uid ?: return)
             .collection("favorites")
@@ -203,6 +201,10 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
                 removeFollowingFromFireStore(detailInfo)
                 binding.tvFollowing.text = "구독하기"
                 isFollow = false
+            }else{
+                Toast.makeText(requireContext(), "로그인을 해주세요", Toast.LENGTH_SHORT).show()
+                val intent = Intent(requireContext(), LoginActivity::class.java)
+                startActivity(intent)
             }
         }
     }
@@ -222,8 +224,7 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
             if (url != null) {
                 startActivity(NewspaperDialog.newInstance(requireContext(), url))
             } else {
-                showSnackbar("링크가 없습니다.")
-
+                Toast.makeText(requireContext(), "링크가 없습니다.", Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -249,6 +250,7 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
                 textToSpeech.speak(descriptionText, TextToSpeech.QUEUE_FLUSH, null)
             }
         }
+
     }
 
     private fun addFavoriteToFireStore(detailInfo: DetailInfo) {
@@ -334,9 +336,4 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
         textToSpeech.shutdown()
         super.onDestroy()
     }
-
-    private fun showSnackbar(message: String) {
-        Snackbar.make(requireView(), message, Snackbar.LENGTH_SHORT).show()
-    }
-
 }
