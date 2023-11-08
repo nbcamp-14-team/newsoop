@@ -112,7 +112,7 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
                 }
             } else {
                 // 사용자가 로그인하지 않은 경우
-                Toast.makeText(requireContext(), "로그인을 해주세요", Toast.LENGTH_SHORT).show()
+                showSnackbar("로그인을 해주세요.")
                 val intent = Intent(requireContext(), LoginActivity::class.java)
                 startActivity(intent)
             }
@@ -202,7 +202,7 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
                 binding.tvFollowing.text = "구독하기"
                 isFollow = false
             }else{
-                Toast.makeText(requireContext(), "로그인을 해주세요", Toast.LENGTH_SHORT).show()
+                showSnackbar("로그인을 해주세요.")
                 val intent = Intent(requireContext(), LoginActivity::class.java)
                 startActivity(intent)
             }
@@ -224,7 +224,7 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
             if (url != null) {
                 startActivity(NewspaperDialog.newInstance(requireContext(), url))
             } else {
-                Toast.makeText(requireContext(), "링크가 없습니다.", Toast.LENGTH_SHORT).show()
+                showSnackbar("링크가 없습니다.")
             }
         }
 
@@ -326,6 +326,10 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
 
     fun restoreFavoriteFromFireStore() {
         // Firestore에서 즐겨찾기 복원 (구현 필요)
+    }
+
+    private fun showSnackbar(message: String) {
+        Snackbar.make(requireView(), message, Snackbar.LENGTH_SHORT).show()
     }
 
     override fun onDestroy() {
