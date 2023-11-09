@@ -34,14 +34,13 @@ class HomeFragment() : Fragment() {
     }
 
 
-    private lateinit var queryInbox:String
-    var isLoading = false
-
+    private lateinit var queryInbox:String // 카테고리 변수
+    var isLoading = false // 인피니티 스크롤이 로딩되었는지 체크하는 변수
     private var _binding: FragmentMainBinding? = null
     private val binding get() = _binding!!
-    private val detailViewModel: DetailViewModel by activityViewModels()
-    private val fireStore = FirebaseFirestore.getInstance()
-    private var isUserHaveCategory: Boolean = false
+    private val detailViewModel: DetailViewModel by activityViewModels() // detailFragment SharedViewModel
+    private val fireStore = FirebaseFirestore.getInstance() // FireStore instance
+    private var isUserHaveCategory: Boolean = false//User가 카테고리를 가지고 있는지 체크하는 변수
 
     // HomeFragment Fragment
     private val headLineAdapter by lazy {
@@ -83,7 +82,7 @@ class HomeFragment() : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentMainBinding.inflate(inflater, container, false)
-        queryInbox = arguments?.getString("query").toString()
+        queryInbox = arguments?.getString("query").toString() // 뷰를 생성할 때 번들로 검색어를 받음
         Log.d("queryInbox","$queryInbox")
         return binding.root
 
@@ -93,7 +92,7 @@ class HomeFragment() : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         initView()//화면 설정 함수
         initViewModel()//뷰모델 설정 함수
-        if (queryInbox != "추천") {
+        if (queryInbox != "추천") { //탭이 추천이 아닐 때 실행
             Log.d("isworkAtViewCreated","$queryInbox")
             viewPagerViewModel.headLineNews(queryInbox!!)
             viewPagerViewModel.detailNews(queryInbox!!)
@@ -101,7 +100,7 @@ class HomeFragment() : Fragment() {
     }
 
     fun initView() = with(binding) {
-        category.text = queryInbox + " 관련 뉴스"//텍스트박스
+        category.text = queryInbox + " 관련 뉴스" //카테고리 텍스트박스
         val slideImageHandler: Handler = Handler()
         val slideImageRunnable = Runnable {// 메인 ViewPager 자동 스와이프 관련 runnable 함수
 
@@ -147,8 +146,12 @@ class HomeFragment() : Fragment() {
                 }
                 Log.d("VisiblePosition", "$lastVisiblePosition + $itemCount + $isLoading")
                 if (!isLoading) {
-
-                    if (!rvNews.canScrollHorizontally(1) && (rvNews.layoutManager as LinearLayoutManager)!!.findLastCompletelyVisibleItemPosition() == itemCount && itemCount != -1) {
+                    /**
+                     * 스크롤이 더이상 안 될 때 인피니티 스크롤 실행
+                     */
+                    if (!rvNews.canScrollHorizontally(1)
+                        && (rvNews.layoutManager as LinearLayoutManager)!!.findLastCompletelyVisibleItemPosition() == itemCount
+                        && itemCount != -1) {
                         isLoading = true
                         infinityAddNews(queryInbox)
                     }
