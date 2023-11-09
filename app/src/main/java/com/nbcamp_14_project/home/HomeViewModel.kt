@@ -33,21 +33,19 @@ class HomeViewModel(
     val newsList: LiveData<List<HomeModel>> get() = _newsList
     var isLoading: Boolean = false
     var category: String? = null
-
-
-    init {
-        _list.value = repository.getList()
-    }
-
     private val VIEW_TYPE_ITEM = 0
     private val VIEW_TYPE_LOADING = 1
+
+    /**
+     * 하단 리사이클러뷰에 출력할 뉴스 데이터 가져오는 함수
+     */
     suspend fun addNewsItem(
         query: String,
         display: Int? = 5,
         startingNum: Int? = 1,
         sort: String? = "sim"
     ) {
-        val docs = searchNews(query, display, startingNum, sort)
+        val docs = searchNews(query, display, startingNum, sort) //API를 이용하여 받아온 데이터를 문서로 저장
         val item = docs.items ?: return
         for (i in item.indices) {//아이템 개수만큼 for문 실행
             val thumbnail = getThumbnail(item[i].link.toString())
@@ -58,6 +56,7 @@ class HomeViewModel(
             var description = item[i].description?.replace("<b>", "")
             description = description?.replace("</b>", "")
             description = description?.replace("&quot;", "\"")
+            description = description?.replace("&amp;", "&")
             val link = item[i].link
             val pubDate = item[i].pubDate
             var date = Date(pubDate)
@@ -79,6 +78,9 @@ class HomeViewModel(
         }
     }
 
+    /**
+     * 로딩 바 추가 함수
+     */
     fun addLoadingItem() {
         repository.addNewsItem(
             HomeModel(
@@ -86,6 +88,10 @@ class HomeViewModel(
             )
         )
     }
+
+    /**
+     * 헤드라인에 출력한 뉴스 데이터 가져오는 함수
+     */
 
     fun headLineNews(query: String, display: Int? = 5) {
         if (query.isNullOrBlank()) return
@@ -124,7 +130,9 @@ class HomeViewModel(
         }
     }
 
-
+    /**
+     * 하단 리사이클러뷰에 데이터값 주입 함수
+     */
     fun detailNews(query: String, startingNum: Int? = 1, display: Int? = 5) {
         viewModelScope.launch {
             Log.d("iswork", "detailNews")
@@ -136,6 +144,10 @@ class HomeViewModel(
         }
 
     }
+
+    /**
+     * 인피니티 스크롤을 구현하기 위해 사용되는 함수
+     */
 
     fun detailNewsInfinity(
         query: String
@@ -185,6 +197,10 @@ class HomeViewModel(
         }
     }
 
+    /**
+     * 추천 탭 인피니티 인피니티 스크롤을 구현하기 위해 사용되는 함수
+     */
+
     fun detailNewsInfinityToRecommend(
         firstCategory: String?,
         secondCategory: String?,
@@ -231,6 +247,10 @@ class HomeViewModel(
 
     }
 
+    /**
+     * 사용자가 지정한 카테고리가 2개일 때 사용하는 함수
+     */
+
     fun twoCategoryDetailNews(
         firstCategory: String?,
         secondCategory: String?,
@@ -247,7 +267,9 @@ class HomeViewModel(
         }
     }
 
-
+    /**
+     * 사용자가 지정한 카테고리가 3개일 때 사용하는 함수
+     */
     fun threeCategoryDetailNews(
         firstCategory: String?,
         secondCategory: String?,
@@ -269,6 +291,9 @@ class HomeViewModel(
         }
     }
 
+    /**
+     * 썸네일 이미지를 가져오는 함수(JSOP 이용)
+     */
 
     suspend fun getThumbnail(url: String): String? {//썸네일 가져오기
 
@@ -291,6 +316,9 @@ class HomeViewModel(
         return null
     }
 
+    /**
+     * 기자 성함을 가져오는 함수(JSOP 이용)
+     */
     suspend fun getAuthor(url: String): String? {
         var author: String?
         try {
