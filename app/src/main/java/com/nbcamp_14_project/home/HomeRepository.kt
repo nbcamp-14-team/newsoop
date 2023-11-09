@@ -164,8 +164,16 @@ class MainFragmentRepositoryImpl(
 
     override fun removeLastNewsItem(): List<HomeModel> {
         if(newsList.isNotEmpty()){
-            Log.d("removeLoading","${newsList[newsList.lastIndex].viewType}")
-            newsList.removeAt(newsList.lastIndex)
+            fun findIndex():Int{
+                val findItem = newsList.find{
+                    it.viewType == 1
+                }
+                return newsList.indexOf(findItem)
+            }
+            val findPosition = findIndex()
+            if(findPosition < 0) return ArrayList<HomeModel>(newsList)
+
+            newsList.removeAt(findPosition)
         }
         return ArrayList<HomeModel>(newsList)
     }

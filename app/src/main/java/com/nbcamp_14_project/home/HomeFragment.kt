@@ -40,7 +40,6 @@ class HomeFragment() : Fragment() {
     private var _binding: FragmentMainBinding? = null
     private val binding get() = _binding!!
     private val detailViewModel: DetailViewModel by activityViewModels()
-    private val loginViewModel: LoginViewModel by activityViewModels()
     private val fireStore = FirebaseFirestore.getInstance()
     private var isUserHaveCategory: Boolean = false
 
@@ -95,6 +94,7 @@ class HomeFragment() : Fragment() {
         initView()//화면 설정 함수
         initViewModel()//뷰모델 설정 함수
         if (queryInbox != "추천") {
+            Log.d("isworkAtViewCreated","$queryInbox")
             viewPagerViewModel.headLineNews(queryInbox!!)
             viewPagerViewModel.detailNews(queryInbox!!)
         }
