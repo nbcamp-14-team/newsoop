@@ -1,6 +1,5 @@
 package com.nbcamp_14_project.home
 
-import android.os.Handler
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -10,8 +9,6 @@ import androidx.lifecycle.viewModelScope
 import com.nbcamp_14_project.domain.GetSearchNewsUseCase
 import com.nbcamp_14_project.Utils
 import com.nbcamp_14_project.api.RetrofitInstance
-import com.nbcamp_14_project.detail.DetailInfo
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
@@ -156,11 +153,11 @@ class HomeViewModel(
         /** 토큰 */
     ) {
         viewModelScope.launch {
-            repository.removeLastNewsItem()
+            repository.removeLoadingTypeItem()
             addNewsItem(query, 10, startingNum)
 //            val docs = searchNews(query, 10, startingNum, sort = "sim")
 //            val item = docs.items ?: return@launch
-//            repository.removeLastNewsItem()
+//            repository.removeLoadingTypeItem()
 //            for (i in item.indices) {//아이템 개수만큼 for문 실행
 //                val thumbnail = getThumbnail(item[i].link.toString())
 //                var title = item[i].title!!.replace("<b>", "")
@@ -210,14 +207,14 @@ class HomeViewModel(
     ) {
         viewModelScope.launch {
             if (thirdCategory.isNullOrBlank()) {
-                repository.removeLastNewsItem()
+                repository.removeLoadingTypeItem()
                 addNewsItem(firstCategory ?: "생활", 5, startingNum)
                 addLoadingItem()
 
                 _newsList.value = repository.getNewsList()
                 isLoading = true
             } else if (secondCategory.isNullOrBlank()) {
-                repository.removeLastNewsItem()
+                repository.removeLoadingTypeItem()
                 async {
                     addNewsItem(firstCategory ?: "생활", 7, startingNum)
                 }
@@ -227,7 +224,7 @@ class HomeViewModel(
                 _newsList.value = repository.getNewsList()
                 isLoading = true
             } else {
-                repository.removeLastNewsItem()
+                repository.removeLoadingTypeItem()
                 async {
                     addNewsItem(firstCategory ?: "정치", 5, startingNum)
                 }
