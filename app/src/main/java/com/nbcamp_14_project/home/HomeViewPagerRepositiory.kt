@@ -1,15 +1,27 @@
 package com.nbcamp_14_project.home
 
+import android.os.Bundle
+import android.util.Log
+import java.util.concurrent.atomic.AtomicInteger
+
 class HomeViewPagerRepository {
-    private val list = mutableListOf<HomeFragmentTabs>(
-        HomeFragmentTabs(HomeFragment("정치 사회"),"정치/사회"),
-        HomeFragmentTabs(HomeFragment("경제"),"경제"),
-        HomeFragmentTabs(HomeFragment("생활 문화"),"생활/문화"),
-        HomeFragmentTabs(HomeFragment("IT 과학"),"IT/과학"),
-        HomeFragmentTabs(HomeFragment("세계"),"세계"),
-    )
+    private val list = mutableListOf<HomeFragmentTabs>()
+    private val idGenerate =AtomicInteger()
     fun addListAtFront(query:String,title:String): MutableList<HomeFragmentTabs> {
-        list.add(0, HomeFragmentTabs(HomeFragment(query),title))
+        val homeFragment = HomeFragment()
+        val bundle = Bundle()
+        bundle.putString("query",query)
+        homeFragment.arguments=bundle
+        list.add(0, HomeFragmentTabs(homeFragment,title))
+        return list
+    }
+    fun addFragment(query: String,title: String):MutableList<HomeFragmentTabs>{
+        val homeFragment = HomeFragment()
+        val bundle = Bundle()
+        bundle.putString("query",query)
+        homeFragment.arguments=bundle
+        Log.d("idGenerate","$idGenerate")
+        list.add(idGenerate.getAndIncrement(),HomeFragmentTabs(homeFragment,title))
         return list
     }
     fun removeListAtFront(): MutableList<HomeFragmentTabs> {

@@ -26,16 +26,15 @@ import retrofit2.HttpException
 import java.util.Timer
 import java.util.TimerTask
 
-class HomeFragment(query: String) : Fragment() {
+class HomeFragment() : Fragment() {
     companion object {
         private var firstHomeCategory: String? = null
         private var secondHomeCategory: String? = null
         private var thirdHomeCategory: String? = null
-        fun newInstance(query: String) = HomeFragment(query)
     }
 
 
-    private var queryInbox = query //검색어 변수
+    private lateinit var queryInbox:String
     var isLoading = false
 
     private var _binding: FragmentMainBinding? = null
@@ -85,6 +84,8 @@ class HomeFragment(query: String) : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentMainBinding.inflate(inflater, container, false)
+        queryInbox = arguments?.getString("query").toString()
+        Log.d("queryInbox","$queryInbox")
         return binding.root
 
     }
