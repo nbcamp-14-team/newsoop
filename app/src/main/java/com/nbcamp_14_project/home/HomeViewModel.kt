@@ -155,40 +155,9 @@ class HomeViewModel(
         viewModelScope.launch {
             repository.removeLoadingTypeItem()
             addNewsItem(query, 10, startingNum)
-//            val docs = searchNews(query, 10, startingNum, sort = "sim")
-//            val item = docs.items ?: return@launch
-//            repository.removeLoadingTypeItem()
-//            for (i in item.indices) {//아이템 개수만큼 for문 실행
-//                val thumbnail = getThumbnail(item[i].link.toString())
-//                var title = item[i].title!!.replace("<b>", "")
-//                title = title.replace("</b>", "")
-//                title = title.replace("&quot;", "\"")
-//                title = title.replace("&amp;", "&")
-//                var description = item[i].description?.replace("<b>", "")
-//                description = description?.replace("</b>", "")
-//                description = description?.replace("&quot;", "\"")
-//                val link = item[i].link
-//                val pubDate = item[i].pubDate
-//                var date = Date(pubDate)
-//                val author = getAuthor(item[i].link.toString())
-//                repository.addNewsItem(
-//                    HomeModel(
-//                        title = title,
-//                        thumbnail = thumbnail,
-//                        description = description,
-//                        link = link,
-//                        pubDate = date,
-//                        author = author,
-//                        viewType = VIEW_TYPE_ITEM
-//                    )
-//                )
-//            }
+
             addLoadingItem()
-//            var currentList: List<HomeModel> = repository.addNewsItem(
-//                HomeModel(
-//                    viewType = VIEW_TYPE_LOADING
-//                )
-//            )
+
             _newsList.value = repository.getNewsList()
             isLoading = true
         }

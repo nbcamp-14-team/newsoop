@@ -67,10 +67,8 @@ class SearchFragment : Fragment() {
                     if (detailInfo != null) {
                         val isFavorite = detailInfo.isLike
                         if (!isFavorite!!) {
-                            favoriteViewModel.removeFavoriteItem(detailInfo)
                             removeFavoriteFromFireStore(detailInfo)  // Firestore에서도 제거
                         } else {
-                            favoriteViewModel.addFavoriteItem(detailInfo)
                             addFavoriteToFireStore(detailInfo)  // Firestore에도 추가
                         }
                     }
@@ -255,10 +253,11 @@ class SearchFragment : Fragment() {
                 "author" to detailInfo.author,
                 "originalLink" to detailInfo.originalLink,
                 "pubDate" to detailInfo.pubDate,
-                "created" to Date()
+                "created" to Date(),
+                "isLike" to true
             )
 
-            favoriteCollection.add(favoriteData)
+            favoriteCollection.document(detailInfo.title.toString()).set(favoriteData)
         } else {
 //            Toast.makeText(requireContext(), "로그인을 해주세요".toString() )show()
         }

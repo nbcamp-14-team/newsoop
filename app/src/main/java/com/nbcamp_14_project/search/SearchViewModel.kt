@@ -59,7 +59,7 @@ class SearchViewModel(
             val findItem = currentList.find {
                 it.thumbnail == item.thumbnail
             }
-            return currentList.indexOf(findItem!!)
+            return currentList.indexOf(findItem!!) ?: return -1
         }
 
         val findPosition = findIndex(item)

@@ -69,10 +69,6 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
     private val fireStore = FirebaseFirestore.getInstance()
     var isLike:Boolean? = false
     var isFollow:Boolean? = false
-
-
-
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
