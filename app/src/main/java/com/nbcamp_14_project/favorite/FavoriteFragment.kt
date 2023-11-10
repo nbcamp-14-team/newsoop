@@ -41,6 +41,7 @@ import com.nbcamp_14_project.data.model.User
 import com.nbcamp_14_project.databinding.FragmentFavoriteBinding
 import com.nbcamp_14_project.detail.DetailInfo
 import com.nbcamp_14_project.detail.DetailViewModel
+import com.nbcamp_14_project.detail.DetailViewModelFactory
 import com.nbcamp_14_project.home.HomeModel
 import com.nbcamp_14_project.home.HomeViewModel
 import com.nbcamp_14_project.home.HomeViewPagerViewModel
@@ -69,10 +70,9 @@ class FavoriteFragment : Fragment() {
             requireActivity(), FavoriteViewModel.FavoriteViewModelFactory()
         )[FavoriteViewModel::class.java]
     }
-    private val detailViewModel: DetailViewModel by activityViewModels()
+    private val detailViewModel: DetailViewModel by activityViewModels{DetailViewModelFactory()}
     private val loginViewModel: LoginViewModel by activityViewModels()
     private val homeViewPagerViewModel: HomeViewPagerViewModel by activityViewModels()
-    private val homeViewModel: HomeViewModel by activityViewModels()
     private val firestore = FirebaseFirestore.getInstance()
     private var isLogin = false
     private var auth = FirebaseAuth.getInstance()
@@ -83,8 +83,6 @@ class FavoriteFragment : Fragment() {
     private val followingAdapter by lazy {
         FollowingListAdapter(//recyclerView에서 클릭이 일어났을 때, Detail에 데이터값을 보냄
             onItemClick = { item ->
-                val detailInfo =
-                    item
                 detailViewModel.setDetailInfo(item.toDetailInfo())//뷰모델로 전송
                 val mainActivity = (activity as MainActivity)
                 mainActivity.runDetailFragment()//DetailFragment 실행

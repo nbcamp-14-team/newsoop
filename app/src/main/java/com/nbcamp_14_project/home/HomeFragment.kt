@@ -19,6 +19,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.nbcamp_14_project.databinding.FragmentMainBinding
 import com.nbcamp_14_project.detail.DetailViewModel
+import com.nbcamp_14_project.detail.DetailViewModelFactory
 import com.nbcamp_14_project.mainpage.MainActivity
 import com.nbcamp_14_project.ui.login.LoginViewModel
 import kotlinx.coroutines.delay
@@ -38,7 +39,7 @@ class HomeFragment() : Fragment() {
     var isLoading = false // 인피니티 스크롤이 로딩되었는지 체크하는 변수
     private var _binding: FragmentMainBinding? = null
     private val binding get() = _binding!!
-    private val detailViewModel: DetailViewModel by activityViewModels() // detailFragment SharedViewModel
+    private val detailViewModel: DetailViewModel by activityViewModels{DetailViewModelFactory()} // detailFragment SharedViewModel
     private val fireStore = FirebaseFirestore.getInstance() // FireStore instance
     private var isUserHaveCategory: Boolean = false//User가 카테고리를 가지고 있는지 체크하는 변수
 
