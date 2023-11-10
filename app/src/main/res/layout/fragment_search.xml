@@ -14,6 +14,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:background="@drawable/et_border_radius_green"
+        android:contentDescription="search bar"
         android:orientation="horizontal"
         android:paddingStart="10dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -37,6 +38,7 @@
             android:layout_height="40dp"
             android:layout_gravity="center_vertical"
             android:background="@android:color/transparent"
+            android:contentDescription="search Button"
             android:src="@drawable/ic_search" />
     </LinearLayout>
 
@@ -66,6 +68,7 @@
         android:id="@+id/search_not"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:contentDescription="@null"
         android:src="@drawable/img_app_logo"
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"

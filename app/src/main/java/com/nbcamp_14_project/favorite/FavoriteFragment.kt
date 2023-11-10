@@ -17,7 +17,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
-import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -268,24 +267,6 @@ class FavoriteFragment : Fragment() {
                 binding.tvThirdCategory.text = null
             }
         }
-
-        // firebase에서 이미지 가져오기
-        if (userUID != null) {
-            val storage = FirebaseStorage.getInstance()
-            var imgFileName = "IMAGE_$userUID.jpg"
-            storage.reference.child("profiles")
-                .child(imgFileName).downloadUrl.addOnSuccessListener {
-                    selectedImageUri = it
-                    binding.imgProfile.load(selectedImageUri) {
-                        transformations(CircleCropTransformation())
-                    }
-                    Log.d("img", "이미지 가져오기 성공")
-                }.addOnFailureListener {
-                    Log.d("img", it.message.toString())
-                }
-        }
-
-
 
         // RecyclerView 어댑터 초기화
         adapter = FavoriteListAdapter { item ->
