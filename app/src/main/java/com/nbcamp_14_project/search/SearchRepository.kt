@@ -67,6 +67,27 @@ class SearchRepositoryImpl(
     }
 
     override fun getRecentSearchList(): List<String> {
+        val user = FirebaseAuth.getInstance().currentUser
+        val userUID = user?.uid
+        if (userUID != null) {
+            val db = FirebaseFirestore.getInstance()
+            val recentSearchCollection =
+                db.collection("User").document(userUID).collection("recentSearch")
+            recentSearchCollection.orderBy("inputTime").get()
+                .addOnSuccessListener { querySnapshot ->
+                    for (document in querySnapshot) {
+                        val searchWord = document.getString("searchWord")
+                        if (searchWord != null) {
+                            recentSearchList.add(searchWord)
+                            Log.d("recentSearch", "$searchWord")
+                        }
+                    }
+                    Log.d("recentSearchFirebase", "is success")
+                }
+                .addOnFailureListener { e ->
+                    Log.d("recentSearchFirebase", "is fail")
+                }
+        }
         return recentSearchList
     }
 
@@ -109,8 +130,11 @@ class SearchRepositoryImpl(
         val user = FirebaseAuth.getInstance().currentUser
         val userUID = user?.uid
 
+        //같은 단어가 있는지 체크하기
+        var checkWord = recentSearchList.contains(searchWord)
+
         //userID가 존재하면 firebase에서 삭제
-        if (userUID != null && recentSearchList.size > 0) {
+        if (userUID != null && checkWord) {
             val db = FirebaseFirestore.getInstance()
             val ref = db.collection("User").document(userUID).collection("recentSearch")
             val query = ref.whereEqualTo("searchWord", searchWord)
