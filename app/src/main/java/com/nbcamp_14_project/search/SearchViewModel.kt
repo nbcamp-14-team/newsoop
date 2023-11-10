@@ -48,7 +48,6 @@ class SearchViewModel(
         _recentSearchList.value = repository.addRecentSearchList(query)
     }
 
-
     fun modifyFavoriteItemToPosition(item: DetailInfo) {// DetailInfo 아이템 값 수정
         item.isLike = !item.isLike!!
         Log.d("search", "search")
