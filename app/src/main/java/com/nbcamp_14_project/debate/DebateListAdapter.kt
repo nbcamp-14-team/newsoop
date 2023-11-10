@@ -4,10 +4,8 @@ package com.nbcamp_14_project.debate
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
-import com.nbcamp_14_project.R
 import com.nbcamp_14_project.databinding.ItemDebateBinding
 
 // RecyclerView.Adapter를 상속받은 DebateListAdapter 클래스 정의

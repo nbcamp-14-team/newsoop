@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
-import com.nbcamp_14_project.R
 import com.nbcamp_14_project.databinding.ItemDebatedetail2Binding
 import com.nbcamp_14_project.databinding.ItemDebatedetailBinding
 
