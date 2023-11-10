@@ -23,7 +23,10 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.nbcamp_14_project.R.layout.item_loading
 import com.nbcamp_14_project.databinding.FragmentSearchBinding
 import com.nbcamp_14_project.detail.DetailInfo
+import com.nbcamp_14_project.detail.DetailRepository
 import com.nbcamp_14_project.detail.DetailViewModel
+import com.nbcamp_14_project.detail.DetailViewModelFactory
+import com.nbcamp_14_project.favorite.FavoriteRepository
 import com.nbcamp_14_project.favorite.FavoriteViewModel
 import com.nbcamp_14_project.home.toDetailInfo
 import com.nbcamp_14_project.mainpage.MainActivity
@@ -41,8 +44,8 @@ class SearchFragment : Fragment() {
 
     private val dialog by lazy { LoadingDialog(requireContext()) }
     private var _binding: FragmentSearchBinding? = null
-    private val detailViewModel: DetailViewModel by activityViewModels()
-    private val favoriteViewModel: FavoriteViewModel by activityViewModels()
+    private val detailViewModel: DetailViewModel by activityViewModels{DetailViewModelFactory()}
+//    private val favoriteViewModel: FavoriteViewModel by activityViewModels{FavoriteViewModel.FavoriteViewModelFactory()}
     private val binding get() = _binding!!
     private val viewModel: SearchViewModel by lazy {
         ViewModelProvider(
@@ -67,10 +70,8 @@ class SearchFragment : Fragment() {
                     if (detailInfo != null) {
                         val isFavorite = detailInfo.isLike
                         if (!isFavorite!!) {
-                            favoriteViewModel.removeFavoriteItem(detailInfo)
                             removeFavoriteFromFireStore(detailInfo)  // Firestore에서도 제거
                         } else {
-                            favoriteViewModel.addFavoriteItem(detailInfo)
                             addFavoriteToFireStore(detailInfo)  // Firestore에도 추가
                         }
                     }
@@ -239,10 +240,15 @@ class SearchFragment : Fragment() {
                 "author" to detailInfo.author,
                 "originalLink" to detailInfo.originalLink,
                 "pubDate" to detailInfo.pubDate,
-                "created" to Date()
+                "created" to Date(),
+                "isLike" to true
             )
-            favoriteCollection.add(favoriteData)
+
+            favoriteCollection.document(detailInfo.title.toString()).set(favoriteData)
+        } else {
+//            Toast.makeText(requireContext(), "로그인을 해주세요".toString() )show()
         }
+
     }
 
     private fun removeFavoriteFromFireStore(detailInfo: DetailInfo) {

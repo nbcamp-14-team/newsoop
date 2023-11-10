@@ -16,7 +16,13 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.nbcamp_14_project.R
 import com.nbcamp_14_project.Utils
+import com.nbcamp_14_project.api.RetrofitInstance
+
 import com.nbcamp_14_project.databinding.FragmentDetailBinding
+import com.nbcamp_14_project.databinding.FragmentFavoriteBinding
+import com.nbcamp_14_project.databinding.FragmentSearchBinding
+import com.nbcamp_14_project.favorite.FavoriteListAdapter
+import com.nbcamp_14_project.favorite.FavoriteRepository
 import com.nbcamp_14_project.favorite.FavoriteViewModel
 import com.nbcamp_14_project.newspaper.NewspaperDialog
 import com.nbcamp_14_project.search.SearchViewModel
@@ -24,6 +30,7 @@ import com.nbcamp_14_project.search.SearchViewModelFactory
 import com.nbcamp_14_project.ui.login.LoginActivity
 import java.util.Date
 import java.util.Locale
+import java.util.concurrent.atomic.AtomicInteger
 
 class DetailFragment : Fragment(R.layout.fragment_detail) {
 
@@ -34,7 +41,11 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
 
     private var _binding: FragmentDetailBinding? = null
     private val binding get() = _binding!!
-    private val viewModel: DetailViewModel by activityViewModels()
+    private val viewModel: DetailViewModel by lazy{
+        ViewModelProvider(
+            requireActivity()
+        )[DetailViewModel::class.java]
+    }
     private var isAnimating = false
     private val fbFireStore = FirebaseFirestore.getInstance()
     private lateinit var textToSpeech: TextToSpeech
@@ -42,19 +53,18 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
         FavoriteViewModel.FavoriteViewModelFactory()
     }
 
-    private val searchViewModel: SearchViewModel by lazy {
-        ViewModelProvider(
-            requireActivity(), SearchViewModelFactory()
-        )[SearchViewModel::class.java]
+    private val searchViewModel: SearchViewModel by activityViewModels {
+        SearchViewModelFactory()
     }
     private val fireStore = FirebaseFirestore.getInstance()
     var isLike: Boolean? = false
     var isFollow: Boolean? = false
 
 
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        viewModel.getDetailInfo()
         _binding = FragmentDetailBinding.bind(view)
 
         // Detail 정보 가져오기
@@ -175,6 +185,9 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
             } else if (isFollow == true) {
                 Log.d("isFollowbtn2", "$isFollow")
                 removeFollowingFromFireStore(detailInfo)
+            }else if(isFollow == true){
+                Log.d("isFollowbtn2","$isFollow")
+                removeFollowingFromFireStore(detailInfo!!)
                 binding.tvFollowing.text = "구독하기"
                 isFollow = false
             } else {
@@ -318,3 +331,6 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
         super.onDestroy()
     }
 }
+
+
+
