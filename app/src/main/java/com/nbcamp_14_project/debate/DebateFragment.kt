@@ -1,19 +1,16 @@
+// DebateFragment.kt
 package com.nbcamp_14_project.debate
 
 import android.app.AlertDialog
-import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -22,27 +19,37 @@ import com.nbcamp_14_project.databinding.FragmentDebateBinding
 import com.nbcamp_14_project.ui.login.LoginActivity
 import java.util.Date
 
+// Fragment를 상속받은 DebateFragment 클래스 정의
 class DebateFragment : Fragment() {
+    // 뷰 바인딩을 위한 바인딩 객체 선언
     private var _binding: com.nbcamp_14_project.databinding.FragmentDebateBinding? = null
     private val binding get() = _binding!!
+
+    // 토론 목록을 저장하는 어레이 리스트와 어댑터, ViewModel 선언
     private lateinit var adapter: DebateListAdapter
     private val debateList = ArrayList<DebateItem>()
     val viewModel: DebateViewModel by activityViewModels()
 
+    // onCreateView 함수 오버라이드 - Fragment의 뷰 생성
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        // 뷰 바인딩 초기화
         _binding = FragmentDebateBinding.inflate(inflater, container, false)
+        // Firestore 인스턴스 초기화
         val firestore = FirebaseFirestore.getInstance()
 
+        // 뷰 바인딩의 root를 반환
         return binding.root
     }
 
+    // onViewCreated 함수 오버라이드 - 뷰가 생성된 후 호출되는 함수
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        // 검색 버튼 클릭 시의 동작 설정
         binding.searchBtn.setOnClickListener {
             val searchText = binding.searchInput.text.toString()
 
@@ -60,27 +67,25 @@ class DebateFragment : Fragment() {
             adapter.setDebateList(searchResults)
         }
 
-
+        // 어댑터 초기화 및 리사이클러뷰 설정
         adapter = DebateListAdapter()
         binding.debateList.layoutManager = LinearLayoutManager(context)
         binding.debateList.adapter = adapter
 
-
+        // 아이템 클릭 이벤트 설정
         adapter.itemClick = object : DebateListAdapter.ItemClick {
             override fun onClick(view: View, position: Int, title: String) {
-                val debateItem = debateList[position] // 클릭한 아이템을 가져옴
+                // 클릭한 아이템의 정보를 ViewModel에 저장
+                val debateItem = debateList[position]
+                viewModel.debateId = debateItem.id
+                viewModel.userUID = debateItem.userUID
+                viewModel.title = title
+                viewModel.name = debateItem.name
+                viewModel.originalcontext = debateItem.originalcontext
+                viewModel.agreecontext = debateItem.agreecontext
+                viewModel.oppositecontext = debateItem.oppositecontext
 
-                // ViewModel에 Firebase 문서 ID와 다른 필요한 데이터를 할당
-                viewModel.debateId = debateItem.id // Firestore 문서 ID
-                viewModel.userUID = debateItem.userUID // Firestore 문서 ID
-                viewModel.title = title // 제목
-                viewModel.name = debateItem.name // 이름
-                viewModel.originalcontext = debateItem.originalcontext // 내용
-                viewModel.agreecontext = debateItem.agreecontext // 찬성 의견
-                viewModel.oppositecontext = debateItem.oppositecontext // 반대 의견
-
-                // 사용자 ID
-
+                // 토론 상세 화면으로 이동
                 val debateDetailFragment = DebateDetailFragment()
                 val transaction = parentFragmentManager.beginTransaction()
                 transaction.add(
@@ -92,6 +97,7 @@ class DebateFragment : Fragment() {
             }
 
             override fun onDeleteClick(position: Int) {
+                // 삭제 버튼 클릭 시 동작
                 val itemToDelete = debateList[position]
                 val user = FirebaseAuth.getInstance().currentUser
 
@@ -107,7 +113,7 @@ class DebateFragment : Fragment() {
                             .document(itemToDelete.id)
                             .delete()
                             .addOnSuccessListener {
-                                // Firestore에서 삭제 성공
+                                // Firestore에서 삭제 성공 시 목록에서도 제거
                                 debateList.removeAt(position)
                                 adapter.setDebateList(debateList)
                             }
@@ -122,69 +128,76 @@ class DebateFragment : Fragment() {
                 } else {
                     // 사용자가 로그아웃된 경우
                     showSnackbar("삭제 할 수 없습니다. 로그인이 필요합니다.")
-
                 }
             }
-
         }
 
+        // "토론 추가" 버튼 클릭 시의 동작 설정
         binding.btnText.setOnClickListener {
             val user = FirebaseAuth.getInstance().currentUser
             if (user != null) {
+                // 로그인된 경우 토론 추가 다이얼로그 표시
                 showAddDebateDialog()
-                Log.d("#hyunsik", "plus")
             } else {
+                // 로그인되지 않은 경우 로그인 화면으로 이동
                 showSnackbar("로그인을 해주세요.")
-
-
                 navigateToLoginActivity()
             }
         }
     }
 
+    // onResume 함수 오버라이드 - Fragment가 화면에 표시될 때 호출되는 함수
     override fun onResume() {
         super.onResume()
+        // 토론 목록을 새로고침
         loadDebates()
-        Log.d("hyunsik", "load = ${loadDebates()}")
     }
 
-
+    // 토론 추가 다이얼로그 표시 함수
     private fun showAddDebateDialog() {
+        // 다이얼로그 빌더 생성
         val builder = AlertDialog.Builder(requireContext(), R.style.RoundedCornersAlertDialog)
         builder.setTitle("토론 추가하기")
         builder.setIcon(R.drawable.ic_people)
 
+        // 다이얼로그 레이아웃 설정
         val v1 = layoutInflater.inflate(R.layout.dialog_debate, null)
         builder.setView(v1)
 
+        // 다이얼로그 내의 에디트텍스트 초기화
         val tvdebate: EditText = v1.findViewById(R.id.tv_debate)
         val tvContext: EditText = v1.findViewById(R.id.tv_context)
         val tvAgree: EditText = v1.findViewById(R.id.tv_agree)
         val tvOpposite: EditText = v1.findViewById(R.id.tv_opposite)
 
-        builder.setPositiveButton("확인") { _, _ ->
+        // 확인 버튼 클릭 시의 동작 설정
+        builder.setPositiveButton("확인") { _, _ -> }
 
-        }
-
+        // 취소 버튼 클릭 시의 동작 설정
         builder.setNegativeButton("취소", null)
         val dialog = builder.create()
 
+        // 다이얼로그 표시
         dialog.show()
+
+        // 확인 버튼 클릭 리스너 설정
         val possitiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE)
         possitiveButton.setOnClickListener {
+            // 입력된 데이터 가져오기
             val debateTitle = tvdebate.text.toString()
             val originalcontext = tvContext.text.toString()
             val agreecontext = tvAgree.text.toString()
             val oppositecontext = tvOpposite.text.toString()
 
+            // 입력 데이터 유효성 검사
             if (debateTitle.isEmpty()) {
                 // 토론 주제가 입력되지 않은 경우 오류 메시지 표시
                 showSnackbar("토론할 주제를 입력해 주세요.")
             } else if (originalcontext.isEmpty() || agreecontext.isEmpty() || oppositecontext.isEmpty()) {
                 // 토론 내용, 찬성 의견, 반대 의견 중 하나라도 비어있는 경우 오류 메시지 표시
                 showSnackbar("빈칸의 내용을 모두 입력해 주세요.")
-
             } else {
+                // Firebase에 토론 아이템 추가
                 val firestore = FirebaseFirestore.getInstance()
                 val user = FirebaseAuth.getInstance().currentUser
                 user?.let { currentUser ->
@@ -217,6 +230,7 @@ class DebateFragment : Fragment() {
                                     newDebateItem.id = newRef.id
                                     newRef.set(newDebateItem)
                                         .addOnSuccessListener { documentReference ->
+                                            // Firestore에서 추가 성공 시 목록에도 추가
                                             debateList.add(newDebateItem)
                                             adapter.setDebateList(debateList)
                                         }
@@ -237,28 +251,26 @@ class DebateFragment : Fragment() {
                 }
                 dialog.dismiss()
             }
-
-
         }
-
     }
 
-
+    // LoginActivity로 이동하는 함수
     private fun navigateToLoginActivity() {
-        // LoginActivity로 이동하는 Intent를 생성
         val intent = Intent(requireContext(), LoginActivity::class.java)
         startActivity(intent)
     }
 
+    // 토론 목록을 불러오는 함수
     private fun loadDebates() {
         val firestore = FirebaseFirestore.getInstance()
 
+        // "Debates" 컬렉션에서 모든 문서 가져오기
         firestore.collectionGroup("Debates")
             .get()
             .addOnSuccessListener { documents ->
-                Log.d("hyunsik", "documents = $documents")
                 debateList.clear()
                 for (document in documents) {
+                    // 각 문서의 데이터 가져오기
                     val id = document.id
                     val title = document.getString("title")
                     val originalcontext = document.getString("originalcontext")
@@ -267,6 +279,8 @@ class DebateFragment : Fragment() {
                     val name = document.getString("name")
                     val userUID = document.getString("userUID")
                     val timestamp = Date()
+
+                    // 가져온 데이터를 이용하여 DebateItem 객체 생성 및 목록에 추가
                     if (title != null && name != null && userUID != null) {
                         debateList.add(
                             DebateItem(
@@ -282,6 +296,8 @@ class DebateFragment : Fragment() {
                         )
                     }
                 }
+
+                // 어댑터에 토론 목록 설정 및 업데이트
                 adapter.setDebateList(debateList)
             }
             .addOnFailureListener { e ->
@@ -289,10 +305,12 @@ class DebateFragment : Fragment() {
             }
     }
 
+    // Snackbar 표시 함수
     private fun showSnackbar(message: String) {
         Snackbar.make(requireView(), message, Snackbar.LENGTH_SHORT).show()
     }
 
+    // Fragment 종료 시 뷰 바인딩 해제
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
