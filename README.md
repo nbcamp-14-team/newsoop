@@ -58,52 +58,39 @@
 ##  **구현 클래스 & 상세기능**
 
 ### **1) HomeFragment**
-
-<img width="200" alt="finder6" src="https://ifh.cc/g/LByqsc.png">
-
+<img width="200" alt="finder6" src="https://ifh.cc/g/LByqsc.png"><img width="205" alt="finder5" src="https://ifh.cc/g/HwgF4A.jpg"><img width="205" alt="finder5" src="https://ifh.cc/g/YZKpjh.jpg">
 
 - 메인 액티비티 구성, 네이버 뉴스 api 받아오기
-  
 - 메인 프래그먼트 화면 구성(viewtype활용)
+- 로그인시 추천 기사 항목 추가
   
   
 
 </br>
 ### **2) LogInActivity**
 
-<img width="200" alt="finder1" src="https://ifh.cc/g/6J3tXN.png"><img width="205" alt="finder5" src="https://ifh.cc/g/gvaCQf.png">
-
-
+<img width="200" alt="finder1" src="https://ifh.cc/g/6J3tXN.png"><img width="205" alt="finder5" src="https://ifh.cc/g/gvaCQf.png"><img width="205" alt="finder5" src="https://ifh.cc/g/fnX1gz.png"><img width="205" alt="finder5" src="https://ifh.cc/g/fR13A4.png">
 
 - 로그인, 회원가입화면 구성
-  
 - 소셜로그인 기능
-  
 - 회원 정보 파이어베이스에 저장하기
 
 </br>
 
 ### **2) SearchFragment**
 
-<img width="200" alt="finder1" src="https://ifh.cc/g/Or8ptg.png"><img width="210" alt="finder5" src="https://ifh.cc/g/Rdh9qb.png">
-
-
+<img width="200" alt="finder1" src="https://ifh.cc/g/Or8ptg.png"><img width="210" alt="finder5" src="https://ifh.cc/g/Rdh9qb.png"><img width="210" alt="finder5" src="https://ifh.cc/g/Xhazhr.png"><img width="210" alt="finder5" src="https://ifh.cc/g/4BQ3NH.jpg">
 
 - 검색화면 구성
-
 - 키워드 검색 기능
-  
 - 검색 기능
-  
 - 태그 기능
-  
 - 무한 스크롤 기능
-
 </br>
 
 ### **3) DetailActivtiy**
 
-<img width="200" alt="finder7" src="https://ifh.cc/g/zmzZ4h.png">
+<img width="200" alt="finder7" src="https://ifh.cc/g/zmzZ4h.png"><img width="200" alt="finder7" src="https://ifh.cc/g/o091S5.jpg">
 
 
 - 상세페이지 기능 구현(MVVM패턴 적용)
@@ -117,18 +104,47 @@
 
 ### **4) MyPageFragment**
 
-<img width="200" src="https://ifh.cc/g/kjdZDc.png"><img width="193" alt="finder3" src="https://ifh.cc/g/yAppvj.jpg">
+<img width="200" src="https://ifh.cc/g/kjdZDc.png"><img width="193" alt="finder3" src="https://ifh.cc/g/yAppvj.jpg"><img width="193" alt="finder3" src="https://ifh.cc/g/2QymG5.png"><img width="193" alt="finder3" src="https://ifh.cc/g/D02PfT.jpg"><img width="193" alt="finder3" src="https://ifh.cc/g/kNYgLb.png">
 
 
 
 - **My List(+) 추가**를 선택한 기사 리스트 출력 
-- MVVM 패턴 적
+- MVVM 패턴 적용
 - 로그인시 Firestore에 저장되어있는 데이터를 즐겨찾기페이지에 바로 적용
 - 구글 로그인시 Firestore에 저장되어있는 데이터를 즐겨찾기페이지에 바로 적용
 - 로그아웃 버튼 클릭시 즐겨찾기 페이지를 클리어하고 로그인UI 로 변경
 - 앱종료시 자동 로그아웃 기능
+- 카테고리 선택
+- 프로필 사진 바꾸기 기능
+
+</br>
+
+### **5)Newspaper Fragment**
+
+<img width="200" src="https://ifh.cc/g/jDCyr6.png"><img width="200" alt="finder3" src="https://ifh.cc/g/PXDttB.jpg">
+
+- 신문사별 & 카테고리별 기사 제공
 
 </br>
 
 
+### **6)Debate Fragment**
 
+<img width="200" src="https://ifh.cc/g/kd2H3v.png"><img width="200" alt="finder3" src="https://ifh.cc/g/XqC718.png">
+
+- 토론글 올리기 & 삭제하기
+- 투표하기 기능
+- 댓글 쓰기 기능
+
+</br>
+
+### **7)Setting Activity**
+
+<img width="200" src="https://ifh.cc/g/3tq1gD.png">
+
+- 오픈소스 라이센스
+- 문의 메일 보내기 기능
+
+</br>
+</br>
+</br>
