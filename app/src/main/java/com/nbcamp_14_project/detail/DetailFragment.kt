@@ -1,48 +1,36 @@
 package com.nbcamp_14_project.detail
 
-import android.content.Context
+
 import android.content.Intent
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.speech.tts.TextToSpeech
 import android.util.Log
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import android.widget.Toast
-import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
-import androidx.databinding.DataBindingUtil.setContentView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.LinearLayoutManager
-import coil.load
 import com.bumptech.glide.Glide
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.nbcamp_14_project.R
 import com.nbcamp_14_project.Utils
+import com.nbcamp_14_project.api.RetrofitInstance
 
 import com.nbcamp_14_project.databinding.FragmentDetailBinding
 import com.nbcamp_14_project.databinding.FragmentFavoriteBinding
 import com.nbcamp_14_project.databinding.FragmentSearchBinding
 import com.nbcamp_14_project.favorite.FavoriteListAdapter
+import com.nbcamp_14_project.favorite.FavoriteRepository
 import com.nbcamp_14_project.favorite.FavoriteViewModel
-import com.nbcamp_14_project.home.HomeModelFactory
-import com.nbcamp_14_project.home.HomeViewModel
 import com.nbcamp_14_project.newspaper.NewspaperDialog
-import com.nbcamp_14_project.search.SearchListAdapter
 import com.nbcamp_14_project.search.SearchViewModel
 import com.nbcamp_14_project.search.SearchViewModelFactory
 import com.nbcamp_14_project.ui.login.LoginActivity
-import com.nbcamp_14_project.ui.login.LoginViewModel
 import java.util.Date
 import java.util.Locale
+import java.util.concurrent.atomic.AtomicInteger
 
 class DetailFragment : Fragment(R.layout.fragment_detail) {
 
@@ -53,34 +41,35 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
 
     private var _binding: FragmentDetailBinding? = null
     private val binding get() = _binding!!
-    private val viewModel: DetailViewModel by activityViewModels()
+    private val viewModel: DetailViewModel by lazy{
+        ViewModelProvider(
+            requireActivity()
+        )[DetailViewModel::class.java]
+    }
     private var isAnimating = false
     private val fbFireStore = FirebaseFirestore.getInstance()
     private lateinit var textToSpeech: TextToSpeech
-    private val favoriteViewModel: FavoriteViewModel by activityViewModels{
+    private val favoriteViewModel: FavoriteViewModel by activityViewModels {
         FavoriteViewModel.FavoriteViewModelFactory()
     }
 
-    private val searchViewModel: SearchViewModel by lazy {
-        ViewModelProvider(
-            requireActivity(), SearchViewModelFactory()
-        )[SearchViewModel::class.java]
+    private val searchViewModel: SearchViewModel by activityViewModels {
+        SearchViewModelFactory()
     }
     private val fireStore = FirebaseFirestore.getInstance()
-    var isLike:Boolean? = false
-    var isFollow:Boolean? = false
-
+    var isLike: Boolean? = false
+    var isFollow: Boolean? = false
 
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        viewModel.getDetailInfo()
         _binding = FragmentDetailBinding.bind(view)
 
         // Detail 정보 가져오기
         val detailInfo = viewModel.detailInfo.value
-        Log.d("detailWork","$detailInfo")
+        Log.d("detailWork", "$detailInfo")
         //즐겨찾기 여부 확인
         val isFavorite = favoriteViewModel.favoriteList.value?.contains(detailInfo) == true
         if (isFavorite) {
@@ -98,7 +87,7 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
                 if (detailInfo != null) {
                     val isFavorite =
                         favoriteViewModel.favoriteList.value?.contains(detailInfo) == true
-                    if (isFavorite || isLike == true ) {
+                    if (isFavorite || isLike == true) {
                         favoriteViewModel.removeFavoriteItem(detailInfo)
                         searchViewModel.modifyFavoriteItemToPosition(detailInfo)
                         binding.imgLike.setImageResource(R.drawable.ic_like)
@@ -117,7 +106,6 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
                 startActivity(intent)
             }
         }
-
 
 
         // 텍스트 음성 출력 설정
@@ -155,15 +143,14 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
                 val document = task.result
                 if (document.exists()) {
                     isLike = document.getBoolean("isLike")
-                    Log.d("isLike??","$isLike")
+                    Log.d("isLike??", "$isLike")
                     if (isLike == true) {
                         binding.imgLike.setImageResource(R.drawable.ic_check)
                     } else {
                         binding.imgLike.setImageResource(R.drawable.ic_like)
                     }
                 }
-            }
-            else{
+            } else {
                 return@addOnCompleteListener
             }
         }
@@ -171,22 +158,21 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
             .document(FirebaseAuth.getInstance().currentUser?.uid ?: return)
             .collection("author")
             .document(detailInfo?.author.toString())
-        Log.d("test","${detailInfo!!.author.toString()}")
+        Log.d("test", "${detailInfo!!.author.toString()}")
         collectionRefToAuthor.get().addOnCompleteListener { task ->
             if (task.isSuccessful) {
                 val document = task.result
                 if (document.exists()) {
                     isFollow = document.getBoolean("isFollow")
-                    Log.d("isFollow??","$isFollow")
+                    Log.d("isFollow??", "$isFollow")
                     if (isFollow == true) {
                         binding.tvFollowing.text = "구독중"
                     } else {
                         binding.tvFollowing.text = "구독하기"
                     }
                 }
-            }
-            else{
-                Log.d("isFollow?","false")
+            } else {
+                Log.d("isFollow?", "false")
                 return@addOnCompleteListener
             }
         }
@@ -194,21 +180,23 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
             if (detailInfo != null && isFollow == false) {
                 storeAuthorInFireStore(detailInfo)
                 binding.tvFollowing.text = "구독중"
-                Log.d("isFollowbtn1","$isFollow")
+                Log.d("isFollowbtn1", "$isFollow")
                 isFollow = true
+            } else if (isFollow == true) {
+                Log.d("isFollowbtn2", "$isFollow")
+                removeFollowingFromFireStore(detailInfo)
             }else if(isFollow == true){
                 Log.d("isFollowbtn2","$isFollow")
-                removeFollowingFromFireStore(detailInfo)
+                removeFollowingFromFireStore(detailInfo!!)
                 binding.tvFollowing.text = "구독하기"
                 isFollow = false
-            }else{
+            } else {
                 showSnackbar("로그인을 해주세요.")
                 val intent = Intent(requireContext(), LoginActivity::class.java)
                 startActivity(intent)
             }
         }
     }
-
 
 
     override fun onDestroyView() {
@@ -292,6 +280,7 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
             favoriteCollection.document(detailInfo.author.toString()).set(favoriteData)
         }
     }
+
     private fun removeFollowingFromFireStore(detailInfo: DetailInfo) {
         // Firestore에서 즐겨찾기 삭제
         val user = FirebaseAuth.getInstance().currentUser
@@ -307,6 +296,7 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
             }
         }
     }
+
     private fun removeFavoriteFromFireStore(detailInfo: DetailInfo) {
         // Firestore에서 즐겨찾기 삭제
         val user = FirebaseAuth.getInstance().currentUser
@@ -341,3 +331,6 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
         super.onDestroy()
     }
 }
+
+
+

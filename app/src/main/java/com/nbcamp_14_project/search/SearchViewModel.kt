@@ -48,7 +48,6 @@ class SearchViewModel(
         _recentSearchList.value = repository.addRecentSearchList(query)
     }
 
-
     fun modifyFavoriteItemToPosition(item: DetailInfo) {// DetailInfo 아이템 값 수정
         item.isLike = !item.isLike!!
         Log.d("search", "search")
@@ -58,8 +57,8 @@ class SearchViewModel(
             if (item == null) return 0
             val findItem = currentList.find {
                 it.thumbnail == item.thumbnail
-            }
-            return currentList.indexOf(findItem!!)
+            } ?: return -1
+            return currentList.indexOf(findItem!!) ?: return -1
         }
 
         val findPosition = findIndex(item)

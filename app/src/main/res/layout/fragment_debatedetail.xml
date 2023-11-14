@@ -60,16 +60,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <!--                <View-->
-                <!--                    android:layout_width="match_parent"-->
-                <!--                    android:layout_height="3dp"-->
-                <!--                    android:layout_marginStart="20dp"-->
-                <!--                    android:layout_marginEnd="20dp"-->
-                <!--                    android:background="#E1DCDC"-->
-                <!--                    app:layout_constraintBottom_toTopOf="@+id/tv_thisagree"-->
-                <!--                    app:layout_constraintEnd_toEndOf="parent"-->
-                <!--                    app:layout_constraintStart_toStartOf="parent"-->
-                <!--                    app:layout_constraintTop_toBottomOf="@+id/tv_opinion2" />-->
+
 
                 <TextView
                     android:id="@+id/tv_thisagree"
@@ -213,22 +204,6 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tv_opinion"
                     app:layout_constraintVertical_bias="0" />
-
-
-                <!--                <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton-->
-                <!--                    android:id="@+id/btn_comment"-->
-                <!--                    android:layout_width="wrap_content"-->
-                <!--                    android:layout_height="wrap_content"-->
-                <!--                    android:layout_gravity="bottom|end"-->
-                <!--                    android:layout_marginEnd="20dp"-->
-                <!--                    android:layout_marginBottom="20dp"-->
-                <!--                    android:backgroundTint="@color/white"-->
-                <!--                    android:elevation="3dp"-->
-                <!--                    app:icon="@drawable/ic_plus_24px"-->
-                <!--                    app:layout_constraintBottom_toBottomOf="parent"-->
-                <!--                    app:layout_constraintEnd_toEndOf="parent"-->
-                <!--                    app:strokeColor="@color/green"-->
-                <!--                    app:strokeWidth="2dp" />-->
 
 
                 <TextView

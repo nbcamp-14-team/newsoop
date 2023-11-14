@@ -14,7 +14,6 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.EditText
-import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -32,6 +31,7 @@ import java.text.SimpleDateFormat
 import java.util.Date
 
 class DebateDetailFragment : Fragment() {
+    // Binding 객체
     private var _binding: FragmentDebatedetailBinding? = null
     private val binding get() = _binding!!
     private lateinit var adapter: DebateDetailListAdapter
@@ -48,6 +48,7 @@ class DebateDetailFragment : Fragment() {
     private var agreeNum = 0.0
     private var oppositeNum = 0.0
 
+    // onCreateView: Fragment의 레이아웃을 inflate하여 반환
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -57,32 +58,32 @@ class DebateDetailFragment : Fragment() {
         return binding.root
     }
 
+    // onViewCreated: View가 생성된 후에 호출되는 메서드
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
 
-
-//         SwipeRefreshLayout 초기화
+        //         SwipeRefreshLayout 초기화
         val swipeRefreshLayout = view.findViewById<SwipeRefreshLayout>(R.id.swipe_refresh_layout)
 
-//         Swipe to Refresh 리스너 설정
+        //         Swipe to Refresh 리스너 설정
         swipeRefreshLayout.setOnRefreshListener {
             // Swipe to Refresh 동작 시, 데이터 다시 불러오는 작업 수행
             loadComments(viewModel.debateId ?: "")
         }
-
+        // Spinner 설정
 
         val spinner = binding.homeSpinner
         val spinnerAdapter = ArrayAdapter.createFromResource(
             requireContext(),
-            R.array.sort_options, // 이것은 res/values/strings.xml에 정의된 배열 리소스여야 합니다.
+            R.array.sort_options,
             android.R.layout.simple_spinner_item
         )
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinner.adapter = spinnerAdapter
 
 
-
+        // Spinner 리스너 설정
         spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(
                 parent: AdapterView<*>?,
@@ -118,8 +119,7 @@ class DebateDetailFragment : Fragment() {
         }
 
 
-
-
+        // 댓글 추가 버튼 클릭 시 동작
         binding.btnComment.setOnClickListener {
             val user = FirebaseAuth.getInstance().currentUser
             if (user != null) {
@@ -137,7 +137,7 @@ class DebateDetailFragment : Fragment() {
             }
         }
 
-
+        // Agree 투표에 대한 처리
         val agreeImageView = binding.icAgree
         val tvAgree = binding.tvAgree
 
@@ -176,7 +176,7 @@ class DebateDetailFragment : Fragment() {
         val tvOpposite = binding.tvOpposite
 
         checkOppositeVoteStatus()
-
+        // Opposite 투표에 대한 처리
         oppositeImageView.setOnClickListener {
             if (agreeClicked) {
             } else {
@@ -211,33 +211,43 @@ class DebateDetailFragment : Fragment() {
 
         val fullAgreeText = "Agree : ${agreecontext}"
 
-// SpannableString을 생성합니다.
+        // SpannableString을 생성합니다.
         val spannableString = SpannableString(fullAgreeText)
 
-// "Agree" 문자열이 전체 텍스트에서 시작하는 인덱스를 찾습니다.
+        // "Agree" 문자열이 전체 텍스트에서 시작하는 인덱스를 찾습니다.
         val startIndex = fullAgreeText.indexOf("Agree")
 
-// "Agree" 부분에 적용할 파란색을 정의합니다.
+        // "Agree" 부분에 적용할 파란색을 정의합니다.
         val colorBlue = resources.getColor(R.color.agree_blue) // 원하는 파란색 리소스로 변경하세요
 
-// "Agree"를 파란색으로 변경합니다.
-        spannableString.setSpan(ForegroundColorSpan(colorBlue), startIndex, startIndex + "Agree".length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        // "Agree"를 파란색으로 변경합니다.
+        spannableString.setSpan(
+            ForegroundColorSpan(colorBlue),
+            startIndex,
+            startIndex + "Agree".length,
+            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
 
         val fullDisagreeText = "Disagree : ${oppositecontext}"
 
-// SpannableString을 생성합니다.
+        // SpannableString을 생성합니다.
         val spannableString1 = SpannableString(fullDisagreeText)
 
-// "Disagree" 문자열이 전체 텍스트에서 시작하는 인덱스를 찾습니다.
+        // "Disagree" 문자열이 전체 텍스트에서 시작하는 인덱스를 찾습니다.
         val startIndex1 = fullDisagreeText.indexOf("Disagree")
 
-// "Disagree" 부분에 적용할 빨간색을 정의합니다.
+        // "Disagree" 부분에 적용할 빨간색을 정의합니다.
         val colorRed = resources.getColor(R.color.disagree_red) // 원하는 빨간색 리소스로 변경하세요
 
-// "Disagree"를 빨간색으로 변경합니다.
-        spannableString1.setSpan(ForegroundColorSpan(colorRed), startIndex1, startIndex1 + "Disagree".length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        // "Disagree"를 빨간색으로 변경합니다.
+        spannableString1.setSpan(
+            ForegroundColorSpan(colorRed),
+            startIndex1,
+            startIndex1 + "Disagree".length,
+            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
 
-// TextView에 SpannableString을 설정하여 "Disagree"를 빨간색으로 표시합니다
+        // TextView에 SpannableString을 설정하여 "Disagree"를 빨간색으로 표시합니다
 
         if (title != null) {
             binding.tvTitle.text = title
@@ -250,7 +260,7 @@ class DebateDetailFragment : Fragment() {
         adapter = DebateDetailListAdapter(debatedetailList)
         binding.debatedetailList.layoutManager = LinearLayoutManager(context)
         binding.debatedetailList.adapter = adapter
-
+        // 댓글 삭제 버튼에 대한 동작 설정
         adapter.itemClick = object : DebateDetailListAdapter.ItemClick {
 
 
@@ -305,7 +315,7 @@ class DebateDetailFragment : Fragment() {
 
         }
 
-
+        // 투표 정보 및 화면 갱신
         val debateId = viewModel.debateId
         Log.d("hyunsik", "debateId = $debateId")
         if (debateId != null) {
@@ -316,7 +326,7 @@ class DebateDetailFragment : Fragment() {
 
     }
 
-
+    // 댓글 화면 갱신
     private fun loadComments(debateId: String) {
         val firestore = FirebaseFirestore.getInstance()
         val userUID = viewModel.userUID
@@ -367,7 +377,7 @@ class DebateDetailFragment : Fragment() {
 
     }
 
-
+    // 찬성 투표 Firestore에 저장
     private fun addAgreeVote() {
         val user = auth.currentUser
         val debateId = viewModel.debateId
@@ -395,7 +405,7 @@ class DebateDetailFragment : Fragment() {
                 }
         }
     }
-
+    // 찬성 투표 Firestore에서 삭제
     private fun removeAgreeVote() {
         val user = auth.currentUser
         val debateId = viewModel.debateId
@@ -415,7 +425,7 @@ class DebateDetailFragment : Fragment() {
             voteRef.delete()
         }
     }
-
+    // 찬성 투표 갱신
     private fun updateAgreeCount() {
         val debateId = viewModel.debateId
         val tvAgree = binding.tvAgree
@@ -481,7 +491,7 @@ class DebateDetailFragment : Fragment() {
                 }
         }
     }
-
+    // 반대 투표 Firestore에 저장
     private fun addOppositeVote() {
         val user = auth.currentUser
         val debateId = viewModel.debateId
@@ -506,7 +516,7 @@ class DebateDetailFragment : Fragment() {
                 }
         }
     }
-
+    // 반대 투표 Firestore에 삭제
     private fun removeOppositeVote() {
         val user = auth.currentUser
         val debateId = viewModel.debateId
@@ -525,7 +535,7 @@ class DebateDetailFragment : Fragment() {
             voteRef.delete()
         }
     }
-
+    // 반대 투표 화면에 갱신
     private fun updateOppositeCount() {
         val debateId = viewModel.debateId
         val tvOpposite = binding.tvOpposite
@@ -554,7 +564,7 @@ class DebateDetailFragment : Fragment() {
         }
 
     }
-
+    // 사용자의 userUID가 OppositeVotes에 있는지 확인하는 함수
     private fun checkOppositeVoteStatus() {
         val user = auth.currentUser
         val debateId = viewModel.debateId
@@ -585,7 +595,7 @@ class DebateDetailFragment : Fragment() {
                 }
         }
     }
-
+    // Floating버튼 클릭시 다이얼로그 화면에 띄우기
     private fun showAddCommentDialog() {
         val builder = AlertDialog.Builder(requireContext(), R.style.RoundedCornersAlertDialog)
         val dialogView = layoutInflater.inflate(R.layout.dialog_debatedetail, null)
@@ -723,18 +733,17 @@ class DebateDetailFragment : Fragment() {
 
 
     }
-
+    //Snackbar 활용
     private fun showSnackbar(message: String) {
         Snackbar.make(requireView(), message, Snackbar.LENGTH_SHORT).show()
     }
 
-
+    // LoginActivity로 이동하는 Intent를 생성
     private fun navigateToLoginActivity() {
-        // LoginActivity로 이동하는 Intent를 생성
         val intent = Intent(requireContext(), LoginActivity::class.java)
         startActivity(intent)
     }
-
+    // onDestroyView: Fragment의 뷰가 소멸될 때 호출
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null

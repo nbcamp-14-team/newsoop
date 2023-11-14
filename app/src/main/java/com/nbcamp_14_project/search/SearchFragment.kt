@@ -23,7 +23,10 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.nbcamp_14_project.R.layout.item_loading
 import com.nbcamp_14_project.databinding.FragmentSearchBinding
 import com.nbcamp_14_project.detail.DetailInfo
+import com.nbcamp_14_project.detail.DetailRepository
 import com.nbcamp_14_project.detail.DetailViewModel
+import com.nbcamp_14_project.detail.DetailViewModelFactory
+import com.nbcamp_14_project.favorite.FavoriteRepository
 import com.nbcamp_14_project.favorite.FavoriteViewModel
 import com.nbcamp_14_project.home.toDetailInfo
 import com.nbcamp_14_project.mainpage.MainActivity
@@ -41,8 +44,8 @@ class SearchFragment : Fragment() {
 
     private val dialog by lazy { LoadingDialog(requireContext()) }
     private var _binding: FragmentSearchBinding? = null
-    private val detailViewModel: DetailViewModel by activityViewModels()
-    private val favoriteViewModel: FavoriteViewModel by activityViewModels()
+    private val detailViewModel: DetailViewModel by activityViewModels{DetailViewModelFactory()}
+//    private val favoriteViewModel: FavoriteViewModel by activityViewModels{FavoriteViewModel.FavoriteViewModelFactory()}
     private val binding get() = _binding!!
     private val viewModel: SearchViewModel by lazy {
         ViewModelProvider(
@@ -67,10 +70,8 @@ class SearchFragment : Fragment() {
                     if (detailInfo != null) {
                         val isFavorite = detailInfo.isLike
                         if (!isFavorite!!) {
-                            favoriteViewModel.removeFavoriteItem(detailInfo)
                             removeFavoriteFromFireStore(detailInfo)  // Firestore에서도 제거
                         } else {
-                            favoriteViewModel.addFavoriteItem(detailInfo)
                             addFavoriteToFireStore(detailInfo)  // Firestore에도 추가
                         }
                     }
@@ -94,6 +95,55 @@ class SearchFragment : Fragment() {
     ): View {
         _binding = FragmentSearchBinding.inflate(inflater, container, false)
         return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        initView()
+        initViewModel()
+
+        binding.searchRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+                val lastVisiblePosition =
+                    (binding.searchRecyclerView.layoutManager as LinearLayoutManager).findLastCompletelyVisibleItemPosition()
+                val itemCount = adapter.itemCount - 1
+                Log.d("VisiblePosition", "$lastVisiblePosition + $itemCount")
+                if (!binding.searchRecyclerView.canScrollHorizontally(1) && lastVisiblePosition == itemCount) {
+                    viewModel.getSearchNews(query, 10, countStart)
+                    countStart += 10
+                    //검색 로딩 딜레이 주기 : 3초
+                    CoroutineScope(Dispatchers.Main).launch {
+                        dialog.show()
+                        delay(3000)
+                        dialog.dismiss()
+                    }
+                }
+            }
+        })
+
+        tagAdapter.setItemClickListener(object : SearchTagAdapter.OnItemClickListener {
+            override fun onClick(v: View, position: Int, searchWord: String) {
+                // 최근 검색어 가져오기
+                binding.searchInput.setText(searchWord)
+                Log.d("search", "$position : $searchWord")
+                binding.searchBtn.performClick()
+            }
+
+            override fun onCancelClick(v: View, position: Int, searchWord: String) {
+                viewModel.removeRecentSearchItem(searchWord)
+                Log.d("search", "$position : $searchWord")
+            }
+
+        })
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (user != null) {
+            viewModel.clearRecentSearch()
+            getRecentSearchListFirebase(userUID = user!!.uid)
+        }
     }
 
     private fun initView() = with(binding) {
@@ -133,59 +183,6 @@ class SearchFragment : Fragment() {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        user = FirebaseAuth.getInstance().currentUser
-        if (user != null) {
-            viewModel.clearRecentSearch()
-            getRecentSearchListFirebase(userUID = user!!.uid)
-        }
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        initView()
-        initViewModel()
-        val userUID = user?.uid
-        if (userUID != null) {
-            getRecentSearchListFirebase(userUID)
-        }
-        binding.searchRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                super.onScrollStateChanged(recyclerView, newState)
-                val lastVisiblePosition =
-                    (binding.searchRecyclerView.layoutManager as LinearLayoutManager).findLastCompletelyVisibleItemPosition()
-                val itemCount = adapter.itemCount - 1
-                Log.d("VisiblePosition", "$lastVisiblePosition + $itemCount")
-                if (!binding.searchRecyclerView.canScrollHorizontally(1) && lastVisiblePosition == itemCount) {
-                    viewModel.getSearchNews(query, 10, countStart)
-                    countStart += 10
-                    //검색 로딩 딜레이 주기 : 3초
-                    CoroutineScope(Dispatchers.Main).launch {
-                        dialog.show()
-                        delay(3000)
-                        dialog.dismiss()
-                    }
-                }
-            }
-        })
-
-        tagAdapter.setItemClickListener(object : SearchTagAdapter.OnItemClickListener {
-            override fun onClick(v: View, position: Int, searchWord: String) {
-                // 최근 검색어 가져오기
-                binding.searchInput.setText(searchWord)
-                Log.d("search", "$position : $searchWord")
-                binding.searchBtn.performClick()
-            }
-
-            override fun onCancelClick(v: View, position: Int, searchWord: String) {
-                viewModel.removeRecentSearchItem(searchWord)
-                Log.d("search", "$position : $searchWord")
-            }
-
-        })
-    }
-
     private fun initViewModel() {
         with(viewModel) {
             searchResultList.observe(viewLifecycleOwner) {
@@ -203,6 +200,7 @@ class SearchFragment : Fragment() {
                 } else {
                     binding.recentSearchNot.visibility = View.VISIBLE
                 }
+                Log.d("recent", "${it.size}")
                 tagAdapter.submitList(it.toMutableList())
             }
         }
@@ -228,22 +226,9 @@ class SearchFragment : Fragment() {
     }
 
     private fun addFavoriteToFireStore(detailInfo: DetailInfo) {
-//        val db = FirebaseFirestore.getInstance()
-//        val favoriteRef = db.collection("favorites")
-//        val favoriteData = hashMapOf(
-//            "title" to detailInfo.title,
-//            "thumbnail" to detailInfo.thumbnail,
-//            "description" to detailInfo.description,
-//            "author" to detailInfo.author,
-//            "originalLink" to detailInfo.originalLink,
-//            "pubDate" to detailInfo.pubDate
-//        )
-//        favoriteRef.add(favoriteData)
-
         // 1. 사용자가 로그인한 후 사용자 UID 가져오기
         val user = FirebaseAuth.getInstance().currentUser
         val userUID = user?.uid
-
         if (userUID != null) {
             // 2. Firestore에서 해당 사용자의 favorite 컬렉션 참조
             val db = FirebaseFirestore.getInstance()
@@ -255,10 +240,11 @@ class SearchFragment : Fragment() {
                 "author" to detailInfo.author,
                 "originalLink" to detailInfo.originalLink,
                 "pubDate" to detailInfo.pubDate,
-                "created" to Date()
+                "created" to Date(),
+                "isLike" to true
             )
 
-            favoriteCollection.add(favoriteData)
+            favoriteCollection.document(detailInfo.title.toString()).set(favoriteData)
         } else {
 //            Toast.makeText(requireContext(), "로그인을 해주세요".toString() )show()
         }

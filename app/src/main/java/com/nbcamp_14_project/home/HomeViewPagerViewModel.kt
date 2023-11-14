@@ -17,6 +17,11 @@ class HomeViewPagerViewModel(
     val resumed get() = _resumed
 
     init{
+        repository.addFragment("정치 사회","정치/사회")
+        repository.addFragment("경제","경제")
+        repository.addFragment("생활 문화","생활/문화")
+        repository.addFragment("IT 과학","IT/과학")
+        repository.addFragment("세계","세계")
         _list.value =repository.getList()
     }
     fun removeListAtFirst(){
