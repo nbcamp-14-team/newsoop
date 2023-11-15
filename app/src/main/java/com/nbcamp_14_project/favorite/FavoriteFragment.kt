@@ -45,6 +45,7 @@ import com.nbcamp_14_project.detail.DetailViewModelFactory
 import com.nbcamp_14_project.home.HomeModel
 import com.nbcamp_14_project.home.HomeViewModel
 import com.nbcamp_14_project.home.HomeViewPagerViewModel
+import com.nbcamp_14_project.home.HomeViewPagerViewModelFactory
 import com.nbcamp_14_project.home.toDetailInfo
 import com.nbcamp_14_project.mainpage.MainActivity
 import com.nbcamp_14_project.setting.SettingActivity
@@ -72,7 +73,9 @@ class FavoriteFragment : Fragment() {
     }
     private val detailViewModel: DetailViewModel by activityViewModels{DetailViewModelFactory()}
     private val loginViewModel: LoginViewModel by activityViewModels()
-    private val homeViewPagerViewModel: HomeViewPagerViewModel by activityViewModels()
+    private val homeViewPagerViewModel: HomeViewPagerViewModel by activityViewModels{
+        HomeViewPagerViewModelFactory()
+    }
     private val firestore = FirebaseFirestore.getInstance()
     private var isLogin = false
     private var auth = FirebaseAuth.getInstance()
