@@ -31,6 +31,7 @@ import coil.load
 import coil.transform.CircleCropTransformation
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
@@ -111,8 +112,8 @@ class FavoriteFragment : Fragment() {
             }
         }
 
-    private val user = FirebaseAuth.getInstance().currentUser
-    private val userUID = user?.uid
+    private lateinit var user:FirebaseUser
+    private lateinit var userUID:String
     private var selectedImageUri: Uri? = null
     private val pickImageActivityResult =//갤러리에서 선택한 사진 적용
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
@@ -124,7 +125,7 @@ class FavoriteFragment : Fragment() {
                         if (selectedImageUri != null) {
                             binding.imgProfile.load(selectedImageUri) {
                                 transformations(CircleCropTransformation())
-                                if (userUID != null) {
+                                if (userUID != "") {
                                     deleteFirebaseImage(userUID)
                                     setFirebaseImage()
                                 }
@@ -172,6 +173,7 @@ class FavoriteFragment : Fragment() {
         binding.btnLogout.setOnClickListener {
             // 로그아웃 버튼 클릭 시 Firebase에서 로그아웃
             Firebase.auth.signOut()
+            userUID = ""
 
             if (FirebaseAuth.getInstance().currentUser == null) {
                 loginBox.visibility = View.VISIBLE
@@ -184,6 +186,9 @@ class FavoriteFragment : Fragment() {
         }
 
         if (FirebaseAuth.getInstance().currentUser != null) {
+            user = FirebaseAuth.getInstance().currentUser!!
+            userUID = user.uid
+
             // 로그인 상태일 때
             loginBox.visibility = View.INVISIBLE
             profileBox.visibility = View.VISIBLE
@@ -222,7 +227,7 @@ class FavoriteFragment : Fragment() {
         }
 
         // firebase에서 이미지 가져오기
-        if (userUID != null) {
+        if (userUID != "") {
             val storage = FirebaseStorage.getInstance()
             var imgFileName = "IMAGE_$userUID.jpg"
             storage.reference.child("profiles")
@@ -233,6 +238,7 @@ class FavoriteFragment : Fragment() {
                     }
                     Log.d("img", "이미지 가져오기 성공")
                 }.addOnFailureListener {
+                    binding.imgProfile.setImageResource(R.drawable.img_person)
                     Log.d("img", it.message.toString())
                 }
         }
