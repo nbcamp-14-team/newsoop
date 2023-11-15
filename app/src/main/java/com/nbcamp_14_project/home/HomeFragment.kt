@@ -252,7 +252,6 @@ class HomeFragment() : Fragment() {
                         ) {
                             return@addOnCompleteListener
                         } else {
-
                             viewPagerViewModel.clearAllItems()
                             Log.d("testCategory", "${document.getString("category")}")
                             firstHomeCategory = document.getString("category")

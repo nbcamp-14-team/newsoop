@@ -1,12 +1,14 @@
 package com.nbcamp_14_project.detail
 
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.speech.tts.TextToSpeech
 import android.util.Log
 import android.view.View
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
@@ -24,6 +26,8 @@ import com.nbcamp_14_project.databinding.FragmentSearchBinding
 import com.nbcamp_14_project.favorite.FavoriteListAdapter
 import com.nbcamp_14_project.favorite.FavoriteRepository
 import com.nbcamp_14_project.favorite.FavoriteViewModel
+import com.nbcamp_14_project.home.HomeViewPagerViewModel
+import com.nbcamp_14_project.home.HomeViewPagerViewModelFactory
 import com.nbcamp_14_project.newspaper.NewspaperDialog
 import com.nbcamp_14_project.search.SearchViewModel
 import com.nbcamp_14_project.search.SearchViewModelFactory
@@ -52,7 +56,9 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
     private val favoriteViewModel: FavoriteViewModel by activityViewModels {
         FavoriteViewModel.FavoriteViewModelFactory()
     }
-
+    private val homeViewPagerViewModel: HomeViewPagerViewModel by activityViewModels{
+        HomeViewPagerViewModelFactory()
+    }
     private val searchViewModel: SearchViewModel by activityViewModels {
         SearchViewModelFactory()
     }
@@ -60,7 +66,15 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
     var isLike: Boolean? = false
     var isFollow: Boolean? = false
 
-
+    private val checkLoginLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                val checkLogin = result.data?.getStringExtra(LoginActivity.CHECK_LOGIN)
+                if (checkLogin == "Login") {
+                    homeViewPagerViewModel.addListAtFirst("추천", "추천")
+                }
+            }
+        }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -103,7 +117,7 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
                 // 사용자가 로그인하지 않은 경우
                 showSnackbar("로그인을 해주세요.")
                 val intent = Intent(requireContext(), LoginActivity::class.java)
-                startActivity(intent)
+                checkLoginLauncher.launch(intent)
             }
         }
 
