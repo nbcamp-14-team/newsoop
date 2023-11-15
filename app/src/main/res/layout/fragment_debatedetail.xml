@@ -49,11 +49,13 @@
 
                 <TextView
                     android:id="@+id/tv_title"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="20dp"
+                    android:layout_marginEnd="20dp"
                     android:layout_marginTop="10dp"
-                    android:text="사과는 맛있다"
+                    android:maxLines="2"
+                    android:text="가나다라마바사아자차카타파하가나다라마바사아자차카타파하"
                     android:textColor="@color/black"
                     android:textSize="28dp"
                     android:textStyle="bold"
@@ -210,7 +212,7 @@
                     android:id="@+id/tv_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="5dp"
                     android:text="정현식"
                     android:textSize="15dp"
                     app:layout_constraintStart_toStartOf="@+id/tv_title"
@@ -230,7 +232,7 @@
 
                     <TextView
                         android:id="@+id/tv_context"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
                         android:text="내용"
@@ -253,16 +255,18 @@
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/tv_opinion2"
                     android:layout_width="match_parent"
-                    android:layout_height="80dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="20dp"
                     app:layout_constraintStart_toStartOf="@+id/tv_thisagree"
                     app:layout_constraintTop_toBottomOf="@+id/textView6">
 
                     <TextView
                         android:id="@+id/tv_agreecontext"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="20dp"
                         android:layout_marginTop="15dp"
+                        android:maxLines="2"
                         android:text="찬성: 사과는 맛있다."
                         android:textSize="20sp"
                         android:textStyle="bold"
@@ -271,10 +275,11 @@
 
                     <TextView
                         android:id="@+id/tv_oppositecontext"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="20dp"
                         android:layout_marginTop="10dp"
+                        android:maxLines="2"
                         android:text="반대: 사과는 맛없다."
                         android:textSize="20sp"
                         android:textStyle="bold"
@@ -295,19 +300,19 @@
         </androidx.core.widget.NestedScrollView>
 
         <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-        android:id="@+id/btn_comment"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_marginEnd="20dp"
-        android:layout_marginBottom="20dp"
-        android:backgroundTint="@color/white"
-        android:elevation="3dp"
-        app:icon="@drawable/ic_plus_24px"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:strokeColor="@color/green"
-        app:strokeWidth="2dp" />
+            android:id="@+id/btn_comment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:layout_marginEnd="20dp"
+            android:layout_marginBottom="20dp"
+            android:backgroundTint="@color/white"
+            android:elevation="3dp"
+            app:icon="@drawable/ic_plus_24px"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:strokeColor="@color/green"
+            app:strokeWidth="2dp" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
