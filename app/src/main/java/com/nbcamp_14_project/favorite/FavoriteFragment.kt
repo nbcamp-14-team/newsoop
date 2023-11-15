@@ -118,7 +118,7 @@ class FavoriteFragment : Fragment() {
     private lateinit var user:FirebaseUser
     private lateinit var userUID:String
     private var selectedImageUri: Uri? = null
-    private val pickImageActivityResult =//갤러리에서 선택한 사진 적용
+    private var pickImageActivityResult =//갤러리에서 선택한 사진 적용
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
             with(binding) {
                 if (result.resultCode == Activity.RESULT_OK) {
@@ -177,6 +177,7 @@ class FavoriteFragment : Fragment() {
             // 로그아웃 버튼 클릭 시 Firebase에서 로그아웃
             Firebase.auth.signOut()
             userUID = ""
+            selectedImageUri = null
 
             if (FirebaseAuth.getInstance().currentUser == null) {
                 loginBox.visibility = View.VISIBLE
@@ -191,6 +192,22 @@ class FavoriteFragment : Fragment() {
         if (FirebaseAuth.getInstance().currentUser != null) {
             user = FirebaseAuth.getInstance().currentUser!!
             userUID = user.uid
+
+                val storage = FirebaseStorage.getInstance()
+                var imgFileName = "IMAGE_$userUID.jpg"
+                storage.reference.child("profiles")
+                    .child(imgFileName).downloadUrl.addOnSuccessListener {
+                        selectedImageUri = it
+                        binding.imgProfile.load(selectedImageUri) {
+                            transformations(CircleCropTransformation())
+                        }
+                        Log.d("img", "이미지 가져오기 성공")
+                    }.addOnFailureListener {
+                        if(selectedImageUri==null){
+                            binding.imgProfile.setImageResource(R.drawable.img_person)
+                        }
+                        Log.d("img", it.message.toString())
+                    }
 
             // 로그인 상태일 때
             loginBox.visibility = View.INVISIBLE
@@ -227,23 +244,6 @@ class FavoriteFragment : Fragment() {
             profileBox.visibility = View.INVISIBLE
             logoutButton.visibility = View.INVISIBLE
             binding.textView2.visibility = View.VISIBLE
-        }
-
-        // firebase에서 이미지 가져오기
-        if (userUID != "") {
-            val storage = FirebaseStorage.getInstance()
-            var imgFileName = "IMAGE_$userUID.jpg"
-            storage.reference.child("profiles")
-                .child(imgFileName).downloadUrl.addOnSuccessListener {
-                    selectedImageUri = it
-                    binding.imgProfile.load(selectedImageUri) {
-                        transformations(CircleCropTransformation())
-                    }
-                    Log.d("img", "이미지 가져오기 성공")
-                }.addOnFailureListener {
-                    binding.imgProfile.setImageResource(R.drawable.img_person)
-                    Log.d("img", it.message.toString())
-                }
         }
     }
 
@@ -538,7 +538,6 @@ class FavoriteFragment : Fragment() {
             Log.d("img", "이미지 삭제 성공")
         }.addOnFailureListener {
             Log.d("img", "이미지 삭제 실패")
-            showSnackbar("이미지 삭제를 실패했습니다.")
         }
     }
 
