@@ -1,5 +1,6 @@
 package com.nbcamp_14_project.search
 
+import android.app.Activity
 import android.app.Dialog
 import android.content.Context
 import android.content.Intent
@@ -12,6 +13,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
@@ -28,6 +30,8 @@ import com.nbcamp_14_project.detail.DetailViewModel
 import com.nbcamp_14_project.detail.DetailViewModelFactory
 import com.nbcamp_14_project.favorite.FavoriteRepository
 import com.nbcamp_14_project.favorite.FavoriteViewModel
+import com.nbcamp_14_project.home.HomeViewPagerViewModel
+import com.nbcamp_14_project.home.HomeViewPagerViewModelFactory
 import com.nbcamp_14_project.home.toDetailInfo
 import com.nbcamp_14_project.mainpage.MainActivity
 import com.nbcamp_14_project.ui.login.LoginActivity
@@ -52,7 +56,20 @@ class SearchFragment : Fragment() {
             requireActivity(), SearchViewModelFactory()
         )[SearchViewModel::class.java]
     }
+    private val homeViewPagerViewModel: HomeViewPagerViewModel by activityViewModels{
+        HomeViewPagerViewModelFactory()
+    }
+    private val checkLoginLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                val checkLogin = result.data?.getStringExtra(LoginActivity.CHECK_LOGIN)
+                if (checkLogin == "Login") {
+                    homeViewPagerViewModel.addListAtFirst("추천", "추천")
+                }
+            }
+        }
     var user = FirebaseAuth.getInstance().currentUser
+
     private val adapter by lazy {
         SearchListAdapter(
             onClick = { item ->
@@ -64,8 +81,9 @@ class SearchFragment : Fragment() {
             },
             onSwitch = { item ->
                 val detailInfo = item.toDetailInfo()
-                Log.d("searchuserFragment", "$user")
-                if (user != null) {
+                val test = user
+                Log.d("searchuserFragment", "$test")
+                if (test != null) {
                     // 사용자가 로그인한 경우
                     if (detailInfo != null) {
                         val isFavorite = detailInfo.isLike
@@ -79,7 +97,7 @@ class SearchFragment : Fragment() {
                     // 사용자가 로그인하지 않은 경우
                     showSnackbar("로그인을 해주세요.")
                     val intent = Intent(requireContext(), LoginActivity::class.java)
-                    startActivity(intent)
+                    checkLoginLauncher.launch(intent)
                 }
             }
         )
@@ -140,6 +158,7 @@ class SearchFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
+        user = FirebaseAuth.getInstance().currentUser
         if (user != null) {
             viewModel.clearRecentSearch()
             getRecentSearchListFirebase(userUID = user!!.uid)

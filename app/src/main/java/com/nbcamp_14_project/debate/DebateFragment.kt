@@ -1,6 +1,7 @@
 // DebateFragment.kt
 package com.nbcamp_14_project.debate
 
+import android.app.Activity
 import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
@@ -8,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -16,6 +18,8 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.nbcamp_14_project.R
 import com.nbcamp_14_project.databinding.FragmentDebateBinding
+import com.nbcamp_14_project.home.HomeViewPagerViewModel
+import com.nbcamp_14_project.home.HomeViewPagerViewModelFactory
 import com.nbcamp_14_project.ui.login.LoginActivity
 import java.util.Date
 
@@ -29,7 +33,18 @@ class DebateFragment : Fragment() {
     private lateinit var adapter: DebateListAdapter
     private val debateList = ArrayList<DebateItem>()
     val viewModel: DebateViewModel by activityViewModels()
-
+    private val homeViewPagerViewModel: HomeViewPagerViewModel by activityViewModels{
+        HomeViewPagerViewModelFactory()
+    }
+    private val checkLoginLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                val checkLogin = result.data?.getStringExtra(LoginActivity.CHECK_LOGIN)
+                if (checkLogin == "Login") {
+                    homeViewPagerViewModel.addListAtFirst("추천", "추천")
+                }
+            }
+        }
     // onCreateView 함수 오버라이드 - Fragment의 뷰 생성
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -257,7 +272,7 @@ class DebateFragment : Fragment() {
     // LoginActivity로 이동하는 함수
     private fun navigateToLoginActivity() {
         val intent = Intent(requireContext(), LoginActivity::class.java)
-        startActivity(intent)
+        checkLoginLauncher.launch((intent))
     }
 
     // 토론 목록을 불러오는 함수

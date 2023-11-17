@@ -1,5 +1,6 @@
 package com.nbcamp_14_project.debate
 
+import android.app.Activity
 import android.app.AlertDialog
 import android.content.Intent
 import android.content.res.ColorStateList
@@ -14,6 +15,7 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.EditText
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -26,6 +28,8 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.nbcamp_14_project.R
 import com.nbcamp_14_project.databinding.FragmentDebatedetailBinding
+import com.nbcamp_14_project.home.HomeViewPagerViewModel
+import com.nbcamp_14_project.home.HomeViewPagerViewModelFactory
 import com.nbcamp_14_project.ui.login.LoginActivity
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -47,6 +51,18 @@ class DebateDetailFragment : Fragment() {
     private var isOppositeButtonClicked = false
     private var agreeNum = 0.0
     private var oppositeNum = 0.0
+    private val homeViewPagerViewModel: HomeViewPagerViewModel by activityViewModels{
+        HomeViewPagerViewModelFactory()
+    }
+    private val checkLoginLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                val checkLogin = result.data?.getStringExtra(LoginActivity.CHECK_LOGIN)
+                if (checkLogin == "Login") {
+                    homeViewPagerViewModel.addListAtFirst("추천", "추천")
+                }
+            }
+        }
 
     // onCreateView: Fragment의 레이아웃을 inflate하여 반환
     override fun onCreateView(
@@ -631,7 +647,7 @@ class DebateDetailFragment : Fragment() {
                 }
 
                 isAgreeButtonClicked = !isAgreeButtonClicked // 클릭 상태 토글
-                agreeClicked = isAgreeButtonClicked // agreeClicked 변수 업데이트
+//                agreeClicked = isAgreeButtonClicked // agreeClicked 변수 업데이트
             }
         }
 
@@ -658,7 +674,7 @@ class DebateDetailFragment : Fragment() {
                 }
 
                 isOppositeButtonClicked = !isOppositeButtonClicked // 클릭 상태 토글
-                oppositeClicked = isOppositeButtonClicked // agreeClicked 변수 업데이트
+//                oppositeClicked = isOppositeButtonClicked // agreeClicked 변수 업데이트
             }
         }
 
@@ -741,7 +757,7 @@ class DebateDetailFragment : Fragment() {
     // LoginActivity로 이동하는 Intent를 생성
     private fun navigateToLoginActivity() {
         val intent = Intent(requireContext(), LoginActivity::class.java)
-        startActivity(intent)
+        checkLoginLauncher.launch(intent)
     }
     // onDestroyView: Fragment의 뷰가 소멸될 때 호출
     override fun onDestroyView() {
